@@ -127,6 +127,61 @@
 </head>
 <body>
 
+<script>
+/* ── TONDA 접근 잠금 (브라우저 닫으면 재입력) ── */
+(function(){
+  if (location.protocol === 'file:') return;
+  if (sessionStorage.getItem('tonda_gate_ok') === '1') return;
+  const GATE_JSON = 'https://raw.githubusercontent.com/a90894048-creator/TONDA-CONVERT/main/gate.json';
+  const GATE_API  = 'https://api.github.com/repos/a90894048-creator/TONDA-CONVERT/contents/gate.json';
+  let activeHash = '388ff3adccc5444ba184b8e4edd589fbfc30dc56cada02ecc83004ead7f24aeb';
+  const sha256 = async s => { const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); };
+  const cover = document.createElement('div');
+  cover.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#f4f5f7;display:flex;align-items:center;justify-content:center;font-family:"Malgun Gothic",Arial,sans-serif;';
+  cover.innerHTML = '<div style="width:320px;background:#fff;border:1px solid #ececec;border-radius:16px;padding:32px 28px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.08);">'
+    + '<div style="width:54px;height:54px;border-radius:14px;background:#e8f0fe;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px;">🔒</div>'
+    + '<div style="font-size:17px;font-weight:700;color:#1a1a2e;margin-bottom:4px;">TONDA 통관 변환기</div>'
+    + '<div style="font-size:13px;color:#888;margin-bottom:20px;">접근하려면 비밀번호를 입력하세요</div>'
+    + '<input id="_gpw" type="password" placeholder="비밀번호" style="width:100%;padding:10px 12px;border:1px solid #d0d7e3;border-radius:8px;text-align:center;font-size:14px;margin-bottom:10px;box-sizing:border-box;">'
+    + '<button id="_gok" style="width:100%;padding:10px;border:none;border-radius:8px;background:#1a1a2e;color:#fff;font-weight:700;font-size:14px;cursor:pointer;">확인</button>'
+    + '<div id="_gerr" style="font-size:12px;color:#e74c3c;margin-top:10px;min-height:15px;"></div>'
+    + '<div style="font-size:11px;color:#aaa;">브라우저를 닫으면 다시 입력해야 합니다</div>'
+    + '<div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f0f0;"><a id="_gchg" href="#" style="font-size:11px;color:#2563eb;text-decoration:none;">🔑 비밀번호 변경</a></div>'
+    + '</div>';
+  const mount = () => {
+    document.documentElement.appendChild(cover);
+    if (document.body) document.body.style.overflow = 'hidden';
+    const pw = cover.querySelector('#_gpw'), err = cover.querySelector('#_gerr');
+    const unlock = async () => {
+      if (await sha256(pw.value) === activeHash) { sessionStorage.setItem('tonda_gate_ok','1'); cover.remove(); if (document.body) document.body.style.overflow=''; }
+      else { err.textContent = '비밀번호가 올바르지 않습니다'; pw.select(); }
+    };
+    cover.querySelector('#_gok').onclick = unlock;
+    pw.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+    pw.focus();
+    cover.querySelector('#_gchg').onclick = async e => {
+      e.preventDefault();
+      const cur = prompt('현재 비밀번호'); if (cur == null) return;
+      if (await sha256(cur) !== activeHash) { alert('현재 비밀번호가 올바르지 않습니다.'); return; }
+      const n1 = prompt('새 비밀번호'); if (!n1) return;
+      const n2 = prompt('새 비밀번호 확인'); if (n1 !== n2) { alert('새 비밀번호가 일치하지 않습니다.'); return; }
+      let token = localStorage.getItem('tonda_gh_token') || prompt('GitHub 토큰 (변경 권한 필요)');
+      if (!token) return; localStorage.setItem('tonda_gh_token', token);
+      const nh = await sha256(n1);
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify({ hash: nh, updated: new Date().toISOString() }))));
+      let sha = null;
+      try { const g = await fetch(GATE_API, { headers: { Authorization: 'token ' + token } }); if (g.ok) sha = (await g.json()).sha; } catch(_) {}
+      const body = { message: '비밀번호 변경', content }; if (sha) body.sha = sha;
+      const put = await fetch(GATE_API, { method: 'PUT', headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (put.ok) { activeHash = nh; alert('비밀번호가 변경되었습니다. 모든 사용자에게 1~2분 내 적용됩니다.'); }
+      else { alert('변경 실패: ' + ((await put.json().catch(()=>({}))).message || put.status)); }
+    };
+  };
+  if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);
+  fetch(GATE_JSON + '?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(j => { if (j && j.hash) activeHash = j.hash; }).catch(()=>{});
+})();
+</script>
+
 <header>
   <div class="logo">📦 TONDA 쿠팡 변환기</div>
   <div class="badge">v1.0</div>

@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TONDA 쿠팡 변환기</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Malgun Gothic', system-ui, sans-serif; background: #f4f5f7; color: #1a1a1a; min-height: 100vh; }
+
+  header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 0 2rem; height: 52px; display: flex; align-items: center; gap: 10px; }
+  .logo { font-size: 16px; font-weight: 600; }
+  .badge { font-size: 11px; background: #e8f0fe; color: #1a6cf5; padding: 2px 8px; border-radius: 20px; }
+  #lib-status { font-size: 11px; padding: 3px 10px; border-radius: 6px; margin-left: auto; }
+  .lib-ok   { background: #e8f5e9; color: #2e7d32; }
+  .lib-fail { background: #fce4ec; color: #c62828; }
+
+  .container { max-width: 1180px; margin: 0 auto; padding: 1.5rem 1.5rem 2rem; display: flex; flex-direction: column; gap: 1rem; }
+
+  .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 1.25rem; }
+  .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .card-icon { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .icon-in  { background: #fff3e0; }
+  .icon-out { background: #e8f5e9; }
+  .icon-db  { background: #e8f0fe; }
+  .card-title { font-size: 15px; font-weight: 600; }
+  .card-sub { font-size: 12px; color: #888; margin-bottom: 1rem; }
+  .pill { margin-left: auto; font-size: 11px; padding: 2px 10px; border-radius: 20px; }
+  .pill-orange { background: #fff3e0; color: #e65100; }
+  .pill-green  { background: #e8f5e9; color: #2e7d32; }
+  .pill-blue   { background: #e8f0fe; color: #1a6cf5; }
+
+  .dropzone { border: 1.5px dashed #ccc; border-radius: 8px; padding: 32px 16px; text-align: center; cursor: pointer; background: #fafafa; position: relative; transition: background 0.15s, border-color 0.15s; }
+  .dropzone:hover, .dropzone.drag-over { background: #f0f4ff; border-color: #1a6cf5; }
+  .dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .dz-icon { font-size: 34px; margin-bottom: 8px; }
+  .dz-text { font-size: 14px; color: #555; }
+  .dz-hint { font-size: 11px; color: #aaa; margin-top: 3px; }
+
+  .db-dropzone { border: 1.5px dashed #ccc; border-radius: 8px; padding: 18px 16px; text-align: center; cursor: pointer; background: #fafafa; position: relative; transition: background 0.15s, border-color 0.15s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .db-dropzone:hover, .db-dropzone.drag-over { background: #f0f4ff; border-color: #1a6cf5; }
+  .db-dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .db-dz-icon { font-size: 22px; }
+  .db-dz-text { font-size: 13px; color: #666; }
+  .db-dz-hint { font-size: 11px; color: #aaa; }
+
+  /* 파일 목록 */
+  .file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .file-item { display: flex; align-items: center; gap: 10px; background: #f7f8fa; border: 1px solid #ececec; border-radius: 8px; padding: 8px 12px; font-size: 12px; }
+  .file-item .fname { flex: 1; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fi-badge { font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 600; white-space: nowrap; }
+  .b-ok { background: #e8f5e9; color: #2e7d32; }
+  .b-warn { background: #fff3e0; color: #e65100; }
+  .b-err { background: #fce4ec; color: #c62828; }
+  .b-load { background: #e8f0fe; color: #1a6cf5; }
+  .fi-remove { background: none; border: none; color: #bbb; cursor: pointer; font-size: 14px; padding: 0 2px; }
+  .fi-remove:hover { color: #e53935; }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 7px 14px; border-radius: 8px; border: 1px solid #d0d0d0; background: #fff; cursor: pointer; color: #1a1a1a; transition: background 0.12s; font-family: inherit; }
+  .btn:hover { background: #f4f5f7; }
+  .btn-green { background: #2e7d32; color: #fff; border-color: #2e7d32; }
+  .btn-green:hover { background: #256128; }
+  .btn-green:disabled { background: #a5d6a7; border-color: #a5d6a7; cursor: not-allowed; }
+  .btn-sm { font-size: 12px; padding: 5px 12px; }
+  .btn-danger { color: #e53935; border-color: #f1c4c4; }
+  .btn-danger:hover { background: #fdecec; }
+
+  .output-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; flex-wrap: wrap; }
+  .output-actions { display: flex; gap: 8px; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 1rem; }
+  .stat-card { background: #f4f5f7; border-radius: 8px; padding: 10px 14px; text-align: center; }
+  .sv { font-size: 22px; font-weight: 600; }
+  .sl { font-size: 11px; color: #888; margin-top: 2px; }
+  .sv-total { color: #1a6cf5; }
+  .sv-ok    { color: #2e7d32; }
+  .sv-file  { color: #6a1b9a; }
+  .sv-miss  { color: #e65100; }
+  .sv-err   { color: #e53935; }
+
+  .section-label { font-size: 11px; font-weight: 600; color: #aaa; letter-spacing: 0.05em; text-transform: uppercase; margin: 4px 0 6px; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid #e0e0e0; border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: #1a1a2e; }
+  th { padding: 9px 10px; text-align: left; font-weight: 500; color: #fff; border-bottom: 1px solid #2a2a40; white-space: nowrap; }
+  td { padding: 6px 10px; border-bottom: 1px solid #f0f0f0; white-space: nowrap; vertical-align: middle; }
+  tbody tr:nth-child(even) { background: #f8f9fa; }
+  tbody tr:hover { background: #eef4ff; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.hs  { font-family: monospace; color: #1a6fc4; font-weight: 600; }
+  td.miss { background: #fffde7; color: #e65100; font-weight: 500; }
+  td.miss-biz { background: #fff3e0; color: #e65100; font-weight: 500; }
+  td.bad-hs { background: #ffebee; color: #c62828; font-weight: 700; }
+  .thumb { max-height: 54px; max-width: 70px; border-radius: 4px; display: block; }
+  .no-img { color: #ccc; font-size: 11px; }
+
+  .table-note { font-size: 11px; color: #aaa; margin-top: 6px; }
+  .empty-msg  { text-align: center; padding: 2.5rem; color: #aaa; font-size: 13px; }
+
+  /* DB 상태 바 */
+  .db-status-bar { margin-top: 10px; border-radius: 8px; padding: 9px 12px; display: flex; align-items: center; gap: 8px; font-size: 12px; background: #f4f5f7; min-height: 38px; }
+  .db-status-bar.ok      { background: #e8f5e9; }
+  .db-status-bar.loading { background: #e8f0fe; }
+  .db-status-bar.error   { background: #fce4ec; }
+  .db-sname { font-weight: 500; color: #2e7d32; }
+  .db-sinfo { color: #888; flex: 1; }
+  .db-sinfo.err { color: #c62828; }
+  .db-sinfo.loading { color: #1a6cf5; }
+
+  .token-row { margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+  .token-row input { flex: 1; font-size: 12px; padding: 6px 10px; border: 1px solid #d0d0d0; border-radius: 6px; font-family: monospace; }
+  .token-row input:focus { outline: none; border-color: #1a6cf5; }
+  .token-hint { font-size: 11px; color: #aaa; margin-top: 4px; }
+  .token-hint a { color: #1a6cf5; text-decoration: none; }
+
+  .upload-progress { display: none; margin-top: 10px; background: #e8f0fe; border-radius: 8px; padding: 9px 12px; font-size: 12px; color: #1a6cf5; align-items: center; gap: 8px; }
+  .spinner { width: 14px; height: 14px; border: 2px solid #b0c8fa; border-top-color: #1a6cf5; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .warn-list { font-size: 12px; color: #e65100; background: #fff8ef; border: 1px solid #ffe0b2; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; line-height: 1.7; }
+  .warn-list b { color: #bf360c; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">📦 TONDA 쿠팡 변환기</div>
+  <div class="badge">v1.0</div>
+  <span id="lib-status">로딩 중…</span>
+</header>
+
+<div class="container">
+
+  <!-- 입력 파일 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-in">📥</div>
+      <span class="card-title">입력 파일</span>
+      <span class="pill pill-orange">인보이스/패킹 엑셀 · 여러 개 동시 가능</span>
+    </div>
+    <p class="card-sub">선적요청 자료(인패킹 또는 INVOICE&amp;PACKING 시트)를 한꺼번에 올리면 하나의 통합 엑셀로 변환합니다</p>
+    <div class="dropzone" id="input-drop">
+      <input type="file" accept=".xlsx,.xls" id="input-file-input" multiple />
+      <div class="dz-icon">📂</div>
+      <div class="dz-text">클릭하거나 파일 여러 개를 끌어다 놓으세요</div>
+      <div class="dz-hint">.xlsx / .xls — 여러 파일 동시 선택 가능</div>
+    </div>
+    <div class="file-list" id="file-list"></div>
+    <div style="margin-top:12px; display:flex; gap:8px;">
+      <button class="btn btn-sm" id="add-btn">＋ 파일 추가</button>
+      <button class="btn btn-sm btn-danger" id="clear-btn" style="display:none">전체 초기화</button>
+    </div>
+  </div>
+
+  <!-- 출력 결과 -->
+  <div class="card">
+    <div class="output-header">
+      <div class="card-header" style="margin-bottom:0">
+        <div class="card-icon icon-out">📤</div>
+        <span class="card-title">변환 결과</span>
+      </div>
+      <div class="output-actions">
+        <button class="btn btn-sm" id="db-template-btn" disabled title="결과의 사업자번호로 DB 업데이트용 양식을 내려받습니다">🗂️ DB 양식 받기</button>
+        <button class="btn btn-green btn-sm" id="download-btn" disabled>⬇ 통합 엑셀 저장</button>
+      </div>
+    </div>
+
+    <div class="stat-row" id="stat-row" style="display:none">
+      <div class="stat-card"><div class="sv sv-file"  id="s-file">0</div><div class="sl">처리 파일</div></div>
+      <div class="stat-card"><div class="sv sv-total" id="s-total">0</div><div class="sl">전체 품목</div></div>
+      <div class="stat-card"><div class="sv sv-ok"    id="s-ok">0</div><div class="sl">통관번호 매칭</div></div>
+      <div class="stat-card"><div class="sv sv-miss"  id="s-miss">0</div><div class="sl">사업자번호 누락</div></div>
+      <div class="stat-card"><div class="sv sv-err"   id="s-err">0</div><div class="sl">추출 실패</div></div>
+    </div>
+
+    <div id="warn-box"></div>
+
+    <div class="table-wrap">
+      <div class="empty-msg" id="empty-msg">파일을 올리면 변환 결과가 여기에 표시됩니다</div>
+      <table id="preview-table" style="display:none">
+        <thead id="preview-head"></thead>
+        <tbody id="preview-body"></tbody>
+      </table>
+    </div>
+    <p class="table-note" id="table-note" style="display:none"></p>
+  </div>
+
+  <!-- 공유 DB -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-db">🗄️</div>
+      <span class="card-title">공유 DB (사업자번호 → 통관고유번호 · 사업자명)</span>
+      <span class="pill pill-blue" id="db-pill">GitHub 연동</span>
+    </div>
+    <p class="card-sub">누구든 DB 파일을 업로드하면 GitHub에 저장되어 모든 사용자에게 자동 공유됩니다</p>
+
+    <div class="db-dropzone" id="db-drop">
+      <input type="file" accept=".xlsx,.xls" id="db-file-input" />
+      <div class="db-dz-icon">🗄️</div>
+      <div>
+        <div class="db-dz-text">새 DB 파일 업로드 (클릭 또는 드래그)</div>
+        <div class="db-dz-hint">컬럼: 사업자번호 · 통관고유번호 · 사업자명 — GitHub에 저장되어 전체 공유</div>
+      </div>
+    </div>
+
+    <div class="upload-progress" id="upload-progress">
+      <div class="spinner"></div>
+      <span id="upload-msg">GitHub에 업로드 중…</span>
+    </div>
+
+    <div class="db-status-bar" id="db-status-bar">
+      <span>⚪</span><span class="db-sinfo loading">GitHub에서 DB 불러오는 중…</span>
+    </div>
+
+    <div id="token-section" style="margin-top:12px; padding-top:12px; border-top: 1px solid #f0f0f0;">
+      <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:600; color:#888;">🔑 GitHub 토큰</span>
+        <span id="token-saved-badge" style="display:none; font-size:11px; background:#e8f5e9; color:#2e7d32; padding:1px 8px; border-radius:20px;">저장됨</span>
+        <button class="btn btn-sm btn-danger" id="token-clear-btn" style="display:none; margin-left:auto; font-size:11px; padding:3px 8px;">토큰 삭제</button>
+      </div>
+      <div class="token-row" id="token-input-row">
+        <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+        <button class="btn btn-sm" id="token-save-btn">저장</button>
+      </div>
+      <p class="token-hint">
+        DB 업로드 시에만 필요합니다 (추출·다운로드는 토큰 없이 가능).
+        <a href="https://github.com/settings/tokens/new?scopes=repo&description=TONDA-COUPANG-DB" target="_blank">여기서 토큰 발급 →</a>
+        (repo 권한 체크 후 생성, 한 번만 입력하면 됩니다)
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── 상수 ──────────────────────────────────────────────
+const REPO_OWNER = 'a90894048-creator';
+const REPO_NAME  = 'TONDA-DB';        // 공용 DB (교동·DX·쿠팡 공유)
+const DB_FILE    = 'database.xlsx';
+const TOKEN_KEY  = 'tonda_gh_token';  // 공용 토큰 키
+const RAW_URL    = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${DB_FILE}`;
+const API_URL    = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DB_FILE}`;
+
+// 출력 컬럼 정의 (미리보기·엑셀 저장 공통 소스)
+// field: getAllRows() 데이터 키 (null = 빈칸 컬럼) / type: img·hs·num·text
+const COLUMNS = [
+  { header: '이미지',       field: '이미지',       type: 'img',  width: 12 },
+  { header: '입항지',       field: '입항지',       type: 'text', width: 11 },
+  { header: '사업자번호',   field: '사업자번호',   type: 'text', width: 14, emptyLabel: '누락',   emptyClass: 'miss-biz', emptyFill: 'FFFFE0B2' },
+  { header: '사업자명',     field: '사업자명',     type: 'text', width: 20 },
+  { header: '통관고유번호', field: '통관고유번호', type: 'text', width: 16, emptyLabel: '미등록', emptyClass: 'miss', emptyFill: 'FFFFF9C4' },
+  { header: '비엘번호',     field: null,           type: 'text', width: 16 },
+  { header: '해외거래처',   field: '해외거래처',   type: 'text', width: 30 },
+  { header: '세번부호',     field: '세번',         type: 'hs',   width: 15 },
+  { header: '세율구분',     field: null,           type: 'text', width: 9  },
+  { header: '규격1',        field: 'Descriptions', type: 'text', width: 26 },
+  { header: '규격2',        field: null,           type: 'text', width: 14 },
+  { header: '규격3',        field: null,           type: 'text', width: 14 },
+  { header: '성분',         field: '성분',         type: 'text', width: 22 },
+  { header: '수량',         field: '수량',         type: 'num',  width: 8  },
+  { header: '단위',         field: null,           type: 'text', width: 8  },
+  { header: '단가',         field: '단가',         type: 'num',  width: 10 },
+  { header: '총액',         field: '총액',         type: 'num',  width: 11 },
+  { header: '순중량',       field: '순중량',       type: 'num',  width: 9  },
+  { header: 'FILE',         field: null,           type: 'text', width: 10 },
+  { header: '총중량',       field: '총중량',       type: 'num',  width: 9  },
+  { header: '운임',         field: null,           type: 'num',  width: 12 },
+  { header: '파일명',       field: '파일명',       type: 'text', width: 40 },
+];
+// 헤더 행에서 찾을 컬럼 라벨 (중국어 + 한국어, 공백제거·소문자 비교)
+const COLDEFS = {
+  품명:   ['英文品名','英品名文','영문품명','품명'],
+  수량:   ['小件数','개수'],
+  단가:   ['单价','단가'],
+  총액:   ['总价','총액'],
+  순중량: ['净重','순중량'],
+  총중량: ['毛重','총중량'],
+  성분:   ['英文材质','영문재질','재질'],
+  이미지: ['产品图片','제품이미자','제품이미지','이미지'],
+  세번:   ['韩国清关hs编码','한국통관hs코드','한국통관hs','세번'],
+};
+const NUM_COLS = ['수량','단가','총액','순중량','총중량'];
+
+// ── 상태 ──────────────────────────────────────────────
+const state = {
+  dbByBiz: {}, dbLoaded: false,
+  files: [],   // { name, status:'loading'|'ok'|'warn'|'err', error, 해외거래처, 사업자번호, 입항지, image:{ab,ext}|null, rows:[...] }
+};
+
+// ── 라이브러리 확인 ──────────────────────────────────
+window.addEventListener('load', () => {
+  const el = document.getElementById('lib-status');
+  const ok = typeof XLSX !== 'undefined' && typeof JSZip !== 'undefined' && typeof ExcelJS !== 'undefined';
+  if (ok) { el.textContent = '✔ 준비 완료'; el.className = 'lib-ok'; }
+  else { el.textContent = '✗ 라이브러리 로드 실패 (인터넷 확인)'; el.className = 'lib-fail'; }
+});
+
+// ── 유틸 ──────────────────────────────────────────────
+const norm = s => String(s == null ? '' : s).replace(/\s+/g, '').toLowerCase();
+const esc  = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+function cleanNum(v) {
+  if (v === '' || v == null) return '';
+  if (typeof v === 'number') return v;
+  const m = String(v).replace(/,/g, '').match(/-?\d+(\.\d+)?/);
+  return m ? Number(m[0]) : String(v).trim();
+}
+function formatHs(v) {
+  if (v === '' || v == null) return '';
+  const s = String(v).replace(/\s/g, '');
+  if (/^\d{4}[.\-]\d{2}[.\-]\d{4}$/.test(s)) return s;
+  if (/^\d{10}$/.test(s)) return `${s.slice(0,4)}.${s.slice(4,6)}-${s.slice(6)}`;
+  return String(v).trim();
+}
+// 사업자번호: 구분기호 없는 10자리면 ###-##-##### 로 표기
+function formatBiz(v) {
+  if (v === '' || v == null) return '';
+  const d = String(v).replace(/[^0-9]/g, '');
+  if (d.length === 10) return `${d.slice(0,3)}-${d.slice(3,5)}-${d.slice(5)}`;
+  return String(v).trim();
+}
+// 해외거래처: 한자(CJK) 제거하고 영문만, Ltd/Limited로 끝나면 거기까지만
+function cleanCompany(v) {
+  if (v === '' || v == null) return '';
+  let s = String(v)
+    .replace(/[　-〿㐀-鿿豈-﫿＀-￯]/g, ' ') // 한자·전각기호 제거
+    .replace(/\s+/g, ' ')
+    .replace(/^[\s:：\-_,.]+/, '')   // 라벨 구분기호 등 앞쪽 정리
+    .trim();
+  const m = s.match(/^(.*?\bLtd\b\.?)/i) || s.match(/^(.*?\bLimited\b)/i);
+  if (m) s = m[1].trim();
+  return s.trim();
+}
+
+// ── DB 인덱스 ──────────────────────────────────────────
+function pick(row, names) {
+  for (const k of Object.keys(row)) {
+    const nk = norm(k);
+    if (names.some(n => nk.includes(norm(n)))) return row[k];
+  }
+  return '';
+}
+function buildDbIndex(rows) {
+  state.dbByBiz = {};
+  for (const r of rows) {
+    const biz = String(pick(r, ['사업자번호','사업자등록번호','营业执照'])).trim();
+    if (!biz) continue;
+    state.dbByBiz[normBiz(biz)] = {
+      사업자번호:   biz,
+      통관고유번호: String(pick(r, ['통관고유번호','통관고유부호','통관부호'])).trim(),
+      사업자명:     String(pick(r, ['사업자명','상호','회사명','거래처'])).trim(),
+    };
+  }
+  state.dbLoaded = true;
+}
+const normBiz = b => String(b).replace(/[^0-9]/g, '');
+function lookupDb(biz) {
+  if (!biz) return null;
+  return state.dbByBiz[normBiz(biz)] || null;
+}
+
+// ── 시트 선택 ──────────────────────────────────────────
+function sheetToRows(sheet) {
+  return XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '', raw: true });
+}
+// 헤더 행(중국어/한국어 상세 헤더)을 찾아 컬럼 매핑 반환
+function findHeader(rows) {
+  for (let i = 0; i < Math.min(rows.length, 20); i++) {
+    const row = rows[i] || [];
+    const map = {};
+    for (let j = 0; j < row.length; j++) {
+      const cell = norm(row[j]);
+      if (!cell) continue;
+      for (const key of Object.keys(COLDEFS)) {
+        if (map[key] != null) continue;
+        if (COLDEFS[key].some(lbl => cell === norm(lbl) || cell.includes(norm(lbl)))) map[key] = j;
+      }
+    }
+    const matched = Object.keys(map).length;
+    if (map.품명 != null && matched >= 5) return { headerRowIdx: i, colMap: map };
+  }
+  return null;
+}
+// 워크북에서 (시트인덱스, 헤더, 컬럼맵) 결정 — 가이드 규칙 + 폴백
+function pickSheet(wb) {
+  const names = wb.SheetNames;
+  const order = [];
+  const first = names[0] || '';
+  if (/인패킹|인보이스|패킹|invoice|packing/i.test(first)) order.push(0);
+  const inv = names.findIndex(n => /invoice\s*&?\s*packing/i.test(n));
+  if (inv >= 0) order.push(inv);
+  if (names.length >= 3) order.push(2);
+  for (let i = 0; i < names.length; i++) order.push(i); // 최종 폴백: 전체
+  const seen = new Set();
+  for (const idx of order) {
+    if (seen.has(idx)) continue; seen.add(idx);
+    const rows = sheetToRows(wb.Sheets[names[idx]]);
+    const h = findHeader(rows);
+    if (h) return { sheetIdx: idx, rows, ...h };
+  }
+  return null;
+}
+
+// ── 상단 메타 추출 (회사명·사업자번호·입항지) ──────────
+function extractMeta(rows) {
+  let 해외거래처 = '';
+  for (let i = 0; i < Math.min(rows.length, 4) && !해외거래처; i++)
+    for (let j = 0; j < (rows[i]||[]).length; j++) {
+      const cleaned = cleanCompany(rows[i][j]);
+      if (cleaned) { 해외거래처 = cleaned; break; }
+    }
+
+  let 사업자번호 = '';
+  outer:
+  for (let i = 0; i < rows.length; i++)
+    for (let j = 0; j < (rows[i]||[]).length; j++) {
+      if (String(rows[i][j]).includes('营业执照号')) {
+        // 营业执照号 옆 셀: 하이픈 형식 또는 구분기호 없는 10자리 모두 인식
+        for (let k = j + 1; k < Math.min(j + 5, (rows[i]||[]).length); k++) {
+          const cell = String(rows[i][k] ?? '').trim();
+          if (!cell) continue;
+          const mh = cell.match(/\d{3}-\d{2}-\d{5}/);
+          if (mh) { 사업자번호 = mh[0]; break outer; }
+          if (cell.replace(/[^0-9]/g, '').length === 10) { 사업자번호 = cell.replace(/[^0-9]/g, ''); break outer; }
+        }
+      }
+    }
+  if (!사업자번호) { // 폴백: 시트 전체에서 하이픈 형식만 탐색(HS코드 등 오인식 방지)
+    for (let i = 0; i < rows.length && !사업자번호; i++)
+      for (const c of (rows[i]||[])) {
+        const m = String(c).match(/\d{3}-\d{2}-\d{5}/);
+        if (m) { 사업자번호 = m[0]; break; }
+      }
+  }
+
+  let 입항지 = '';
+  for (let i = 0; i < rows.length && !입항지; i++)
+    for (const c of (rows[i]||[])) {
+      const s = String(c);
+      if (/to\s*:/i.test(s)) {
+        const m = s.match(/(PYONGTAEK|PYEONGTAEK|INCHEON)/i);
+        if (m) { 입항지 = m[1].toUpperCase().replace('PYEONGTAEK','PYONGTAEK'); break; }
+      }
+    }
+  return { 해외거래처, 사업자번호: formatBiz(사업자번호), 입항지 };
+}
+
+// ── 품목 행 추출 ──────────────────────────────────────
+function extractRows(rows, headerRowIdx, colMap) {
+  const out = [];
+  for (let i = headerRowIdx + 1; i < rows.length; i++) {
+    const row = rows[i] || [];
+    const name = String(row[colMap.품명] ?? '').trim();
+    const c0 = String(row[0] ?? '').trim().toUpperCase();
+    const c1 = String(row[1] ?? '').trim().toUpperCase();
+    if (c0.startsWith('TOTAL') || c1.startsWith('TOTAL')) break; // 합계행에서 종료
+    if (!name) continue;                                          // 단위행·빈행 건너뛰기
+    if (/^(PCS|CTNS?|USD|CNY|KGS?|CBM)$/i.test(name)) continue;
+    const item = { Descriptions: name, _row: i };
+    for (const key of NUM_COLS) item[key] = colMap[key] != null ? cleanNum(row[colMap[key]]) : '';
+    item.성분 = colMap.성분 != null ? String(row[colMap.성분] ?? '').trim() : '';
+    item.세번 = colMap.세번 != null ? formatHs(row[colMap.세번]) : '';
+    out.push(item);
+  }
+  return out;
+}
+
+// ── 이미지 추출 (제품 행 → 이미지 매핑, 전체) ──────────
+async function extractImages(arrayBuffer, sheetIdx, imageCol) {
+  try {
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const wbFile = zip.file('xl/workbook.xml');
+    const wbRelsFile = zip.file('xl/_rels/workbook.xml.rels');
+    if (!wbFile || !wbRelsFile) return {};
+    const wbXml = await wbFile.async('text');
+    const wbRelsXml = await wbRelsFile.async('text');
+    const sheetOrder = [...wbXml.matchAll(/<sheet\b[^>]*\br:id="([^"]+)"/g)].map(m => m[1]);
+    if (sheetIdx >= sheetOrder.length) return {};
+    const targetRid = sheetOrder[sheetIdx];
+    const wbRels = [...wbRelsXml.matchAll(/Id="([^"]+)"[^>]*Target="([^"]+)"/g)];
+    const sheetRel = wbRels.find(m => m[1] === targetRid);
+    if (!sheetRel) return {};
+    const sheetPath = 'xl/' + sheetRel[2].replace(/^\.\.\//, '');
+    const sheetRelsPath = sheetPath.replace(/\/([^/]+)$/, '/_rels/$1.rels');
+    const srf = zip.file(sheetRelsPath);
+    if (!srf) return {};
+    const sheetRelsXml = await srf.async('text');
+    const drawingRel = sheetRelsXml.match(/Type="[^"]*\/drawing"[^>]*Target="([^"]+)"/);
+    if (!drawingRel) return {};
+    const sheetDir = sheetPath.replace(/\/[^/]+$/, '/');
+    const drawingPath = (sheetDir + drawingRel[1]).replace(/[^/]+\/\.\.\//g, '');
+    const df = zip.file(drawingPath);
+    if (!df) return {};
+    const drawingXml = await df.async('text');
+
+    // drawing rels → 이미지 파일
+    const drawingRelsPath = drawingPath.replace(/\/([^/]+)$/, '/_rels/$1.rels');
+    const drf = zip.file(drawingRelsPath);
+    const rIdToImg = {};
+    if (drf) {
+      const drawingRelsXml = await drf.async('text');
+      const drawingDir = drawingPath.replace(/\/[^/]+$/, '/');
+      for (const m of [...drawingRelsXml.matchAll(/Id="([^"]+)"[^>]*Target="([^"]+)"/g)]) {
+        const mediaPath = (drawingDir + m[2]).replace(/[^/]+\/\.\.\//g, '');
+        const imgFile = zip.file(mediaPath);
+        if (imgFile) {
+          const ab = await imgFile.async('arraybuffer');
+          let ext = mediaPath.split('.').pop().toLowerCase();
+          if (ext === 'jpg') ext = 'jpeg';
+          rIdToImg[m[1]] = { ab, ext };
+        }
+      }
+    }
+
+    // 이미지 컬럼의 모든 앵커 → { 엑셀행번호: 이미지 } 매핑
+    const map = {};
+    const anchorRe = /<xdr:(twoCellAnchor|oneCellAnchor)[\s\S]*?<\/xdr:\1>/g;
+    let am;
+    while ((am = anchorRe.exec(drawingXml)) !== null) {
+      const a = am[0];
+      const fr = a.match(/<xdr:from>[\s\S]*?<xdr:row>(\d+)<\/xdr:row>/);
+      const fc = a.match(/<xdr:from>[\s\S]*?<xdr:col>(\d+)<\/xdr:col>/);
+      const rid = a.match(/r:embed="([^"]+)"/) || a.match(/r:id="([^"]+)"/);
+      if (!fr || !fc || !rid || !rIdToImg[rid[1]]) continue;
+      const row = parseInt(fr[1]), col = parseInt(fc[1]);
+      if (imageCol != null && col !== imageCol) continue;   // 이미지 컬럼만(법인사진 등 제외)
+      if (map[row] == null) map[row] = rIdToImg[rid[1]];     // 한 행에 여러 이미지면 첫 번째
+    }
+    return map;
+  } catch (e) { console.warn('이미지 추출 실패', e); return {}; }
+}
+
+// ── 파일 처리 ──────────────────────────────────────────
+function readArrayBuffer(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = rej;
+    r.readAsArrayBuffer(file);
+  });
+}
+async function processFile(entry, file) {
+  try {
+    const ab = await readArrayBuffer(file);
+    const wb = XLSX.read(ab, { type: 'array' });
+    const picked = pickSheet(wb);
+    if (!picked) { entry.status = 'err'; entry.error = '인보이스/패킹 헤더를 찾지 못함'; return; }
+    const { sheetIdx, rows, headerRowIdx, colMap } = picked;
+    Object.assign(entry, extractMeta(rows));
+    entry.rows = extractRows(rows, headerRowIdx, colMap);
+    if (/\.xlsx$/i.test(file.name)) {
+      const imgMap = await extractImages(ab, sheetIdx, colMap.이미지);
+      entry.rows.forEach(r => { r.image = imgMap[r._row] || null; });
+    }
+    if (!entry.rows.length) { entry.status = 'err'; entry.error = '품목 데이터 없음'; }
+    else if (!entry.사업자번호) { entry.status = 'warn'; entry.error = '사업자번호 누락'; }
+    else { entry.status = 'ok'; }
+  } catch (e) {
+    entry.status = 'err'; entry.error = '읽기 오류: ' + e.message;
+    console.error(e);
+  }
+}
+
+// ── 파일 추가/삭제 ─────────────────────────────────────
+async function addFiles(files) {
+  const xls = Array.from(files).filter(f => /\.(xlsx|xls)$/i.test(f.name));
+  if (!xls.length) return;
+  const existing = new Set(state.files.map(d => d.name));
+  const toAdd = xls.filter(f => !existing.has(f.name));
+  for (const file of toAdd) {
+    const entry = { name: file.name, status: 'loading', error: null, 해외거래처:'', 사업자번호:'', 입항지:'', image:null, rows: [] };
+    state.files.push(entry);
+    renderFileList();
+    await processFile(entry, file);
+    renderFileList();
+    renderResult();
+  }
+  document.getElementById('clear-btn').style.display = state.files.length ? 'inline-flex' : 'none';
+}
+function removeFile(name) {
+  state.files = state.files.filter(d => d.name !== name);
+  renderFileList(); renderResult();
+  document.getElementById('clear-btn').style.display = state.files.length ? 'inline-flex' : 'none';
+}
+function clearAll() {
+  state.files = [];
+  renderFileList(); renderResult();
+  document.getElementById('clear-btn').style.display = 'none';
+}
+
+// ── 결과 합치기 ────────────────────────────────────────
+function getAllRows() {
+  const all = [];
+  for (const f of state.files) {
+    if (f.status === 'err' || f.status === 'loading') continue;
+    const db = lookupDb(f.사업자번호);
+    f.rows.forEach((r, idx) => {
+      all.push({
+        이미지: r.image || null,
+        해외거래처: f.해외거래처,
+        사업자번호: f.사업자번호,
+        통관고유번호: db ? db.통관고유번호 : '',
+        사업자명: db ? db.사업자명 : '',
+        입항지: f.입항지,
+        Descriptions: r.Descriptions,
+        수량: r.수량, 단가: r.단가, 총액: r.총액, 순중량: r.순중량, 총중량: r.총중량,
+        성분: r.성분, 세번: r.세번,
+        파일명: f.name,
+        _firstOfFile: idx === 0,
+      });
+    });
+  }
+  return all;
+}
+
+// ── 렌더링 ─────────────────────────────────────────────
+function renderFileList() {
+  const el = document.getElementById('file-list');
+  el.innerHTML = state.files.map(d => {
+    let badge;
+    if (d.status === 'loading') badge = '<span class="fi-badge b-load">읽는 중…</span>';
+    else if (d.status === 'err') badge = `<span class="fi-badge b-err">실패 · ${esc(d.error)}</span>`;
+    else if (d.status === 'warn') badge = `<span class="fi-badge b-warn">${d.rows.length}품목 · ${esc(d.error)}</span>`;
+    else badge = `<span class="fi-badge b-ok">${d.rows.length}품목</span>`;
+    return `<div class="file-item">
+      <span>📄</span>
+      <span class="fname" title="${esc(d.name)}">${esc(d.name)}</span>
+      ${badge}
+      <button class="fi-remove" onclick="removeFile(${JSON.stringify(d.name)})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function renderResult() {
+  const rows = getAllRows();
+  const anyLoading = state.files.some(d => d.status === 'loading');
+  const errFiles = state.files.filter(d => d.status === 'err');
+  const warnFiles = state.files.filter(d => d.status === 'warn');
+  const okFileCount = state.files.filter(d => d.status === 'ok' || d.status === 'warn').length;
+
+  document.getElementById('download-btn').disabled = !rows.length || anyLoading;
+  document.getElementById('db-template-btn').disabled = anyLoading || (!rows.length && !Object.keys(state.dbByBiz).length);
+
+  // 통계
+  const statRow = document.getElementById('stat-row');
+  if (rows.length || state.files.length) {
+    statRow.style.display = 'grid';
+    document.getElementById('s-file').textContent  = okFileCount;
+    document.getElementById('s-total').textContent = rows.length;
+    document.getElementById('s-ok').textContent    = rows.filter(r => r.통관고유번호).length;
+    document.getElementById('s-miss').textContent  = warnFiles.length;
+    document.getElementById('s-err').textContent   = errFiles.length;
+  } else statRow.style.display = 'none';
+
+  // 경고 목록 (항목 13·14)
+  const warnBox = document.getElementById('warn-box');
+  let warnHtml = '';
+  if (warnFiles.length)
+    warnHtml += `<div class="warn-list">⚠ <b>사업자번호 미추출 ${warnFiles.length}건</b> — ${warnFiles.map(f => esc(f.name)).join(', ')}</div>`;
+  if (errFiles.length)
+    warnHtml += `<div class="warn-list">❌ <b>추출 실패 ${errFiles.length}건</b> — ${errFiles.map(f => esc(f.name) + ' (' + esc(f.error) + ')').join(', ')}</div>`;
+  warnBox.innerHTML = warnHtml;
+
+  // 테이블
+  const table = document.getElementById('preview-table');
+  const empty = document.getElementById('empty-msg');
+  const note  = document.getElementById('table-note');
+  if (!rows.length) {
+    table.style.display = 'none'; empty.style.display = 'block'; note.style.display = 'none';
+    empty.textContent = anyLoading ? '파일 읽는 중…' : '파일을 올리면 변환 결과가 여기에 표시됩니다';
+    return;
+  }
+  empty.style.display = 'none';
+  table.style.display = 'table';
+
+  document.getElementById('preview-head').innerHTML =
+    '<tr>' + COLUMNS.map(c => `<th>${esc(c.header)}</th>`).join('') + '</tr>';
+
+  const view = rows;   // 전체 미리보기 (제한 해제)
+  document.getElementById('preview-body').innerHTML = view.map(r => {
+    const tds = COLUMNS.map(c => {
+      if (c.type === 'img')
+        return `<td>${r.이미지 ? `<img class="thumb" src="${imgUrl(r.이미지)}">` : '<span class="no-img">-</span>'}</td>`;
+      const v = c.field ? r[c.field] : '';
+      if (c.emptyLabel && !v) return `<td class="${c.emptyClass}">${c.emptyLabel}</td>`;
+      if (c.type === 'hs') {
+        const bad = v !== '' && v != null && String(v).replace(/[^0-9]/g, '').length !== 10;
+        return `<td class="hs${bad ? ' bad-hs' : ''}">${esc(v)}</td>`;
+      }
+      if (c.type === 'num') return `<td class="num">${esc(v)}</td>`;
+      return `<td>${esc(v)}</td>`;
+    });
+    return '<tr>' + tds.join('') + '</tr>';
+  }).join('');
+
+  note.style.display = 'block';
+  note.textContent = `전체 ${rows.length}품목`;
+}
+
+const _urlCache = new WeakMap();
+function imgUrl(img) {
+  if (!img) return '';
+  if (_urlCache.has(img)) return _urlCache.get(img);
+  const mime = img.ext === 'png' ? 'image/png' : 'image/jpeg';
+  const url = URL.createObjectURL(new Blob([img.ab], { type: mime }));
+  _urlCache.set(img, url);
+  return url;
+}
+
+// ── 통합 엑셀 저장 (ExcelJS, 이미지 포함) ───────────────
+document.getElementById('download-btn').addEventListener('click', async () => {
+  const rows = getAllRows();
+  if (!rows.length) return;
+  const btn = document.getElementById('download-btn');
+  btn.disabled = true; const old = btn.textContent; btn.textContent = '저장 중…';
+  try {
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('통합결과');
+    ws.columns = COLUMNS.map((c, idx) => ({ header: c.header, key: 'c' + idx, width: c.width }));
+    ws.getRow(1).eachCell(c => {
+      c.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1A1A2E' } };
+      c.alignment = { vertical: 'middle', horizontal: 'center' };
+    });
+    ws.getRow(1).height = 22;
+
+    const imgColIdx = COLUMNS.findIndex(c => c.type === 'img');     // 0-indexed
+    const hsIdx     = COLUMNS.findIndex(c => c.type === 'hs');
+
+    rows.forEach((r, i) => {
+      const obj = {};
+      COLUMNS.forEach((c, idx) => { obj['c' + idx] = (c.type === 'img' || !c.field) ? '' : (r[c.field] ?? ''); });
+      const row = ws.addRow(obj);
+      row.alignment = { vertical: 'middle' };
+      // 강조: 빈 값(사업자번호 누락=주황 / 통관고유번호 미등록=노랑)
+      COLUMNS.forEach((c, idx) => {
+        if (c.emptyFill && c.field && !r[c.field])
+          row.getCell('c' + idx).fill = { type:'pattern', pattern:'solid', fgColor:{ argb: c.emptyFill } };
+      });
+      // 강조: 세번부호가 10자리가 아니면 빨강
+      if (hsIdx >= 0 && r.세번 !== '' && r.세번 != null && String(r.세번).replace(/[^0-9]/g, '').length !== 10) {
+        const cell = row.getCell('c' + hsIdx);
+        cell.fill = { type:'pattern', pattern:'solid', fgColor:{ argb:'FFFFC7CE' } };
+        cell.font = { color:{ argb:'FF9C0006' }, bold: true };
+      }
+
+      if (r.이미지 && r.이미지.ab && imgColIdx >= 0) {
+        row.height = 54;
+        const id = wb.addImage({ buffer: r.이미지.ab, extension: r.이미지.ext || 'jpeg' });
+        ws.addImage(id, { tl: { col: imgColIdx, row: i + 1 }, br: { col: imgColIdx + 1, row: i + 2 }, editAs: 'oneCell' });
+      }
+    });
+
+    const buf = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0,10).replace(/-/g,'');
+    a.href = url; a.download = `통다-쿠팡 엑셀자료추출_${stamp}.xlsx`; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  } catch (e) { alert('저장 실패:\n' + e.message); console.error(e); }
+  btn.disabled = false; btn.textContent = old;
+});
+
+// ── DB 업데이트용 양식 받기 ────────────────────────────
+document.getElementById('db-template-btn').addEventListener('click', () => {
+  // 기존 DB 전체를 보존하고, 추출 결과의 신규 사업자번호를 추가 (재업로드 시 기존 데이터 유지)
+  const map = new Map();
+  for (const k of Object.keys(state.dbByBiz)) {
+    const d = state.dbByBiz[k];
+    map.set(k, { 사업자번호: formatBiz(d.사업자번호 || k), 통관고유번호: d.통관고유번호 || '', 사업자명: d.사업자명 || '' });
+  }
+  let added = 0;
+  for (const r of getAllRows()) {
+    if (!r.사업자번호) continue;
+    const k = normBiz(r.사업자번호);
+    if (!map.has(k)) { map.set(k, { 사업자번호: r.사업자번호, 통관고유번호: '', 사업자명: '' }); added++; }
+  }
+  const list = [...map.values()];
+  if (!list.length) { alert('DB도 비어있고 추출된 사업자번호도 없습니다.'); return; }
+  const ws = XLSX.utils.json_to_sheet(list, { header: ['사업자번호','통관고유번호','사업자명'] });
+  ws['!cols'] = [{wch:15},{wch:16},{wch:24}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'DB');
+  XLSX.writeFile(wb, 'DB_업데이트양식.xlsx');
+});
+
+// ── DB 상태 표시 ──────────────────────────────────────
+function setDbBar(type, name, info) {
+  const bar = document.getElementById('db-status-bar');
+  bar.className = 'db-status-bar ' + (type === 'ok' ? 'ok' : type === 'loading' ? 'loading' : 'error');
+  const icon = type === 'ok' ? '✅' : type === 'loading' ? '⏳' : '❌';
+  const infoCls = type === 'error' ? 'err' : type === 'loading' ? 'loading' : '';
+  bar.innerHTML = `<span>${icon}</span>` +
+    (name ? `<span class="db-sname">${esc(name)}</span>` : '') +
+    `<span class="db-sinfo ${infoCls}" style="flex:1">${esc(info)}</span>`;
+  const pill = document.getElementById('db-pill');
+  pill.textContent = type === 'ok' ? '✔ 동기화됨' : type === 'loading' ? '불러오는 중…' : '연결 오류';
+  pill.style.background = type === 'ok' ? '#e8f5e9' : type === 'loading' ? '#e8f0fe' : '#fce4ec';
+  pill.style.color = type === 'ok' ? '#2e7d32' : type === 'loading' ? '#1a6cf5' : '#c62828';
+}
+
+// ── GitHub에서 DB 자동 로드 ──────────────────────────
+async function loadDbFromGitHub() {
+  setDbBar('loading', '', 'GitHub에서 최신 DB 불러오는 중…');
+  try {
+    const res = await fetch(RAW_URL + '?t=' + Date.now());
+    if (!res.ok) {
+      if (res.status === 404) setDbBar('error', '', 'GitHub에 DB 파일이 없습니다. 아래에서 최초 업로드해주세요.');
+      else throw new Error(`HTTP ${res.status}`);
+      return;
+    }
+    const buf = await res.arrayBuffer();
+    const wb = XLSX.read(new Uint8Array(buf), { type: 'array' });
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+    buildDbIndex(rows);
+    setDbBar('ok', DB_FILE, `${Object.keys(state.dbByBiz).length.toLocaleString()}개 사업자 · GitHub 최신 버전`);
+    renderResult();
+  } catch (e) { setDbBar('error', '', `로드 실패: ${e.message}`); }
+}
+
+// ── GitHub에 DB 업로드 ────────────────────────────────
+async function uploadDbToGitHub(file) {
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (!token) {
+    alert('GitHub 토큰이 필요합니다. 아래 토큰 입력란에 토큰을 저장해주세요.');
+    document.getElementById('token-input').focus();
+    return;
+  }
+  const prog = document.getElementById('upload-progress');
+  prog.style.display = 'flex';
+  document.getElementById('upload-msg').textContent = '파일 읽는 중…';
+  try {
+    const buf = await file.arrayBuffer();
+    let bin = ''; const bytes = new Uint8Array(buf);
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    const b64 = btoa(bin);
+
+    document.getElementById('upload-msg').textContent = '기존 파일 확인 중…';
+    let sha = null;
+    try {
+      const getRes = await fetch(API_URL, { headers: { 'Authorization': `token ${token}` } });
+      if (getRes.ok) sha = (await getRes.json()).sha;
+    } catch (e) {}
+
+    document.getElementById('upload-msg').textContent = 'GitHub에 업로드 중…';
+    const body = { message: `DB 업데이트 (${new Date().toLocaleString('ko-KR')})`, content: b64 };
+    if (sha) body.sha = sha;
+    const putRes = await fetch(API_URL, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    prog.style.display = 'none';
+    if (!putRes.ok) throw new Error((await putRes.json()).message || `HTTP ${putRes.status}`);
+
+    const wb = XLSX.read(new Uint8Array(buf), { type: 'array' });
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+    buildDbIndex(rows);
+    setDbBar('ok', file.name, `${Object.keys(state.dbByBiz).length.toLocaleString()}개 사업자 · 방금 업로드됨 · 전체 공유됨 ✔`);
+    renderResult();
+    document.getElementById('db-file-input').value = '';
+  } catch (e) {
+    prog.style.display = 'none';
+    alert('업로드 실패:\n' + e.message + '\n\n토큰이 올바른지 확인해주세요.');
+  }
+}
+
+// ── 토큰 관리 ──────────────────────────────────────────
+function initTokenUI() {
+  const token = localStorage.getItem(TOKEN_KEY);
+  document.getElementById('token-input-row').style.display = token ? 'none' : 'flex';
+  document.getElementById('token-saved-badge').style.display = token ? 'inline' : 'none';
+  document.getElementById('token-clear-btn').style.display = token ? 'inline-flex' : 'none';
+  document.querySelector('.token-hint').style.display = token ? 'none' : 'block';
+}
+document.getElementById('token-save-btn').addEventListener('click', () => {
+  const val = document.getElementById('token-input').value.trim();
+  if (!val) { alert('토큰을 입력해주세요.'); return; }
+  localStorage.setItem(TOKEN_KEY, val);
+  document.getElementById('token-input').value = '';
+  initTokenUI();
+});
+document.getElementById('token-clear-btn').addEventListener('click', () => {
+  if (confirm('저장된 토큰을 삭제할까요?')) { localStorage.removeItem(TOKEN_KEY); initTokenUI(); }
+});
+
+// ── 드롭존/버튼 연결 ──────────────────────────────────
+function setupDrop(dropId, inputId, handler) {
+  const drop = document.getElementById(dropId);
+  const inp  = document.getElementById(inputId);
+  inp.addEventListener('change', e => { if (e.target.files.length) handler(e.target.files); e.target.value=''; });
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+  drop.addEventListener('drop', e => {
+    e.preventDefault(); drop.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) handler(e.dataTransfer.files);
+  });
+}
+setupDrop('input-drop', 'input-file-input', addFiles);
+setupDrop('db-drop', 'db-file-input', f => uploadDbToGitHub(f[0] || f));
+document.getElementById('add-btn').addEventListener('click', () => document.getElementById('input-file-input').click());
+document.getElementById('clear-btn').addEventListener('click', clearAll);
+
+// ── 초기화 ────────────────────────────────────────────
+initTokenUI();
+loadDbFromGitHub();
+</script>
+</body>
+</html>

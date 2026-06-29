@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TONDA 교동 변환기</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Malgun Gothic', Arial, sans-serif; background: #f4f5f7; min-height: 100vh; }
+  input[type=file] { display: none; }
+
+  /* ── 상단 헤더 바 ── */
+  .top-bar {
+    background: white;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 0 32px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .top-bar .app-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 16px; font-weight: 700; color: #1a1a2e;
+  }
+  .top-bar .app-title .logo { font-size: 20px; }
+  .top-bar .version {
+    font-size: 11px; font-weight: 600; color: #888;
+    background: #f0f0f0; border-radius: 20px; padding: 2px 8px;
+  }
+  .top-bar .status-badge {
+    font-size: 12px; font-weight: 600;
+    color: #27ae60; background: #e8f8f0;
+    border: 1px solid #b2dfcc;
+    border-radius: 20px; padding: 4px 12px;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  /* ── 메인 콘텐츠 ── */
+  .main { max-width: 1240px; margin: 0 auto; padding: 32px 24px; }
+
+  /* ── 카드 ── */
+  .card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 18px 24px 0;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-header .section-title {
+    font-size: 15px; font-weight: 700; color: #1a1a2e;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-header .hint-badge {
+    font-size: 11px; color: #e07b00; background: #fff4e0;
+    border: 1px solid #f5c87a; border-radius: 20px; padding: 3px 10px; font-weight: 600;
+  }
+  .card-desc {
+    padding: 6px 24px 14px;
+    font-size: 12px; color: #999;
+  }
+
+  /* ── 드롭존 ── */
+  .drop-zone {
+    margin: 0 24px 20px;
+    border: 2px dashed #d0d7e3;
+    border-radius: 10px;
+    padding: 48px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fafbfc;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    background: #eef4ff; border-color: #4a90d9;
+  }
+  .drop-zone .dz-icon { font-size: 44px; margin-bottom: 12px; }
+  .drop-zone .dz-main { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 4px; }
+  .drop-zone .dz-sub { font-size: 12px; color: #aaa; }
+
+  /* ── 파일 목록 ── */
+  .file-list { padding: 0 24px 4px; display: flex; flex-direction: column; gap: 7px; }
+  .file-item {
+    display: flex; align-items: center; gap: 10px;
+    background: #f8f9fa; border-radius: 8px; padding: 9px 14px;
+    font-size: 13px; border: 1px solid #ececec;
+  }
+  .file-item .fname { flex: 1; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .badge { font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 700; white-space: nowrap; }
+  .badge-ok  { background: #e6f4ea; color: #1e7e34; }
+  .badge-err { background: #fdecea; color: #c0392b; }
+  .badge-loading { background: #fff8e1; color: #b07d00; }
+  .remove-btn { background: none; border: none; color: #bbb; cursor: pointer; font-size: 15px; line-height: 1; padding: 0 2px; }
+  .remove-btn:hover { color: #e74c3c; }
+
+  /* ── 하단 액션 바 ── */
+  .action-bar {
+    padding: 16px 24px;
+    border-top: 1px solid #f0f0f0;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .btn {
+    padding: 9px 20px; border: none; border-radius: 8px; font-size: 13px;
+    cursor: pointer; font-family: inherit; font-weight: 700;
+    transition: background 0.15s; white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-add    { background: #f0f5ff; color: #2563eb; border: 1px solid #c7d9ff; }
+  .btn-add:hover { background: #dbeafe; }
+  .btn-clear  { background: #fff0f0; color: #dc2626; border: 1px solid #fecaca; }
+  .btn-clear:hover { background: #fee2e2; }
+  .btn-export { background: #1a1a2e; color: white; margin-left: auto; }
+  .btn-export:hover { background: #2d2d4e; }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* ── 결과 테이블 ── */
+  .result-container { }
+  .count-info { font-size: 12px; color: #aaa; padding: 0 2px 8px; text-align: right; }
+  .table-scroll { overflow-x: auto; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); background:#fff; }
+  table { border-collapse: collapse; width: max-content; min-width: 100%; }
+  thead th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; font-size: 12px; white-space: nowrap; }
+  thead th:first-child { border-radius: 10px 0 0 0; }
+  thead th:last-child  { border-radius: 0 10px 0 0; }
+  tbody tr:nth-child(even) { background: #f9fafb; }
+  tbody tr:hover { background: #eef4ff; }
+  tbody td { padding: 7px 12px; font-size: 12px; color: #333; border-bottom: 1px solid #f0f0f0; vertical-align: middle; white-space: nowrap; }
+  tbody td.hs { font-family: monospace; color: #2563eb; font-weight: 700; }
+  tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody td.blank-col { background: repeating-linear-gradient(45deg,#fcfcfc,#fcfcfc 6px,#f5f5f5 6px,#f5f5f5 12px); }
+  .thumb { max-height: 68px; max-width: 76px; border-radius: 4px; display: block; }
+  .no-img { color: #ddd; font-size: 11px; }
+
+  /* ── 공유 DB ── */
+  .db-dropzone { border: 2px dashed #d0d7e3; border-radius: 10px; padding: 18px 16px; text-align: center; cursor: pointer; background: #fafbfc; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all .2s; }
+  .db-dropzone:hover, .db-dropzone.drag-over { background: #eef4ff; border-color: #4a90d9; }
+  .db-dz-icon { font-size: 22px; }
+  .db-dz-text { font-size: 13px; color: #444; font-weight: 600; }
+  .db-dz-hint { font-size: 11px; color: #aaa; }
+  .db-status-bar { margin-top: 10px; border-radius: 8px; padding: 9px 12px; display: flex; align-items: center; gap: 8px; font-size: 12px; background: #f4f5f7; min-height: 38px; }
+  .db-status-bar.ok { background: #e6f4ea; }
+  .db-status-bar.loading { background: #eef4ff; }
+  .db-status-bar.error { background: #fdecea; }
+  .db-sname { font-weight: 700; color: #1e7e34; }
+  .db-sinfo { color: #888; flex: 1; }
+  .db-sinfo.err { color: #c0392b; }
+  .db-sinfo.loading { color: #2563eb; }
+  .token-row { margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+  .token-row input { flex: 1; font-size: 12px; padding: 7px 10px; border: 1px solid #d0d7e3; border-radius: 6px; font-family: monospace; }
+  .token-row input:focus { outline: none; border-color: #4a90d9; }
+  .token-hint { font-size: 11px; color: #aaa; margin-top: 6px; }
+  .token-hint a { color: #2563eb; text-decoration: none; }
+  .upload-progress { display: none; margin-top: 10px; background: #eef4ff; border-radius: 8px; padding: 9px 12px; font-size: 12px; color: #2563eb; align-items: center; gap: 8px; }
+  .spinner { width: 14px; height: 14px; border: 2px solid #b0c8fa; border-top-color: #2563eb; border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- 상단 헤더 -->
+<div class="top-bar">
+  <div class="app-title">
+    <span class="logo">🍊</span>
+    TONDA 교동 변환기
+    <span class="version">v2.0</span>
+  </div>
+  <div class="status-badge">✓ 준비 완료</div>
+</div>
+
+<!-- 메인 -->
+<div class="main">
+
+  <!-- 입력 파일 카드 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="section-title">📂 입력 파일</div>
+      <div class="hint-badge">인보이스+패킹+상품재질 엑셀 · 여러 개 동시 가능</div>
+    </div>
+    <div class="card-desc">사진·입항지·사업자번호·해외거래처·규격(품명)·성분·수량·단가·총액·순중량(안분)·총중량을 자동 추출하여 수입신고용 통합 엑셀로 변환합니다</div>
+
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+      <div class="dz-icon">📁</div>
+      <div class="dz-main">클릭하거나 파일 여러 개를 끌어다 놓으세요</div>
+      <div class="dz-sub">.xlsx / .xls — 여러 파일 동시 선택 가능</div>
+    </div>
+    <input type="file" id="fileInput" accept=".xlsx,.xls" multiple>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div class="action-bar" id="actionBar">
+      <button class="btn btn-add" onclick="document.getElementById('fileInput').click()">+ 파일 추가</button>
+      <button class="btn btn-clear" id="clearBtn" onclick="clearAll()" style="display:none;">✕ 전체 초기화</button>
+      <button class="btn btn-export" id="exportBtn" onclick="exportExcel()" disabled>⬇ 전체 Excel 저장</button>
+    </div>
+  </div>
+
+  <!-- 결과 -->
+  <div class="result-container" id="result"></div>
+
+  <!-- 공유 DB -->
+  <div class="card" id="dbCard">
+    <div class="card-header">
+      <div class="section-title">🗄️ 공유 DB <span style="font-weight:500;color:#999;font-size:12px;">(사업자번호 → 통관고유번호 · 사업자명)</span></div>
+      <div class="hint-badge" id="dbPill">GitHub 연동</div>
+    </div>
+    <div class="card-desc">누구든 DB 파일을 업로드하면 GitHub에 저장되어 모든 변환기(교동·DX·쿠팡)에 자동 공유됩니다</div>
+
+    <div style="padding: 0 24px 18px;">
+      <div class="db-dropzone" id="dbDrop" onclick="document.getElementById('dbFileInput').click()">
+        <div class="db-dz-icon">🗄️</div>
+        <div>
+          <div class="db-dz-text">새 DB 파일 업로드 (클릭 또는 드래그)</div>
+          <div class="db-dz-hint">컬럼: 사업자번호 · 통관고유번호 · 사업자명 — GitHub에 저장되어 전체 공유</div>
+        </div>
+      </div>
+      <input type="file" accept=".xlsx,.xls" id="dbFileInput" />
+
+      <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+        <button class="btn btn-add" id="dbTemplateBtn">🗂️ DB 양식 받기</button>
+      </div>
+
+      <div class="upload-progress" id="uploadProgress"><div class="spinner"></div><span id="uploadMsg">업로드 중…</span></div>
+
+      <div class="db-status-bar" id="dbStatusBar">
+        <span>⚪</span><span class="db-sinfo loading">GitHub에서 DB 불러오는 중…</span>
+      </div>
+
+      <div style="margin-top:12px; padding-top:12px; border-top:1px solid #f0f0f0;">
+        <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+          <span style="font-size:12px; font-weight:700; color:#888;">🔑 GitHub 토큰</span>
+          <span id="tokenSavedBadge" style="display:none; font-size:11px; background:#e6f4ea; color:#1e7e34; padding:1px 8px; border-radius:20px;">저장됨</span>
+          <button class="btn btn-clear" id="tokenClearBtn" style="display:none; margin-left:auto; font-size:11px; padding:3px 8px;">토큰 삭제</button>
+        </div>
+        <div class="token-row" id="tokenInputRow">
+          <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+          <button class="btn btn-add" id="tokenSaveBtn">저장</button>
+        </div>
+        <p class="token-hint">
+          DB 업로드 시에만 필요합니다 (추출·다운로드는 토큰 없이 가능).
+          <a href="https://github.com/settings/tokens/new?scopes=repo&description=TONDA-DB" target="_blank">여기서 토큰 발급 →</a>
+          (repo 권한 체크 후 생성, 한 번만 입력하면 됩니다)
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let fileDataList = [];
+
+// ── 출력 컬럼 정의 (화면/엑셀 공통) ──────────────────────────
+// blank:true = 추후 입력/DB 연동 예정으로 비워두는 컬럼
+const COLUMNS = [
+  { key: '사진',        header: '사진',        img: true,  width: 14 },
+  { key: '입항지',      header: '입항지',                  width: 16 },
+  { key: '사업자번호',  header: '사업자번호',              width: 16 },
+  { key: '사업자명',    header: '사업자명',                width: 16 },
+  { key: '통관고유번호',header: '통관고유번호',            width: 18 },
+  { key: '비엘번호',    header: '비엘번호',    blank: true, width: 16 },
+  { key: '해외거래처',  header: '해외거래처',              width: 30 },
+  { key: '세번부호',    header: '세번부호',    hs: true,   width: 16 },
+  { key: '세율구분',    header: '세율구분',    blank: true, width: 12 },
+  { key: '규격1',       header: '규격1',                   width: 30 },
+  { key: '규격2',       header: '규격2',                   width: 30 },
+  { key: '규격3',       header: '규격3',                   width: 30 },
+  { key: '성분',        header: '성분',                    width: 26 },
+  { key: '수량',        header: '수량',        num: true,  width: 10 },
+  { key: '단위',        header: '단위',                    width: 8 },
+  { key: '단가',        header: '단가',        num: true,  width: 12 },
+  { key: '총액',        header: '총액',        num: true,  width: 12 },
+  { key: '순중량',      header: '순중량',      num: true,  width: 12 },
+  { key: 'FILE',        header: 'FILE',        blank: true, width: 12 },
+  { key: '총중량',      header: '총중량',      num: true,  width: 12 },
+  { key: '운임',        header: '운임',        blank: true, width: 12 },
+  { key: '파일명',      header: '파일명',                  width: 40 },
+];
+
+// ── 드래그 & 파일 선택 ──────────────────────────────────────
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  addFiles(Array.from(e.dataTransfer.files));
+});
+document.getElementById('fileInput').addEventListener('change', e => {
+  addFiles(Array.from(e.target.files)); e.target.value = '';
+});
+
+function addFiles(files) {
+  const xlsFiles = files.filter(f => /\.(xlsx|xls)$/i.test(f.name));
+  if (!xlsFiles.length) return;
+  const existing = new Set(fileDataList.map(d => d.name));
+  xlsFiles.filter(f => !existing.has(f.name)).forEach(file => {
+    const entry = { name: file.name, meta: {}, rows: [], error: null, loading: true };
+    fileDataList.push(entry);
+    readFile(file, entry);
+  });
+  renderFileList();
+  document.getElementById('clearBtn').style.display = 'flex';
+}
+
+// ── 시트 찾기 헬퍼 ──────────────────────────────────────────
+function findSheet(wb, kws) {
+  for (const n of wb.SheetNames) {
+    const ln = n.toLowerCase();
+    if (kws.some(k => n.includes(k) || ln.includes(k.toLowerCase()))) return n;
+  }
+  return null;
+}
+function gridOf(wb, name) {
+  if (!name || !wb.Sheets[name]) return [];
+  return XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
+}
+const norm = s => String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
+const round2 = x => Math.round(x * 100) / 100;
+
+// ── 파일 읽기 ───────────────────────────────────────────────
+function readFile(file, entry) {
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try {
+      const ab = e.target.result;
+      const wb = XLSX.read(ab, { type: 'array' });
+
+      const invName  = findSheet(wb, ['인보이스', 'invoice', 'commercial', '发票']);
+      const packName = findSheet(wb, ['패킹', 'packing', '箱单', '装箱']);
+
+      // 1) 기본 품목(상품재질 시트) — 품명/성분/세번 + 이미지
+      const { products, sheetIdx, headerRowIdx } = extractProducts(wb);
+
+      // 2) 인보이스 메타 + 품목별 수량/단가/총액
+      const meta = invName ? extractInvoiceMeta(gridOf(wb, invName)) : {};
+      const invItems = invName ? extractInvoiceItems(gridOf(wb, invName)) : {};
+
+      // 사업자번호 보강(없으면 기존 방식)
+      if (!meta.사업자번호) meta.사업자번호 = extractBizNumber(wb);
+
+      // 3) 패킹 — 순중량 총합 / 총중량
+      const pack = packName ? extractPacking(gridOf(wb, packName)) : { netTotal: null, gross: null };
+
+      // 인보이스 품목 병합
+      products.forEach(p => {
+        const it = invItems[norm(p.품명)] || {};
+        p.수량 = it.수량 || '';
+        p.단가 = it.단가 || '';
+        p.총액 = it.총액 || '';
+      });
+
+      // 순중량 안분 (총 순중량 × 해당 수량 / 총 수량)
+      const totalQty = products.reduce((s, p) => s + (parseFloat(String(p.수량).replace(/,/g, '')) || 0), 0);
+      if (pack.netTotal != null && totalQty > 0) {
+        let acc = 0;
+        products.forEach((p, idx) => {
+          const q = parseFloat(String(p.수량).replace(/,/g, '')) || 0;
+          if (idx === products.length - 1) {
+            p.순중량 = round2(pack.netTotal - acc);      // 마지막 행은 잔여로 보정(합계 일치)
+          } else {
+            const w = round2(pack.netTotal * q / totalQty);
+            p.순중량 = w; acc += w;
+          }
+        });
+      }
+
+      // 이미지 추출 (xlsx만 지원)
+      if (/\.xlsx$/i.test(file.name)) {
+        const imageMap = await extractImages(ab, sheetIdx, headerRowIdx);
+        products.forEach((p, i) => {
+          const drawingRow = headerRowIdx + 1 + i;
+          if (imageMap[drawingRow]) Object.assign(p, imageMap[drawingRow]);
+        });
+      }
+
+      entry.meta = {
+        입항지: meta.입항지 || '',
+        사업자번호: meta.사업자번호 || '',
+        해외거래처: meta.해외거래처 || '',
+        총중량: pack.gross,
+      };
+      entry.rows = products;
+      entry.error = (products.length === 0) ? '데이터를 찾을 수 없음' : null;
+    } catch(err) {
+      entry.error = '파일 읽기 오류: ' + err.message;
+      console.error(err);
+    }
+    entry.loading = false;
+    renderFileList();
+    renderTable();
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ── 사업자번호 추출(보조) ────────────────────────────────────
+function extractBizNumber(wb) {
+  for (const name of wb.SheetNames) {
+    const rows = gridOf(wb, name);
+    for (const row of rows)
+      for (const cell of row) {
+        const m = String(cell).match(/(\d{3}-\d{2}-\d{5})/);
+        if (m) return m[1];
+      }
+  }
+  return '';
+}
+
+// ── 인보이스 메타(입항지/사업자번호/해외거래처) ──────────────
+function extractInvoiceMeta(grid) {
+  const meta = { 입항지: '', 사업자번호: '', 해외거래처: '' };
+  for (let r = 0; r < grid.length; r++) {
+    const row = grid[r] || [];
+    for (let c = 0; c < row.length; c++) {
+      const v = String(row[c] || '');
+      if (!v.trim()) continue;
+
+      // 입항지: "Final destination/deatination" 바로 아래 셀
+      if (!meta.입항지 && /final\s*de[a-z]*?tination/i.test(v)) {
+        for (let k = r + 1; k < Math.min(grid.length, r + 4); k++) {
+          const bv = grid[k] ? String(grid[k][c] || '').trim() : '';
+          if (bv) { meta.입항지 = bv.split(/\r?\n/).map(s => s.trim()).filter(Boolean)[0] || ''; break; }
+        }
+      }
+      // 해외거래처: "Seller" 아래 첫 비어있지 않은 셀의 첫 줄
+      if (!meta.해외거래처 && /^\s*seller\s*$/i.test(v)) {
+        for (let k = r + 1; k < Math.min(grid.length, r + 8); k++) {
+          const bv = grid[k] ? String(grid[k][c] || '').trim() : '';
+          if (bv) { meta.해외거래처 = bv.split(/\r?\n/).map(s => s.trim()).filter(Boolean)[0] || ''; break; }
+        }
+      }
+      // 사업자번호: "Consignee" 인근 행의 괄호 안 10단위 사업자번호
+      if (!meta.사업자번호 && /consignee/i.test(v)) {
+        for (let k = r; k < Math.min(grid.length, r + 6); k++) {
+          const rowstr = (grid[k] || []).map(x => String(x)).join(' ');
+          const m = rowstr.match(/\((\d{3}-\d{2}-\d{5})\)/) || rowstr.match(/(\d{3}-\d{2}-\d{5})/);
+          if (m) { meta.사업자번호 = m[1]; break; }
+        }
+      }
+    }
+  }
+  return meta;
+}
+
+// ── 인보이스 품목(품명→수량/단가/총액) ──────────────────────
+function extractInvoiceItems(grid) {
+  const items = {};
+  let hr = -1, cDesc = -1, cComp = -1, cQty = -1, cPrice = -1, cAmt = -1;
+  for (let r = 0; r < grid.length; r++) {
+    const row = grid[r] || [];
+    let d = -1, co = -1, q = -1, p = -1, a = -1;
+    for (let c = 0; c < row.length; c++) {
+      const v = String(row[c] || '');
+      if (/description/i.test(v)) d = c;
+      if (/composition/i.test(v)) co = c;
+      if (/quantity/i.test(v)) q = c;
+      if (/un[il]?t\s*\.?\s*pr[il]?ce/i.test(v)) p = c;
+      if (/amount/i.test(v)) a = c;
+    }
+    if (d >= 0 && q >= 0) { hr = r; cDesc = d; cComp = co; cQty = q; cPrice = p; cAmt = a; break; }
+  }
+  if (hr < 0) return items;
+
+  const sorted = [cDesc, cComp, cQty, cPrice, cAmt].filter(x => x >= 0).sort((a, b) => a - b);
+  const nextCol = c => { for (const s of sorted) if (s > c) return s; return c + 3; };
+  const readRange = (row, s, e) => {
+    for (let c = s; c < e; c++) { const v = String(row[c] ?? '').trim(); if (v !== '') return v; }
+    return '';
+  };
+
+  for (let r = hr + 1; r < grid.length; r++) {
+    const row = grid[r] || [];
+    const any = row.some(x => String(x).trim() !== '');
+    const desc = cDesc >= 0 ? readRange(row, cDesc, (cComp >= 0 ? cComp : cQty)) : '';
+    if (!desc.trim()) { if (!any) break; else continue; }
+    if (/^(sub)?total|합계|소계/i.test(desc.trim())) break;
+    const qty   = cQty   >= 0 ? readRange(row, cQty,   (cPrice >= 0 ? cPrice : nextCol(cQty)))   : '';
+    const price = cPrice >= 0 ? readRange(row, cPrice, (cAmt   >= 0 ? cAmt   : nextCol(cPrice))) : '';
+    const amt   = cAmt   >= 0 ? readRange(row, cAmt,   cAmt + 3)                                  : '';
+    items[norm(desc)] = { 수량: qty, 단가: price, 총액: amt };
+  }
+  return items;
+}
+
+// ── 패킹(순중량 총합 / 총중량) ──────────────────────────────
+function extractPacking(grid) {
+  let hr = -1, cNet = -1, cGross = -1;
+  for (let r = 0; r < grid.length; r++) {
+    const row = grid[r] || [];
+    let n = -1, g = -1;
+    for (let c = 0; c < row.length; c++) {
+      const v = String(row[c] || '');
+      if (/net\s*[-_ ]?\s*weight/i.test(v)) n = c;
+      if (/gr[ao]ss\s*[-_ ]?\s*weight/i.test(v)) g = c;  // Grass / Gross 모두 매칭
+    }
+    if (n >= 0 || g >= 0) { hr = r; cNet = n; cGross = g; break; }
+  }
+  if (hr < 0) return { netTotal: null, gross: null };
+  let netTotal = null, gross = null;
+  for (let r = hr + 1; r < grid.length; r++) {
+    const row = grid[r] || [];
+    if (netTotal == null && cNet >= 0) { const v = parseFloat(String(row[cNet]).replace(/,/g, '')); if (!isNaN(v)) netTotal = v; }
+    if (gross == null && cGross >= 0) { const v = parseFloat(String(row[cGross]).replace(/,/g, '')); if (!isNaN(v)) gross = v; }
+    if (netTotal != null && gross != null) break;
+  }
+  return { netTotal, gross };
+}
+
+// ── 품목 추출 (헤더 자동 탐지) — 품명/성분/세번 ─────────────
+function extractProducts(wb) {
+  const sheetsToTry = wb.SheetNames.length >= 3
+    ? [wb.SheetNames[2], ...wb.SheetNames.filter((_, i) => i !== 2)]
+    : wb.SheetNames;
+
+  for (const sheetName of sheetsToTry) {
+    const sheetIdx = wb.SheetNames.indexOf(sheetName);
+    const rows = gridOf(wb, sheetName);
+
+    let headerRowIdx = -1, colMap = {};
+    for (let i = 0; i < Math.min(rows.length, 10); i++) {
+      const row = rows[i];
+      let f품명 = -1, f재질 = -1;
+      for (let j = 0; j < row.length; j++) {
+        const v = String(row[j]).trim();
+        if (v === '품명') f품명 = j;
+        if (v === '재질') f재질 = j;
+      }
+      if (f품명 >= 0 && f재질 >= 0) { headerRowIdx = i; colMap.품명 = f품명; colMap.재질 = f재질; break; }
+    }
+    if (headerRowIdx < 0) continue;
+
+    // HS코드(세번) 컬럼 탐색
+    colMap.세번 = -1;
+    const headerRow = rows[headerRowIdx];
+
+    function isHsCode(v) {
+      const s = String(v || '').replace(/\s/g, '');
+      return /^\d{9,10}$/.test(s) || /^\d{4}[\.\-]\d{2}[\.\-]\d{4}$/.test(s);
+    }
+    for (let j = 0; j < headerRow.length; j++) {
+      if (/hs|세번/i.test(String(headerRow[j] || ''))) { colMap.세번 = j; break; }
+    }
+    if (colMap.세번 < 0) {
+      const emptyCols = [];
+      for (let j = 0; j < headerRow.length + 5; j++)
+        if (!String(headerRow[j] || '').trim()) emptyCols.push(j);
+      for (const j of emptyCols) {
+        for (let i = headerRowIdx + 1; i < rows.length; i++) {
+          if (isHsCode(rows[i][j])) { colMap.세번 = j; break; }
+        }
+        if (colMap.세번 >= 0) break;
+      }
+    }
+
+    const products = [];
+    for (let i = headerRowIdx + 1; i < rows.length; i++) {
+      const row = rows[i];
+      const 품명 = String(row[colMap.품명] || '').trim();
+      const 성분 = String(row[colMap.재질] || '').trim();
+      const raw세번 = colMap.세번 >= 0 ? String(row[colMap.세번] || '').trim() : '';
+      if (품명 && 성분) products.push({ 품명, 성분, 세번: formatHsCode(raw세번) });
+    }
+    if (products.length > 0) return { products, sheetIdx, headerRowIdx };
+  }
+  return { products: [], sheetIdx: 0, headerRowIdx: 0 };
+}
+
+// ── HS코드 형식 변환 ─────────────────────────────────────────
+function formatHsCode(v) {
+  if (!v) return '';
+  const s = String(v).replace(/\s/g, '');
+  if (/^\d{4}[\.\-]\d{2}[\.\-]\d{4}$/.test(s)) return s;
+  if (/^\d{10}$/.test(s)) return `${s.slice(0,4)}.${s.slice(4,6)}-${s.slice(6)}`;
+  return v;
+}
+
+// ── 품명 → 규격1/2/3 (각 29자 이하, 초과 시 다음 칸으로) ─────
+function splitSpec(name) {
+  const max = 29;
+  const words = String(name || '').split(/\s+/).filter(Boolean);
+  const lines = []; let cur = '';
+  for (const w of words) {
+    if (w.length > max) {                       // 단어 자체가 29자 초과 → 강제 분할
+      if (cur) { lines.push(cur); cur = ''; }
+      let rem = w;
+      while (rem.length > max) { lines.push(rem.slice(0, max)); rem = rem.slice(max); }
+      cur = rem;
+      continue;
+    }
+    if ((cur ? cur.length + 1 : 0) + w.length <= max) cur = cur ? cur + ' ' + w : w;
+    else { lines.push(cur); cur = w; }
+  }
+  if (cur) lines.push(cur);
+  return [lines[0] || '', lines[1] || '', lines.slice(2).join(' ') || ''];
+}
+
+// ── 이미지 추출 (JSZip) ──────────────────────────────────────
+async function extractImages(arrayBuffer, sheetIdx, headerRowIdx) {
+  try {
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const wbFile = zip.file('xl/workbook.xml');
+    const wbRelsFile = zip.file('xl/_rels/workbook.xml.rels');
+    if (!wbFile || !wbRelsFile) return {};
+
+    const wbXml = await wbFile.async('text');
+    const wbRelsXml = await wbRelsFile.async('text');
+
+    const sheetOrder = [...wbXml.matchAll(/<sheet\b[^>]*\br:id="([^"]+)"/g)].map(m => m[1]);
+    if (sheetIdx >= sheetOrder.length) return {};
+    const targetRid = sheetOrder[sheetIdx];
+
+    const wbRels = [...wbRelsXml.matchAll(/Id="([^"]+)"[^>]*Target="([^"]+)"/g)];
+    const sheetRel = wbRels.find(m => m[1] === targetRid);
+    if (!sheetRel) return {};
+
+    const sheetPath = 'xl/' + sheetRel[2].replace(/^\.\.\//, '');
+    const sheetRelsPath = sheetPath.replace(/\/([^/]+)$/, '/_rels/$1.rels');
+    const sheetRelsFile = zip.file(sheetRelsPath);
+    if (!sheetRelsFile) return {};
+
+    const sheetRelsXml = await sheetRelsFile.async('text');
+    const drawingRel = sheetRelsXml.match(/Type="[^"]*\/drawing"[^>]*Target="([^"]+)"/);
+    if (!drawingRel) return {};
+
+    const sheetDir = sheetPath.replace(/\/[^/]+$/, '/');
+    const drawingPath = (sheetDir + drawingRel[1]).replace(/[^/]+\/\.\.\//g, '');
+    const drawingFile = zip.file(drawingPath);
+    if (!drawingFile) return {};
+    const drawingXml = await drawingFile.async('text');
+
+    const drawingRelsPath = drawingPath.replace(/\/([^/]+)$/, '/_rels/$1.rels');
+    const drawingRelsFile = zip.file(drawingRelsPath);
+    const rIdToImg = {};
+
+    if (drawingRelsFile) {
+      const drawingRelsXml = await drawingRelsFile.async('text');
+      const drawingDir = drawingPath.replace(/\/[^/]+$/, '/');
+      for (const m of [...drawingRelsXml.matchAll(/Id="([^"]+)"[^>]*Target="([^"]+)"/g)]) {
+        const mediaPath = (drawingDir + m[2]).replace(/[^/]+\/\.\.\//g, '');
+        const imgFile = zip.file(mediaPath);
+        if (imgFile) {
+          const ab = await imgFile.async('arraybuffer');
+          const ext = mediaPath.split('.').pop().toLowerCase();
+          const mime = ext === 'png' ? 'image/png' : 'image/jpeg';
+          rIdToImg[m[1]] = { ab, ext: ext === 'jpg' ? 'jpeg' : ext, url: URL.createObjectURL(new Blob([ab], { type: mime })) };
+        }
+      }
+    }
+
+    const rowToImage = {};
+    const anchorRe = /<xdr:(twoCellAnchor|oneCellAnchor)[\s\S]*?<\/xdr:\1>/g;
+    let am;
+    while ((am = anchorRe.exec(drawingXml)) !== null) {
+      const anchor = am[0];
+      const fromRow = anchor.match(/<xdr:from>[\s\S]*?<xdr:row>(\d+)<\/xdr:row>/);
+      const rIdMatch = anchor.match(/r:embed="([^"]+)"/) || anchor.match(/r:id="([^"]+)"/);
+      if (fromRow && rIdMatch && rIdToImg[rIdMatch[1]]) {
+        rowToImage[parseInt(fromRow[1])] = rIdToImg[rIdMatch[1]];
+      }
+    }
+    return rowToImage;
+  } catch(e) {
+    console.warn('이미지 추출 실패:', e);
+    return {};
+  }
+}
+
+// ── UI 렌더링 ────────────────────────────────────────────────
+function removeFile(name) {
+  fileDataList = fileDataList.filter(d => d.name !== name);
+  renderFileList(); renderTable();
+  if (!fileDataList.length) document.getElementById('clearBtn').style.display = 'none';
+}
+function clearAll() {
+  fileDataList = []; renderFileList(); renderTable();
+  document.getElementById('clearBtn').style.display = 'none';
+}
+
+function renderFileList() {
+  const el = document.getElementById('fileList');
+  if (!fileDataList.length) { el.innerHTML = ''; return; }
+  el.innerHTML = fileDataList.map(d => {
+    const badge = d.loading
+      ? `<span class="badge badge-loading">읽는 중...</span>`
+      : d.error
+        ? `<span class="badge badge-err">오류</span>`
+        : `<span class="badge badge-ok">${d.rows.length}개 품목</span>`;
+    return `<div class="file-item">
+      <span>📄</span>
+      <span class="fname" title="${esc(d.name)}">${esc(d.name)}</span>
+      ${badge}
+      <button class="remove-btn" onclick="removeFile(${JSON.stringify(d.name)})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function renderTable() {
+  const result = document.getElementById('result');
+  const exportBtn = document.getElementById('exportBtn');
+  if (fileDataList.some(d => d.loading)) {
+    result.innerHTML = '<div style="text-align:center;color:#888;padding:20px;font-size:14px;">파일 읽는 중...</div>';
+    exportBtn.disabled = true; return;
+  }
+  const allRows = getAllRows();
+  if (!allRows.length) { result.innerHTML = ''; exportBtn.disabled = true; return; }
+
+  exportBtn.disabled = false;
+  const hasImg = allRows.some(r => r.url);
+  const cols = COLUMNS.filter(c => !c.img || hasImg);
+
+  let html = `<div class="count-info">총 ${allRows.length}개 품목 (${fileDataList.filter(d=>!d.error).length}개 파일)</div>`;
+  html += '<div class="table-scroll"><table><thead><tr>';
+  cols.forEach(c => { html += `<th>${esc(c.header)}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  allRows.forEach(item => {
+    html += '<tr>';
+    cols.forEach(c => {
+      if (c.img) {
+        html += `<td>${item.url ? `<img class="thumb" src="${item.url}">` : '<span class="no-img">-</span>'}</td>`;
+        return;
+      }
+      const cls = [c.hs ? 'hs' : '', c.num ? 'num' : '', c.blank ? 'blank-col' : ''].filter(Boolean).join(' ');
+      const val = item[c.key];
+      html += `<td${cls ? ` class="${cls}"` : ''}>${esc(val == null ? '' : val)}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  result.innerHTML = html;
+}
+
+function getAllRows() {
+  const all = [];
+  fileDataList.forEach(d => {
+    if (d.error) return;
+    const db = lookupDb(d.meta.사업자번호);
+    d.rows.forEach((r, idx) => {
+      const [g1, g2, g3] = splitSpec(r.품명);
+      all.push({
+        url: r.url, ab: r.ab, ext: r.ext,
+        입항지: d.meta.입항지 || '',
+        사업자번호: d.meta.사업자번호 || '',
+        사업자명: db ? db.사업자명 : '',
+        통관고유번호: db ? db.통관고유번호 : '',
+        비엘번호: '',
+        해외거래처: d.meta.해외거래처 || '',
+        세번부호: r.세번 || '',
+        세율구분: '',
+        규격1: g1, 규격2: g2, 규격3: g3,
+        성분: r.성분 || '',
+        수량: r.수량 || '',
+        단위: 'PC',
+        단가: r.단가 || '',
+        총액: r.총액 || '',
+        순중량: (r.순중량 != null ? r.순중량 : ''),
+        FILE: '',
+        총중량: (idx === 0 && d.meta.총중량 != null ? d.meta.총중량 : ''),  // 첫 행에만 1번
+        운임: '',
+        파일명: d.name,
+      });
+    });
+  });
+  return all;
+}
+
+// ── Excel 내보내기 (ExcelJS, 이미지 포함) ───────────────────
+async function exportExcel() {
+  const allRows = getAllRows();
+  if (!allRows.length) return;
+
+  const exportBtn = document.getElementById('exportBtn');
+  exportBtn.disabled = true;
+  exportBtn.textContent = '저장 중...';
+
+  try {
+    const workbook = new ExcelJS.Workbook();
+    const ws = workbook.addWorksheet('추출결과');
+
+    const hasImg = allRows.some(r => r.url);
+    const cols = COLUMNS.filter(c => !c.img || hasImg);
+    ws.columns = cols.map(c => ({ header: c.header, key: c.key, width: c.width || 14 }));
+
+    // 헤더 스타일
+    ws.getRow(1).eachCell(cell => {
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1A1A2E' } };
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+    });
+    ws.getRow(1).height = 22;
+
+    const IMG_ROW_HEIGHT = 70;
+    const imgColIdx = hasImg ? cols.findIndex(c => c.img) : -1; // 0-indexed
+
+    for (let i = 0; i < allRows.length; i++) {
+      const item = allRows[i];
+      const rowNum = i + 2;
+
+      const rowData = {};
+      cols.forEach(c => {
+        if (c.img) { rowData[c.key] = ''; return; }
+        let v = item[c.key];
+        if (c.num && v !== '' && v != null && !isNaN(parseFloat(String(v).replace(/,/g, '')))) {
+          v = parseFloat(String(v).replace(/,/g, ''));
+        }
+        rowData[c.key] = (v == null ? '' : v);
+      });
+
+      const row = ws.addRow(rowData);
+      row.alignment = { vertical: 'middle' };
+      if (hasImg) row.height = IMG_ROW_HEIGHT;
+
+      if (hasImg && imgColIdx >= 0 && item.ab) {
+        const imageId = workbook.addImage({ buffer: item.ab, extension: item.ext || 'jpeg' });
+        ws.addImage(imageId, {
+          tl: { col: imgColIdx, row: rowNum - 1 },
+          br: { col: imgColIdx + 1, row: rowNum },
+          editAs: 'oneCell',
+        });
+      }
+    }
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const now = new Date();
+    const stamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+    a.href = url; a.download = `통다-교동 엑셀자료 추출_${stamp}.xlsx`; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  } catch(err) {
+    alert('저장 중 오류: ' + err.message);
+    console.error(err);
+  }
+
+  exportBtn.disabled = false;
+  exportBtn.textContent = '전체 Excel 저장';
+}
+
+// ── 공유 DB (GitHub 연동) ────────────────────────────────────
+const REPO_OWNER = 'a90894048-creator';
+const REPO_NAME  = 'TONDA-DB';
+const DB_FILE    = 'database.xlsx';
+const TOKEN_KEY  = 'tonda_gh_token';
+const RAW_URL    = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${DB_FILE}`;
+const API_URL    = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DB_FILE}`;
+
+let dbByBiz = {};
+const normBiz = b => String(b == null ? '' : b).replace(/[^0-9]/g, '');
+function pickCol(row, names) {
+  for (const k of Object.keys(row)) {
+    const nk = norm(k);
+    if (names.some(n => nk.includes(norm(n)))) return row[k];
+  }
+  return '';
+}
+function buildDbIndex(rows) {
+  dbByBiz = {};
+  for (const r of rows) {
+    const biz = String(pickCol(r, ['사업자번호','사업자등록번호'])).trim();
+    if (!biz) continue;
+    dbByBiz[normBiz(biz)] = {
+      사업자번호:   biz,
+      통관고유번호: String(pickCol(r, ['통관고유번호','통관고유부호','통관부호'])).trim(),
+      사업자명:     String(pickCol(r, ['사업자명','상호','회사명','거래처'])).trim(),
+    };
+  }
+}
+function lookupDb(biz) {
+  if (!biz) return null;
+  return dbByBiz[normBiz(biz)] || null;
+}
+
+function setDbBar(type, name, info) {
+  const bar = document.getElementById('dbStatusBar');
+  bar.className = 'db-status-bar ' + (type === 'ok' ? 'ok' : type === 'loading' ? 'loading' : 'error');
+  const icon = type === 'ok' ? '✅' : type === 'loading' ? '⏳' : '❌';
+  const infoCls = type === 'error' ? 'err' : type === 'loading' ? 'loading' : '';
+  bar.innerHTML = `<span>${icon}</span>` +
+    (name ? `<span class="db-sname">${esc(name)}</span>` : '') +
+    `<span class="db-sinfo ${infoCls}" style="flex:1">${esc(info)}</span>`;
+  document.getElementById('dbPill').textContent =
+    type === 'ok' ? '✔ 동기화됨' : type === 'loading' ? '불러오는 중…' : '연결 오류';
+}
+
+async function loadDbFromGitHub() {
+  setDbBar('loading', '', 'GitHub에서 최신 DB 불러오는 중…');
+  try {
+    const res = await fetch(RAW_URL + '?t=' + Date.now());
+    if (!res.ok) {
+      if (res.status === 404) setDbBar('error', '', 'GitHub에 DB 파일이 없습니다. 아래에서 최초 업로드해주세요.');
+      else throw new Error(`HTTP ${res.status}`);
+      return;
+    }
+    const buf = await res.arrayBuffer();
+    const wb = XLSX.read(new Uint8Array(buf), { type: 'array' });
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+    buildDbIndex(rows);
+    setDbBar('ok', DB_FILE, `${Object.keys(dbByBiz).length.toLocaleString()}개 사업자 · GitHub 최신 버전`);
+    renderTable();
+  } catch (e) { setDbBar('error', '', `로드 실패: ${e.message}`); }
+}
+
+async function uploadDbToGitHub(file) {
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (!token) {
+    alert('GitHub 토큰이 필요합니다. 아래 토큰 입력란에 토큰을 저장해주세요.');
+    document.getElementById('tokenInput').focus();
+    return;
+  }
+  const prog = document.getElementById('uploadProgress');
+  prog.style.display = 'flex';
+  document.getElementById('uploadMsg').textContent = '파일 읽는 중…';
+  try {
+    const buf = await file.arrayBuffer();
+    let bin = ''; const bytes = new Uint8Array(buf);
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    const b64 = btoa(bin);
+
+    document.getElementById('uploadMsg').textContent = '기존 파일 확인 중…';
+    let sha = null;
+    try {
+      const getRes = await fetch(API_URL, { headers: { 'Authorization': `token ${token}` } });
+      if (getRes.ok) sha = (await getRes.json()).sha;
+    } catch (e) {}
+
+    document.getElementById('uploadMsg').textContent = 'GitHub에 업로드 중…';
+    const body = { message: `DB 업데이트 (${new Date().toLocaleString('ko-KR')})`, content: b64 };
+    if (sha) body.sha = sha;
+    const putRes = await fetch(API_URL, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    prog.style.display = 'none';
+    if (!putRes.ok) throw new Error((await putRes.json()).message || `HTTP ${putRes.status}`);
+
+    const wb = XLSX.read(new Uint8Array(buf), { type: 'array' });
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+    buildDbIndex(rows);
+    setDbBar('ok', file.name, `${Object.keys(dbByBiz).length.toLocaleString()}개 사업자 · 방금 업로드됨 · 전체 공유됨 ✔`);
+    renderTable();
+    document.getElementById('dbFileInput').value = '';
+  } catch (e) {
+    prog.style.display = 'none';
+    alert('업로드 실패:\n' + e.message + '\n\n토큰이 올바른지 확인해주세요.');
+  }
+}
+
+// DB 양식 받기 (기존 DB + 추출된 사업자번호 병합)
+function downloadDbTemplate() {
+  const map = new Map();
+  for (const k of Object.keys(dbByBiz)) {
+    const d = dbByBiz[k];
+    map.set(k, { 사업자번호: d.사업자번호 || k, 통관고유번호: d.통관고유번호 || '', 사업자명: d.사업자명 || '' });
+  }
+  for (const d of fileDataList) {
+    if (d.error || !d.meta || !d.meta.사업자번호) continue;
+    const k = normBiz(d.meta.사업자번호);
+    if (!map.has(k)) map.set(k, { 사업자번호: d.meta.사업자번호, 통관고유번호: '', 사업자명: '' });
+  }
+  const list = [...map.values()];
+  if (!list.length) { alert('DB도 비어있고 추출된 사업자번호도 없습니다.'); return; }
+  const ws = XLSX.utils.json_to_sheet(list, { header: ['사업자번호','통관고유번호','사업자명'] });
+  ws['!cols'] = [{wch:15},{wch:16},{wch:24}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'DB');
+  XLSX.writeFile(wb, 'DB_업데이트양식.xlsx');
+}
+
+// 토큰 UI
+function initTokenUI() {
+  const token = localStorage.getItem(TOKEN_KEY);
+  document.getElementById('tokenInputRow').style.display = token ? 'none' : 'flex';
+  document.getElementById('tokenSavedBadge').style.display = token ? 'inline' : 'none';
+  document.getElementById('tokenClearBtn').style.display = token ? 'inline-flex' : 'none';
+  document.querySelector('.token-hint').style.display = token ? 'none' : 'block';
+}
+
+// DB 이벤트 연결
+document.getElementById('tokenSaveBtn').addEventListener('click', () => {
+  const val = document.getElementById('tokenInput').value.trim();
+  if (!val) { alert('토큰을 입력해주세요.'); return; }
+  localStorage.setItem(TOKEN_KEY, val);
+  document.getElementById('tokenInput').value = '';
+  initTokenUI();
+});
+document.getElementById('tokenClearBtn').addEventListener('click', () => {
+  if (confirm('저장된 토큰을 삭제할까요?')) { localStorage.removeItem(TOKEN_KEY); initTokenUI(); }
+});
+document.getElementById('dbTemplateBtn').addEventListener('click', downloadDbTemplate);
+document.getElementById('dbFileInput').addEventListener('change', e => {
+  if (e.target.files.length) uploadDbToGitHub(e.target.files[0]);
+  e.target.value = '';
+});
+(function () {
+  const drop = document.getElementById('dbDrop');
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+  drop.addEventListener('drop', e => {
+    e.preventDefault(); drop.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) uploadDbToGitHub(e.dataTransfer.files[0]);
+  });
+})();
+
+initTokenUI();
+loadDbFromGitHub();
+
+function esc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

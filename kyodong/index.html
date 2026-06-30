@@ -525,12 +525,17 @@ function extractInvoiceMeta(grid) {
           if (bv) { meta.해외거래처 = bv.split(/\r?\n/).map(s => s.trim()).filter(Boolean)[0] || ''; break; }
         }
       }
-      // 사업자번호: "Consignee" 인근 행의 괄호 안 10단위 사업자번호
+      // 사업자번호: "Consignee" 인근 행에서 숫자 10자리 인식 (하이픈·공백 섞여 있어도, 예: "589- 19-02503")
       if (!meta.사업자번호 && /consignee/i.test(v)) {
         for (let k = r; k < Math.min(grid.length, r + 6); k++) {
           const rowstr = (grid[k] || []).map(x => String(x)).join(' ');
-          const m = rowstr.match(/\((\d{3}-\d{2}-\d{5})\)/) || rowstr.match(/(\d{3}-\d{2}-\d{5})/);
-          if (m) { meta.사업자번호 = m[1]; break; }
+          // 숫자/하이픈/공백 덩어리들 중, 숫자만 추렸을 때 정확히 10자리인 것
+          const cands = rowstr.match(/[0-9][0-9\s\-]{7,}[0-9]/g) || [];
+          for (const cand of cands) {
+            const d = cand.replace(/[^0-9]/g, '');
+            if (d.length === 10) { meta.사업자번호 = `${d.slice(0,3)}-${d.slice(3,5)}-${d.slice(5)}`; break; }
+          }
+          if (meta.사업자번호) break;
         }
       }
     }

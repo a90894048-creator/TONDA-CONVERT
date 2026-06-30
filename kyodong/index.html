@@ -358,7 +358,7 @@ const COLUMNS = [
   { key: '단위',        header: '단위',                    width: 8 },
   { key: '단가',        header: '단가',        num: true,  width: 12 },
   { key: '총액',        header: '총액',        num: true,  width: 12 },
-  { key: '순중량',      header: '순중량',      num: true,  width: 12 },
+  { key: '순중량',      header: '순중량',      num: true,  width: 12, note: '패킹서식의 총 순중량을 품목 수량 비율로 안분: 순중량 = 총순중량 × (해당 품목 수량 ÷ 전체 수량 합계). 마지막 품목은 합계 보정.' },
   { key: 'FILE',        header: 'FILE',        blank: true, width: 12 },
   { key: '총중량',      header: '총중량',      num: true,  width: 12 },
   { key: '운임',        header: '운임',        blank: true, width: 12 },
@@ -871,7 +871,7 @@ function renderTable() {
 
   let html = `<div class="count-info">총 ${allRows.length}개 품목 (${fileDataList.filter(d=>!d.error).length}개 파일)</div>`;
   html += '<div class="table-scroll"><table><thead><tr>';
-  cols.forEach(c => { html += `<th>${esc(c.header)}</th>`; });
+  cols.forEach(c => { html += `<th${c.note ? ` title="${esc(c.note)}" style="cursor:help"` : ''}>${esc(c.header)}${c.note ? ' ⓘ' : ''}</th>`; });
   html += '</tr></thead><tbody>';
 
   allRows.forEach(item => {
@@ -888,6 +888,11 @@ function renderTable() {
     html += '</tr>';
   });
   html += '</tbody></table></div>';
+  html += '<div style="font-size:12px;color:#888;margin-top:10px;line-height:1.7;background:#f7f8fa;border:1px solid #ececec;border-radius:8px;padding:10px 14px;">'
+       +  '※ <b style="color:#555;">순중량 계산</b> — 패킹서식의 <b>총 순중량</b>을 각 품목 수량 비율로 안분합니다.<br>'
+       +  '<b style="color:#1a6cf5;">순중량 = 총 순중량 × (해당 품목 수량 ÷ 전체 품목 수량 합계)</b>'
+       +  ' &nbsp;·&nbsp; 마지막 품목은 반올림 오차를 보정해 합계가 총 순중량과 정확히 일치합니다.'
+       +  '</div>';
   result.innerHTML = html;
 }
 

@@ -1014,9 +1014,10 @@ const API_URL    = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/cont
 let dbByBiz = {};
 const normBiz = b => String(b == null ? '' : b).replace(/[^0-9]/g, '');
 function pickCol(row, names) {
+  const ns = s => String(s == null ? '' : s).replace(/\s+/g, '').toLowerCase();  // 공백 완전 제거(헤더 "사업자 번호" 대응)
   for (const k of Object.keys(row)) {
-    const nk = norm(k);
-    if (names.some(n => nk.includes(norm(n)))) return row[k];
+    const nk = ns(k);
+    if (names.some(n => nk.includes(ns(n)))) return row[k];
   }
   return '';
 }

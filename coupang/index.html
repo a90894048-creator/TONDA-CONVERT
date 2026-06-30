@@ -597,22 +597,37 @@ async function extractImages(arrayBuffer, sheetIdx, imageCol) {
       }
     }
 
-    // 이미지 컬럼의 모든 앵커 → { 엑셀행번호: 이미지 } 매핑
-    const map = {};
+    // 제품이미지 컬럼의 앵커들을 "행 범위(fromR~toR)"로 수집
+    // (twoCellAnchor 이미지는 여러 행에 걸쳐 있고, 제품 텍스트 행과 1~2칸 어긋날 수 있음)
+    const anchors = [];
     const anchorRe = /<xdr:(twoCellAnchor|oneCellAnchor)[\s\S]*?<\/xdr:\1>/g;
     let am;
     while ((am = anchorRe.exec(drawingXml)) !== null) {
       const a = am[0];
       const fr = a.match(/<xdr:from>[\s\S]*?<xdr:row>(\d+)<\/xdr:row>/);
       const fc = a.match(/<xdr:from>[\s\S]*?<xdr:col>(\d+)<\/xdr:col>/);
+      const tr = a.match(/<xdr:to>[\s\S]*?<xdr:row>(\d+)<\/xdr:row>/);
       const rid = a.match(/r:embed="([^"]+)"/) || a.match(/r:id="([^"]+)"/);
       if (!fr || !fc || !rid || !rIdToImg[rid[1]]) continue;
-      const row = parseInt(fr[1]), col = parseInt(fc[1]);
-      if (imageCol != null && col !== imageCol) continue;   // 이미지 컬럼만(법인사진 등 제외)
-      if (map[row] == null) map[row] = rIdToImg[rid[1]];     // 한 행에 여러 이미지면 첫 번째
+      const fromR = parseInt(fr[1]), col = parseInt(fc[1]);
+      const toR = tr ? parseInt(tr[1]) : fromR;
+      if (imageCol != null && col !== imageCol) continue;   // 제품이미지 컬럼만(법인사진·여권 등 제외)
+      anchors.push({ fromR, toR, img: rIdToImg[rid[1]] });
     }
-    return map;
-  } catch (e) { console.warn('이미지 추출 실패', e); return {}; }
+    return anchors;
+  } catch (e) { console.warn('이미지 추출 실패', e); return []; }
+}
+
+// 데이터 행(엑셀 행번호)에 맞는 이미지: 앵커 행범위(fromR~toR) 안에 들어오면 매칭
+function imageForRow(anchors, rowIdx) {
+  let best = null;
+  for (const an of anchors)
+    if (rowIdx >= an.fromR && rowIdx <= an.toR && (!best || an.fromR > best.fromR)) best = an;  // 시작행이 가장 가까운 앵커 우선
+  if (best) return best.img;
+  // 폴백: 범위에 안 걸리면 시작행이 ±1 이내인 앵커
+  let near = null, nd = 2;
+  for (const an of anchors) { const d = Math.abs(an.fromR - rowIdx); if (d < nd) { nd = d; near = an; } }
+  return near ? near.img : null;
 }
 
 // ── 파일 처리 ──────────────────────────────────────────
@@ -634,8 +649,8 @@ async function processFile(entry, file) {
     Object.assign(entry, extractMeta(rows));
     entry.rows = extractRows(rows, headerRowIdx, colMap);
     if (/\.xlsx$/i.test(file.name)) {
-      const imgMap = await extractImages(ab, sheetIdx, colMap.이미지);
-      entry.rows.forEach(r => { r.image = imgMap[r._row] || null; });
+      const anchors = await extractImages(ab, sheetIdx, colMap.이미지);
+      entry.rows.forEach(r => { r.image = imageForRow(anchors, r._row); });
     }
     if (!entry.rows.length) { entry.status = 'err'; entry.error = '품목 데이터 없음'; }
     else if (!entry.사업자번호) { entry.status = 'warn'; entry.error = '사업자번호 누락'; }

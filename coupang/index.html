@@ -597,8 +597,8 @@ async function extractImages(arrayBuffer, sheetIdx, imageCol) {
       }
     }
 
-    // 제품이미지 컬럼의 앵커들을 "행 범위(fromR~toR)"로 수집
-    // (twoCellAnchor 이미지는 여러 행에 걸쳐 있고, 제품 텍스트 행과 1~2칸 어긋날 수 있음)
+    // 제품이미지 컬럼에 걸친 앵커들을 "행 범위(fromR~toR)"로 수집
+    // (이미지가 여러 행·여러 열에 걸치고, 제품 텍스트 행과 어긋나거나 표 아래에 따로 놓일 수 있음)
     const anchors = [];
     const anchorRe = /<xdr:(twoCellAnchor|oneCellAnchor)[\s\S]*?<\/xdr:\1>/g;
     let am;
@@ -607,27 +607,38 @@ async function extractImages(arrayBuffer, sheetIdx, imageCol) {
       const fr = a.match(/<xdr:from>[\s\S]*?<xdr:row>(\d+)<\/xdr:row>/);
       const fc = a.match(/<xdr:from>[\s\S]*?<xdr:col>(\d+)<\/xdr:col>/);
       const tr = a.match(/<xdr:to>[\s\S]*?<xdr:row>(\d+)<\/xdr:row>/);
+      const tc = a.match(/<xdr:to>[\s\S]*?<xdr:col>(\d+)<\/xdr:col>/);
       const rid = a.match(/r:embed="([^"]+)"/) || a.match(/r:id="([^"]+)"/);
       if (!fr || !fc || !rid || !rIdToImg[rid[1]]) continue;
-      const fromR = parseInt(fr[1]), col = parseInt(fc[1]);
+      const fromR = parseInt(fr[1]), fromC = parseInt(fc[1]);
       const toR = tr ? parseInt(tr[1]) : fromR;
-      if (imageCol != null && col !== imageCol) continue;   // 제품이미지 컬럼만(법인사진·여권 등 제외)
+      const toC = tc ? parseInt(tc[1]) : fromC;
+      if (imageCol != null && !(fromC <= imageCol && imageCol <= toC)) continue;  // 제품이미지 컬럼이 앵커 열범위에 포함될 때만(법인사진·여권 등 제외)
       anchors.push({ fromR, toR, img: rIdToImg[rid[1]] });
     }
+    anchors.sort((a, b) => a.fromR - b.fromR);
     return anchors;
   } catch (e) { console.warn('이미지 추출 실패', e); return []; }
 }
 
-// 데이터 행(엑셀 행번호)에 맞는 이미지: 앵커 행범위(fromR~toR) 안에 들어오면 매칭
-function imageForRow(anchors, rowIdx) {
-  let best = null;
-  for (const an of anchors)
-    if (rowIdx >= an.fromR && rowIdx <= an.toR && (!best || an.fromR > best.fromR)) best = an;  // 시작행이 가장 가까운 앵커 우선
-  if (best) return best.img;
-  // 폴백: 범위에 안 걸리면 시작행이 ±1 이내인 앵커
-  let near = null, nd = 2;
-  for (const an of anchors) { const d = Math.abs(an.fromR - rowIdx); if (d < nd) { nd = d; near = an; } }
-  return near ? near.img : null;
+// 앵커들을 제품 행(엑셀 행번호 배열)에 매핑 → 행 순서대로 이미지 배열 반환
+function mapImagesToRows(anchors, rowIdxs) {
+  const n = rowIdxs.length;
+  // 이미지 수 == 제품 행 수 → 위에서 아래로 1:1 배정 (행 위치가 어긋나도 안전)
+  if (anchors.length === n && n > 0) return rowIdxs.map((_, i) => anchors[i].img);
+  // 그 외: 행 범위(fromR~toR) 포함으로 매칭, 없으면 가장 가까운 앵커(3행 이내)
+  return rowIdxs.map(idx => {
+    let best = null;
+    for (const an of anchors)
+      if (idx >= an.fromR && idx <= an.toR && (!best || an.fromR > best.fromR)) best = an;
+    if (best) return best.img;
+    let near = null, nd = Infinity;
+    for (const an of anchors) {
+      const d = idx < an.fromR ? an.fromR - idx : (idx > an.toR ? idx - an.toR : 0);
+      if (d < nd) { nd = d; near = an; }
+    }
+    return near && nd <= 3 ? near.img : null;
+  });
 }
 
 // ── 파일 처리 ──────────────────────────────────────────
@@ -650,7 +661,8 @@ async function processFile(entry, file) {
     entry.rows = extractRows(rows, headerRowIdx, colMap);
     if (/\.xlsx$/i.test(file.name)) {
       const anchors = await extractImages(ab, sheetIdx, colMap.이미지);
-      entry.rows.forEach(r => { r.image = imageForRow(anchors, r._row); });
+      const imgs = mapImagesToRows(anchors, entry.rows.map(r => r._row));
+      entry.rows.forEach((r, i) => { r.image = imgs[i]; });
     }
     if (!entry.rows.length) { entry.status = 'err'; entry.error = '품목 데이터 없음'; }
     else if (!entry.사업자번호) { entry.status = 'warn'; entry.error = '사업자번호 누락'; }

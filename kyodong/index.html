@@ -827,8 +827,8 @@ async function extractImages(arrayBuffer, sheetIdx, headerRowIdx) {
 }
 
 // ── UI 렌더링 ────────────────────────────────────────────────
-function removeFile(name) {
-  fileDataList = fileDataList.filter(d => d.name !== name);
+function removeFile(idx) {
+  fileDataList.splice(idx, 1);
   renderFileList(); renderTable();
   if (!fileDataList.length) document.getElementById('clearBtn').style.display = 'none';
 }
@@ -840,7 +840,7 @@ function clearAll() {
 function renderFileList() {
   const el = document.getElementById('fileList');
   if (!fileDataList.length) { el.innerHTML = ''; return; }
-  el.innerHTML = fileDataList.map(d => {
+  el.innerHTML = fileDataList.map((d, i) => {
     const badge = d.loading
       ? `<span class="badge badge-loading">읽는 중...</span>`
       : d.error
@@ -850,7 +850,7 @@ function renderFileList() {
       <span>📄</span>
       <span class="fname" title="${esc(d.name)}">${esc(d.name)}</span>
       ${badge}
-      <button class="remove-btn" onclick="removeFile(${JSON.stringify(d.name)})">✕</button>
+      <button class="remove-btn" onclick="removeFile(${i})">✕</button>
     </div>`;
   }).join('');
 }

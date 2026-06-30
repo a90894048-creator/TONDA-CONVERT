@@ -417,7 +417,7 @@ function readFile(file, entry) {
       const packName = findSheet(wb, ['패킹', 'packing', '箱单', '装箱']);
 
       // 1) 기본 품목(상품재질 시트) — 품명/성분/세번 + 이미지
-      const { products, sheetIdx, headerRowIdx } = extractProducts(wb);
+      let { products, sheetIdx, headerRowIdx } = extractProducts(wb);
 
       // 2) 인보이스 메타 + 품목별 수량/단가/총액
       const meta = invName ? extractInvoiceMeta(gridOf(wb, invName)) : {};
@@ -429,13 +429,22 @@ function readFile(file, entry) {
       // 3) 패킹 — 순중량 총합 / 총중량
       const pack = packName ? extractPacking(gridOf(wb, packName)) : { netTotal: null, gross: null };
 
-      // 인보이스 품목 병합
-      products.forEach(p => {
-        const it = invItems[norm(p.품명)] || {};
-        p.수량 = it.수량 || '';
-        p.단가 = it.단가 || '';
-        p.총액 = it.총액 || '';
-      });
+      // 상품재질 시트가 없으면 → 인보이스서식만으로 품목 구성 (품명/수량/단가/총액/세번/재질, 이미지 없음)
+      let invoiceFallback = false;
+      if (products.length === 0 && invName) {
+        products = extractInvoiceProducts(gridOf(wb, invName));
+        invoiceFallback = true;
+      }
+
+      // 인보이스 품목 병합 (상품재질 기반일 때만 — 폴백은 이미 수량/단가/총액 보유)
+      if (!invoiceFallback) {
+        products.forEach(p => {
+          const it = invItems[norm(p.품명)] || {};
+          p.수량 = it.수량 || '';
+          p.단가 = it.단가 || '';
+          p.총액 = it.총액 || '';
+        });
+      }
 
       // 순중량 안분 (총 순중량 × 해당 수량 / 총 수량)
       const totalQty = products.reduce((s, p) => s + (parseFloat(String(p.수량).replace(/,/g, '')) || 0), 0);
@@ -452,8 +461,8 @@ function readFile(file, entry) {
         });
       }
 
-      // 이미지 추출 (xlsx만 지원)
-      if (/\.xlsx$/i.test(file.name)) {
+      // 이미지 추출 (xlsx만 지원, 상품재질 시트 기반일 때만 — 폴백은 이미지 없음)
+      if (!invoiceFallback && /\.xlsx$/i.test(file.name)) {
         const imageMap = await extractImages(ab, sheetIdx, headerRowIdx);
         products.forEach((p, i) => {
           const drawingRow = headerRowIdx + 1 + i;
@@ -655,10 +664,75 @@ function extractProducts(wb) {
 // ── HS코드 형식 변환 ─────────────────────────────────────────
 function formatHsCode(v) {
   if (!v) return '';
+  const d = String(v).replace(/[^0-9]/g, '');                 // 숫자만 추출(640299-9000 등 하이픈 섞임 대응)
+  if (d.length === 10) return `${d.slice(0,4)}.${d.slice(4,6)}-${d.slice(6)}`;
   const s = String(v).replace(/\s/g, '');
   if (/^\d{4}[\.\-]\d{2}[\.\-]\d{4}$/.test(s)) return s;
-  if (/^\d{10}$/.test(s)) return `${s.slice(0,4)}.${s.slice(4,6)}-${s.slice(6)}`;
   return v;
+}
+
+// ── 재질 한자 → 영문 사전 변환 (영문은 그대로, 한자만 치환) ──
+const MAT_DICT = {
+  '聚酯纤维':'Polyester','食品级塑料':'Food-grade Plastic','不锈钢':'Stainless Steel',
+  '人造革':'Artificial Leather','合成革':'Synthetic Leather','人工革':'Artificial Leather',
+  '无纺布':'Non-woven Fabric','牛津布':'Oxford Fabric','碳钢':'Carbon Steel','涤棉':'Poly-Cotton',
+  '棉麻':'Cotton/Linen','真皮':'Genuine Leather','牛皮':'Cowhide','超纤':'Microfiber',
+  '亚克力':'Acrylic','莫代尔':'Modal','莱卡':'Lycra','雪纺':'Chiffon','帆布':'Canvas',
+  '粘胶纤维':'Viscose','粘胶':'Viscose','粘纤':'Viscose','人造棉':'Rayon','花草':'Herbs',
+  '荞麦':'Buckwheat','纸浆':'Pulp','涤纶':'Polyester','锦纶':'Nylon','尼龙':'Nylon',
+  '氨纶':'Spandex','腈纶':'Acrylic','硅胶':'Silicone','玻璃':'Glass','陶瓷':'Ceramic',
+  '橡胶':'Rubber','树脂':'Resin','塑料':'Plastic','实木':'Wood','木头':'Wood','竹':'Bamboo',
+  '合金':'Alloy','铝':'Aluminum','铁':'Iron','铜':'Copper','真丝':'Silk','羊毛':'Wool',
+  '聚酯':'Polyester','纤维':'Fiber','人工':'Artificial','合成':'Synthetic','棉':'Cotton',
+  '麻':'Linen','丝':'Silk','毛':'Wool','木':'Wood','钢':'Steel'
+};
+const MAT_KEYS = Object.keys(MAT_DICT).sort((a, b) => b.length - a.length);  // 긴 단어 먼저 치환
+function translateMaterial(s) {
+  if (s == null) return '';
+  let t = String(s).trim();
+  if (!t) return '';
+  for (const k of MAT_KEYS) if (t.includes(k)) t = t.split(k).join(' ' + MAT_DICT[k] + ' ');
+  return t.replace(/\s+/g, ' ').trim();   // 사전에 없는 한자는 그대로 둠
+}
+
+// ── 인보이스서식만으로 품목 만들기 (상품재질 시트 없을 때 폴백) ──
+function extractInvoiceProducts(grid) {
+  let hr = -1, cDesc = -1, cComp = -1, cQty = -1, cPrice = -1, cAmt = -1, cHs = -1;
+  for (let r = 0; r < grid.length; r++) {
+    const row = grid[r] || [];
+    let d = -1, co = -1, q = -1, p = -1, a = -1, h = -1;
+    for (let c = 0; c < row.length; c++) {
+      const v = String(row[c] || '');
+      if (/description/i.test(v)) d = c;
+      if (/composition/i.test(v)) co = c;
+      if (/quantity/i.test(v)) q = c;
+      if (/un[il]?t\s*\.?\s*pr[il]?ce/i.test(v)) p = c;
+      if (/amount/i.test(v)) a = c;
+      if (/hs\s*code|hscode|^hs$|세번/i.test(v)) h = c;
+    }
+    if (d >= 0 && q >= 0) { hr = r; cDesc = d; cComp = co; cQty = q; cPrice = p; cAmt = a; cHs = h; break; }
+  }
+  if (hr < 0) return [];
+  const sorted = [cDesc, cComp, cQty, cPrice, cAmt, cHs].filter(x => x >= 0).sort((a, b) => a - b);
+  const nextCol = c => { for (const s of sorted) if (s > c) return s; return c + 3; };
+  const readRange = (row, s, e) => { for (let c = s; c < e; c++) { const v = String(row[c] ?? '').trim(); if (v !== '') return v; } return ''; };
+
+  const products = [];
+  for (let r = hr + 1; r < grid.length; r++) {
+    const row = grid[r] || [];
+    const any = row.some(x => String(x).trim() !== '');
+    const desc = cDesc >= 0 ? readRange(row, cDesc, (cComp >= 0 && cComp > cDesc ? cComp : cQty)) : '';
+    if (!desc.trim()) { if (!any) break; else continue; }
+    if (/^(sub)?total|합계|소계/i.test(desc.trim())) break;
+    const qty   = cQty   >= 0 ? readRange(row, cQty,   (cPrice >= 0 ? cPrice : nextCol(cQty)))   : '';
+    const price = cPrice >= 0 ? readRange(row, cPrice, (cAmt   >= 0 ? cAmt   : nextCol(cPrice))) : '';
+    const amt   = cAmt   >= 0 ? readRange(row, cAmt,   (cHs >= 0 && cHs > cAmt ? cHs : cAmt + 3)) : '';
+    const rawHs = cHs >= 0 ? readRange(row, cHs, cHs + 1) : '';
+    let rawMat = cComp >= 0 ? String(row[cComp] ?? '').trim() : '';   // COMPOSITION 우선
+    if (!rawMat && cHs >= 0) rawMat = String(row[cHs + 1] ?? '').trim();  // 없으면 HSCODE 옆 칸(중문 재질)
+    products.push({ 품명: desc, 수량: qty, 단가: price, 총액: amt, 세번: formatHsCode(rawHs), 성분: translateMaterial(rawMat) });
+  }
+  return products;
 }
 
 // ── 품명 → 규격1/2/3 (각 29자 이하, 초과 시 다음 칸으로) ─────

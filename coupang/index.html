@@ -390,6 +390,8 @@ function cleanNum(v) {
   const m = String(v).replace(/,/g, '').match(/-?\d+(\.\d+)?/);
   return m ? Number(m[0]) : String(v).trim();
 }
+// 소수점 2자리 절사(버림) — 안분 등으로 소수점이 길게 나오는 값(순중량 등) 정리용
+const trunc2 = v => (typeof v === 'number' ? Math.trunc(v * 100) / 100 : v);
 function formatHs(v) {
   if (v === '' || v == null) return '';
   const s = String(v).replace(/\s/g, '');
@@ -542,7 +544,11 @@ function extractRows(rows, headerRowIdx, colMap) {
     if (!name) continue;                                          // 단위행·빈행 건너뛰기
     if (/^(PCS|CTNS?|USD|CNY|KGS?|CBM)$/i.test(name)) continue;
     const item = { Descriptions: name, _row: i };
-    for (const key of NUM_COLS) item[key] = colMap[key] != null ? cleanNum(row[colMap[key]]) : '';
+    for (const key of NUM_COLS) {
+      let v = colMap[key] != null ? cleanNum(row[colMap[key]]) : '';
+      if (key === '순중량') v = trunc2(v);   // 소수점 2자리 초과분 절사(안분 등으로 긴 소수 방지)
+      item[key] = v;
+    }
     item.성분 = colMap.성분 != null ? String(row[colMap.성분] ?? '').trim() : '';
     item.세번 = colMap.세번 != null ? formatHs(row[colMap.세번]) : '';
     out.push(item);

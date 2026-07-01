@@ -335,7 +335,7 @@ const COLUMNS = [
   { header: '규격1',        field: '규격1',        type: 'text',  width: 26 },
   { header: '규격2',        field: '규격2',        type: 'text',  width: 26 },
   { header: '규격3',        field: '규격3',        type: 'text',  width: 26 },
-  { header: '성분',         field: null,           type: 'blank', width: 14 },
+  { header: '성분',         field: '성분',         type: 'text',  width: 16 },
   { header: '수량',         field: '수량',         type: 'num',   width: 9  },
   { header: '단위',         field: '단위',         type: 'text',  width: 8  },
   { header: '단가',         field: '단가',         type: 'num',   width: 10 },
@@ -498,6 +498,7 @@ function extractInv(rows) {
   const cPrice = firstIdx(['unit price']);
   const cAmt   = firstIdx(['amount']);
   const cHs    = firstIdx(['hs 세번', 'hs세번']);
+  const cMat   = firstIdx(['재질', '材质', 'material']);  // 성분(재질)
   const cGW    = firstIdx(['g.w', 'gw']);             // PACKING LIST 측
 
   const items = [];
@@ -523,6 +524,7 @@ function extractInv(rows) {
       단가: cPrice >= 0 ? cleanNum(row[cPrice]) : '',
       총액: cAmt   >= 0 ? cleanNum(row[cAmt])   : '',
       세번: cHs    >= 0 ? formatHs(row[cHs])     : '',
+      성분: cMat   >= 0 ? String(row[cMat] == null ? '' : row[cMat]).trim() : '',
     });
   }
   return { 해외거래처, rows: items, 총중량 };
@@ -621,6 +623,7 @@ function getAllRows() {
         해외거래처: f.해외거래처,
         세번: r.세번,
         규격1: r.규격1, 규격2: r.규격2, 규격3: r.규격3,
+        성분: r.성분,
         수량: r.수량, 단위: r.단위, 단가: r.단가, 총액: r.총액,
         총중량: r._first ? f.총중량 : '',   // B/L별 최초행에만
         운임: f.운임,                         // 모든 행에 반복

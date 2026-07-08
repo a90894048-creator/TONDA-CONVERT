@@ -535,14 +535,26 @@ function extractMeta(rows) {
 // ── 품목 행 추출 ──────────────────────────────────────
 function extractRows(rows, headerRowIdx, colMap) {
   const out = [];
+  let lastName = '';   // 병합된 품명 셀 값(품명이 빈 후속 행이 물려받음)
   for (let i = headerRowIdx + 1; i < rows.length; i++) {
     const row = rows[i] || [];
-    const name = String(row[colMap.품명] ?? '').trim();
+    let name = String(row[colMap.품명] ?? '').trim();
     const c0 = String(row[0] ?? '').trim().toUpperCase();
     const c1 = String(row[1] ?? '').trim().toUpperCase();
     if (c0.startsWith('TOTAL') || c1.startsWith('TOTAL')) break; // 합계행에서 종료
-    if (!name) continue;                                          // 단위행·빈행 건너뛰기
-    if (/^(PCS|CTNS?|USD|CNY|KGS?|CBM)$/i.test(name)) continue;
+    if (/^(PCS|CTNS?|USD|CNY|KGS?|CBM)$/i.test(name)) continue;   // 단위행 건너뛰기
+
+    // 품명이 병합 셀로 빈칸이어도, 수량/단가에 실제 값이 있으면 별도 품목으로 인식
+    const qtyV   = colMap.수량 != null ? cleanNum(row[colMap.수량]) : '';
+    const priceV = colMap.단가 != null ? cleanNum(row[colMap.단가]) : '';
+    const hasData = (typeof qtyV === 'number' && qtyV > 0) || (typeof priceV === 'number' && priceV > 0);
+    if (name) {
+      lastName = name;                 // 자체 품명 있는 행 → 기준 품명 갱신
+    } else {
+      if (!hasData) continue;          // 품명·데이터 모두 없음 → 빈행/합계보조행 건너뛰기
+      name = lastName;                 // 품명 빈칸 + 데이터 있음 → 위 병합 품명 승계
+      if (!name) continue;
+    }
     const item = { Descriptions: name, _row: i };
     for (const key of NUM_COLS) {
       let v = colMap[key] != null ? cleanNum(row[colMap[key]]) : '';

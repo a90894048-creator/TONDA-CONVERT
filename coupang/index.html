@@ -837,7 +837,64 @@ function imgUrl(img) {
   return url;
 }
 
-// ── 통합 엑셀 저장 (ExcelJS, 이미지 포함) ───────────────
+// ── 사진을 MS 엑셀 365 "셀에 배치"(rich value) 형식으로 주입 ──
+function colLetter(n) { let s = ''; n = n + 1; while (n > 0) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; }
+async function injectInCellImages(buf, imgCells) {
+  // imgCells: [{ ref, ab, ext }] (순서대로) — 이미 해당 셀은 {error:'#VALUE!'} 로 저장돼 있음
+  if (!imgCells.length) return buf;
+  const zip = await JSZip.loadAsync(buf);
+  const N = imgCells.length;
+  const exts = [];
+  imgCells.forEach((c, k) => { let e = (c.ext || 'png').toLowerCase(); if (e === 'jpg') e = 'jpeg'; exts.push(e); zip.file(`xl/media/rvimage${k+1}.${e}`, c.ab); });
+
+  zip.file('xl/richData/richValueRel.xml',
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<richValueRels xmlns="http://schemas.microsoft.com/office/spreadsheetml/2022/richvaluerel" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">`+
+    imgCells.map((_,k)=>`<rel r:id="rId${k+1}"/>`).join('')+`</richValueRels>`);
+  zip.file('xl/richData/_rels/richValueRel.xml.rels',
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">`+
+    imgCells.map((_,k)=>`<Relationship Id="rId${k+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/rvimage${k+1}.${exts[k]}"/>`).join('')+`</Relationships>`);
+  zip.file('xl/richData/rdrichvalue.xml',
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<rvData xmlns="http://schemas.microsoft.com/office/spreadsheetml/2017/richdata" count="${N}">`+
+    imgCells.map((_,k)=>`<rv s="0"><v>${k}</v><v>5</v></rv>`).join('')+`</rvData>`);
+  zip.file('xl/richData/rdRichValueStructure.xml',
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<rvStructures xmlns="http://schemas.microsoft.com/office/spreadsheetml/2017/richdata" count="1"><s t="_localImage"><k n="_rvRel:LocalImageIdentifier" t="i"/><k n="CalcOrigin" t="i"/></s></rvStructures>`);
+  zip.file('xl/metadata.xml',
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<metadata xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:xlrd="http://schemas.microsoft.com/office/spreadsheetml/2017/richdata"><metadataTypes count="1"><metadataType name="XLRICHVALUE" minSupportedVersion="120000" copy="1" pasteAll="1" pasteValues="1" merge="1" splitFirst="1" rowColShift="1" clearFormats="1" clearComments="1" assign="1" coerce="1"/></metadataTypes><futureMetadata name="XLRICHVALUE" count="${N}">`+
+    imgCells.map((_,k)=>`<bk><extLst><ext uri="{3e2802c4-a4d2-4d8b-9148-e3be6c30e623}"><xlrd:rvb i="${k}"/></ext></extLst></bk>`).join('')+
+    `</futureMetadata><valueMetadata count="${N}">`+
+    imgCells.map((_,k)=>`<bk><rc t="1" v="${k}"/></bk>`).join('')+`</valueMetadata></metadata>`);
+
+  let ct = await zip.file('[Content_Types].xml').async('text');
+  let defs = '';
+  if (!/Extension="png"/.test(ct)) defs += '<Default Extension="png" ContentType="image/png"/>';
+  if (!/Extension="jpeg"/.test(ct) && exts.includes('jpeg')) defs += '<Default Extension="jpeg" ContentType="image/jpeg"/>';
+  ct = ct.replace('</Types>', defs +
+    '<Override PartName="/xl/metadata.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheetMetadata+xml"/>'+
+    '<Override PartName="/xl/richData/rdrichvalue.xml" ContentType="application/vnd.ms-excel.rdrichvalue+xml"/>'+
+    '<Override PartName="/xl/richData/rdRichValueStructure.xml" ContentType="application/vnd.ms-excel.rdrichvaluestructure+xml"/>'+
+    '<Override PartName="/xl/richData/richValueRel.xml" ContentType="application/vnd.ms-excel.richvaluerel+xml"/></Types>');
+  zip.file('[Content_Types].xml', ct);
+
+  let wr = await zip.file('xl/_rels/workbook.xml.rels').async('text');
+  wr = wr.replace('</Relationships>',
+    '<Relationship Id="rIdRvMeta" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sheetMetadata" Target="metadata.xml"/>'+
+    '<Relationship Id="rIdRv1" Type="http://schemas.microsoft.com/office/2017/06/relationships/rdRichValue" Target="richData/rdrichvalue.xml"/>'+
+    '<Relationship Id="rIdRv2" Type="http://schemas.microsoft.com/office/2017/06/relationships/rdRichValueStructure" Target="richData/rdRichValueStructure.xml"/>'+
+    '<Relationship Id="rIdRv3" Type="http://schemas.microsoft.com/office/2022/10/relationships/richValueRel" Target="richData/richValueRel.xml"/></Relationships>');
+  zip.file('xl/_rels/workbook.xml.rels', wr);
+
+  const sheetPath = Object.keys(zip.files).find(p => /^xl\/worksheets\/sheet\d+\.xml$/.test(p));
+  let sx = await zip.file(sheetPath).async('text');
+  imgCells.forEach((c, idx) => {
+    const re = new RegExp('(<c r="' + c.ref + '")([^>]*?)(>)');
+    sx = sx.replace(re, (m, a, b, d) => (/ vm="/.test(b) ? m : a + b + ' vm="' + (idx + 1) + '"' + d));
+  });
+  zip.file(sheetPath, sx);
+
+  return await zip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
+}
+
+// ── 통합 엑셀 저장 (ExcelJS + 사진 셀에 배치) ───────────────
 document.getElementById('download-btn').addEventListener('click', async () => {
   const rows = getAllRows();
   if (!rows.length) return;
@@ -857,6 +914,7 @@ document.getElementById('download-btn').addEventListener('click', async () => {
     const imgColIdx = COLUMNS.findIndex(c => c.type === 'img');     // 0-indexed
     const hsIdx     = COLUMNS.findIndex(c => c.type === 'hs');
 
+    const imgCells = [];   // 사진을 셀에 배치할 셀 목록 {ref, ab, ext}
     rows.forEach((r, i) => {
       const obj = {};
       COLUMNS.forEach((c, idx) => { obj['c' + idx] = (c.type === 'img' || !c.field) ? '' : (r[c.field] ?? ''); });
@@ -874,14 +932,16 @@ document.getElementById('download-btn').addEventListener('click', async () => {
         cell.font = { color:{ argb:'FF9C0006' }, bold: true };
       }
 
+      // 사진: 셀에 배치(rich value) — 셀 값을 에러로 두고 이후 vm 부여
       if (r.이미지 && r.이미지.ab && imgColIdx >= 0) {
-        row.height = 54;
-        const id = wb.addImage({ buffer: r.이미지.ab, extension: r.이미지.ext || 'jpeg' });
-        ws.addImage(id, { tl: { col: imgColIdx, row: i + 1 }, br: { col: imgColIdx + 1, row: i + 2 }, editAs: 'oneCell' });
+        row.height = 60;
+        row.getCell('c' + imgColIdx).value = { error: '#VALUE!' };
+        imgCells.push({ ref: colLetter(imgColIdx) + (i + 2), ab: r.이미지.ab, ext: r.이미지.ext || 'jpeg' });
       }
     });
 
-    const buf = await wb.xlsx.writeBuffer();
+    let buf = await wb.xlsx.writeBuffer();
+    buf = await injectInCellImages(buf, imgCells);
     const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

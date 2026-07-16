@@ -497,7 +497,7 @@ function extractInv(rows) {
   const cUnit  = lastIdx(['수량단위']);
   const cPrice = firstIdx(['unit price']);
   const cAmt   = firstIdx(['amount']);
-  const cHs    = firstIdx(['hs 세번', 'hs세번']);
+  const cHs    = firstIdx(['hs', '세번']);   // 'HS'가 포함된 열이면 세번부호로 인식(国内HS·韩国清关HS编码·HSCODE 등)
   const cMat   = firstIdx(['재질', '材质', 'material']);  // 성분(재질)
   const cGW    = firstIdx(['g.w', 'gw']);             // PACKING LIST 측
 

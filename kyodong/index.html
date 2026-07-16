@@ -713,7 +713,7 @@ function extractInvoiceProducts(grid) {
       if (/quantity/i.test(v)) q = c;
       if (/un[il]?t\s*\.?\s*pr[il]?ce/i.test(v)) p = c;
       if (/amount/i.test(v)) a = c;
-      if (/hs\s*code|hscode|^hs$|세번/i.test(v)) h = c;
+      if (/hs|세번/i.test(v)) h = c;   // 'HS'가 포함된 열이면 세번부호로 인식(国内HS·韩国清关HS编码·HSCODE 등)
     }
     if (d >= 0 && q >= 0) { hr = r; cDesc = d; cComp = co; cQty = q; cPrice = p; cAmt = a; cHs = h; break; }
   }

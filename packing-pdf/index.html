@@ -131,7 +131,7 @@
 
 <div id="app">
   <h1>통다 DX 인패킹 → PDF 변환기</h1>
-  <p class="sub">선적서류_운임인보이스 엑셀을 업로드하면 비엘·패킹리스트·인보이스·운임내역서 4종 PDF(A4)를 파일마다 만들어 ZIP으로 묶어줍니다.</p>
+  <p class="sub">선적서류_운임인보이스 엑셀을 업로드하면 비엘·운임내역서·인보이스·패킹리스트 순으로 4페이지를 묶은 A4 PDF 1개를 파일마다 만들어 ZIP으로 묶어줍니다.</p>
 
   <div id="dropzone">
     <div class="big">엑셀 파일을 여기로 끌어다 놓거나 클릭해서 선택</div>
@@ -836,15 +836,25 @@ function setStatus(id, text, cls) {
   if (el) { el.textContent = text; el.className = 'status' + (cls ? ' ' + cls : ''); }
 }
 
-async function renderToPdfBlob(html) {
+async function renderPageToImage(html) {
   renderHost.innerHTML = html;
   const el = renderHost.querySelector('.doc');
   const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
-  const imgData = canvas.toDataURL('image/png');
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-  pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+  // JPEG (no alpha channel) avoids a jsPDF bug where canvas PNGs with an alpha
+  // channel get embedded as an uncompressed bitmap + soft mask, ballooning file size.
+  const imgData = canvas.toDataURL('image/jpeg', 0.95);
   renderHost.innerHTML = '';
+  return imgData;
+}
+
+async function renderCombinedPdfBlob(htmlPages) {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
+  for (let i = 0; i < htmlPages.length; i++) {
+    if (i > 0) pdf.addPage();
+    const imgData = await renderPageToImage(htmlPages[i]);
+    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+  }
   return pdf.output('blob');
 }
 
@@ -878,17 +888,15 @@ convertBtn.addEventListener('click', async () => {
         .filter(img => img.src);
 
       const base = baseName(f.file.name);
-      const outputs = [
-        [`${base} 비엘.pdf`, renderBL(blData, blImages)],
-        [`${base} 패킹리스트.pdf`, renderPacking(pkData)],
-        [`${base} 인보이스.pdf`, renderInvoice(ivData)],
-        [`${base} 운임내역서.pdf`, renderFreight(frData)],
+      const htmlPages = [
+        renderBL(blData, blImages),
+        renderFreight(frData),
+        renderInvoice(ivData),
+        renderPacking(pkData),
       ];
 
-      for (const [name, html] of outputs) {
-        const blob = await renderToPdfBlob(html);
-        zip.file(name, blob);
-      }
+      const blob = await renderCombinedPdfBlob(htmlPages);
+      zip.file(`${base}.pdf`, blob);
       setStatus(f.id, '완료', 'ok');
     } catch (err) {
       console.error(err);

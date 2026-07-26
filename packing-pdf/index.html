@@ -848,7 +848,7 @@ function setStatus(id, text, cls) {
 async function renderPageToImage(html) {
   renderHost.innerHTML = html;
   const el = renderHost.querySelector('.doc');
-  const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+  const canvas = await html2canvas(el, { scale: 3, backgroundColor: '#ffffff', useCORS: true, letterRendering: true });
   // JPEG (no alpha channel) avoids a jsPDF bug where canvas PNGs with an alpha
   // channel get embedded as an uncompressed bitmap + soft mask, ballooning file size.
   const imgData = canvas.toDataURL('image/jpeg', 0.95);

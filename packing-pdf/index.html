@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>통다 DX 인패킹 → PDF 변환기</title>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#1c1f26; --paper:#ffffff; --canvas:#f3f4f6; --line:#e2e5ea;
+    --accent:#2d4ea6; --accent-ink:#ffffff; --muted:#6b7280; --ok:#1a7f4b; --err:#c0392b;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --ink:#e8e9ec; --paper:#1b1e24; --canvas:#111318; --line:#2b2f38; --accent:#5f86e0; --accent-ink:#0b1020; --muted:#9aa1ad; --ok:#3ddc84; --err:#ff6b6b; }
+  }
+  :root[data-theme="dark"]{ --ink:#e8e9ec; --paper:#1b1e24; --canvas:#111318; --line:#2b2f38; --accent:#5f86e0; --accent-ink:#0b1020; --muted:#9aa1ad; --ok:#3ddc84; --err:#ff6b6b; }
+  :root[data-theme="light"]{ --ink:#1c1f26; --paper:#ffffff; --canvas:#f3f4f6; --line:#e2e5ea; --accent:#2d4ea6; --accent-ink:#ffffff; --muted:#6b7280; --ok:#1a7f4b; --err:#c0392b; }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--canvas);color:var(--ink);font-family:'Segoe UI',-apple-system,Malgun Gothic,sans-serif;}
+  #app{max-width:760px;margin:0 auto;padding:36px 20px 80px;}
+  h1{font-size:20px;margin:0 0 4px;letter-spacing:-.01em;}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 24px;line-height:1.6;}
+  #dropzone{border:2px dashed var(--line);border-radius:10px;padding:36px 20px;text-align:center;color:var(--muted);cursor:pointer;background:var(--paper);transition:border-color .15s,background .15s;}
+  #dropzone.drag{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 8%, var(--paper));}
+  #dropzone .big{font-size:14px;color:var(--ink);font-weight:600;margin-bottom:4px;}
+  #fileList{margin-top:18px;display:flex;flex-direction:column;gap:6px;}
+  .frow{display:flex;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:12.5px;}
+  .frow .fname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .frow .status{font-size:11px;color:var(--muted);flex-shrink:0;font-variant-numeric:tabular-nums;}
+  .frow .status.ok{color:var(--ok);}
+  .frow .status.err{color:var(--err);}
+  .frow .rm{cursor:pointer;color:var(--muted);flex-shrink:0;font-size:14px;line-height:1;padding:2px 4px;}
+  .frow .rm:hover{color:var(--err);}
+  #actions{margin-top:20px;display:flex;gap:10px;align-items:center;}
+  button{font-family:inherit;font-size:13.5px;font-weight:600;border:none;border-radius:8px;padding:11px 20px;cursor:pointer;}
+  #convertBtn{background:var(--accent);color:var(--accent-ink);}
+  #convertBtn:disabled{opacity:.4;cursor:not-allowed;}
+  #downloadBtn{background:var(--ok);color:#fff;display:none;}
+  #progressWrap{margin-top:16px;display:none;}
+  #progressBar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;}
+  #progressFill{height:100%;background:var(--accent);width:0%;transition:width .2s;}
+  #progressLabel{margin-top:6px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  #renderHost{position:fixed;left:-99999px;top:0;}
+  input[type=file]{display:none;}
+</style>
+</head>
+<body>
+
+<script>
+/* ── TONDA 접근 잠금 (브라우저 닫으면 재입력) ── */
+(function(){
+  if (location.protocol === 'file:') return;
+  let unlocked = sessionStorage.getItem('tonda_gate_ok') === '1';
+  const GATE_JSON = 'https://raw.githubusercontent.com/a90894048-creator/TONDA-CONVERT/main/gate.json';
+  const GATE_API  = 'https://api.github.com/repos/a90894048-creator/TONDA-CONVERT/contents/gate.json';
+  let activeHash = '388ff3adccc5444ba184b8e4edd589fbfc30dc56cada02ecc83004ead7f24aeb';
+  const sha256 = async s => { const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); };
+
+  /* 열려있는 다른 탭과 인증 상태 공유 — 한 번 입력하면 모든 탭/변환기 통과 (브라우저 닫으면 초기화) */
+  let bc = null; try { bc = new BroadcastChannel('tonda_gate'); } catch(_) {}
+  let cover = null;
+  const removeCover = () => { if (cover) { cover.remove(); cover = null; if (document.body) document.body.style.overflow = ''; } };
+  const markUnlocked = broadcast => {
+    unlocked = true;
+    sessionStorage.setItem('tonda_gate_ok','1');
+    removeCover();
+    if (broadcast && bc) bc.postMessage({ type:'grant' });
+  };
+  if (bc) bc.onmessage = e => {
+    const m = e.data || {};
+    if (m.type === 'ask') { if (unlocked && bc) bc.postMessage({ type:'grant' }); }
+    else if (m.type === 'grant') { if (!unlocked) markUnlocked(false); }
+  };
+  if (unlocked) return;   // 이 탭은 이미 인증됨
+
+  const buildCover = () => {
+    if (unlocked) return;
+    cover = document.createElement('div');
+    cover.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#f4f5f7;display:flex;align-items:center;justify-content:center;font-family:"Malgun Gothic",Arial,sans-serif;';
+    cover.innerHTML = '<div style="width:320px;background:#fff;border:1px solid #ececec;border-radius:16px;padding:32px 28px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.08);">'
+      + '<div style="width:54px;height:54px;border-radius:14px;background:#e8f0fe;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px;">🔒</div>'
+      + '<div style="font-size:17px;font-weight:700;color:#1a1a2e;margin-bottom:4px;">TONDA 통관 변환기</div>'
+      + '<div style="font-size:13px;color:#888;margin-bottom:20px;">접근하려면 비밀번호를 입력하세요</div>'
+      + '<input id="_gpw" type="password" placeholder="비밀번호" style="width:100%;padding:10px 12px;border:1px solid #d0d7e3;border-radius:8px;text-align:center;font-size:14px;margin-bottom:10px;box-sizing:border-box;">'
+      + '<button id="_gok" style="width:100%;padding:10px;border:none;border-radius:8px;background:#1a1a2e;color:#fff;font-weight:700;font-size:14px;cursor:pointer;">확인</button>'
+      + '<div id="_gerr" style="font-size:12px;color:#e74c3c;margin-top:10px;min-height:15px;"></div>'
+      + '<div style="font-size:11px;color:#aaa;">브라우저를 닫으면 다시 입력해야 합니다</div>'
+      + '<div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f0f0;"><a id="_gchg" href="#" style="font-size:11px;color:#2563eb;text-decoration:none;">🔑 비밀번호 변경</a></div>'
+      + '</div>';
+    document.documentElement.appendChild(cover);
+    if (document.body) document.body.style.overflow = 'hidden';
+    const pw = cover.querySelector('#_gpw'), err = cover.querySelector('#_gerr');
+    const unlock = async () => {
+      if (await sha256(pw.value) === activeHash) { markUnlocked(true); }
+      else { err.textContent = '비밀번호가 올바르지 않습니다'; pw.select(); }
+    };
+    cover.querySelector('#_gok').onclick = unlock;
+    pw.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+    pw.focus();
+    cover.querySelector('#_gchg').onclick = async e => {
+      e.preventDefault();
+      const cur = prompt('현재 비밀번호'); if (cur == null) return;
+      if (await sha256(cur) !== activeHash) { alert('현재 비밀번호가 올바르지 않습니다.'); return; }
+      const n1 = prompt('새 비밀번호'); if (!n1) return;
+      const n2 = prompt('새 비밀번호 확인'); if (n1 !== n2) { alert('새 비밀번호가 일치하지 않습니다.'); return; }
+      let token = localStorage.getItem('tonda_gh_token') || prompt('GitHub 토큰 (변경 권한 필요)');
+      if (!token) return; localStorage.setItem('tonda_gh_token', token);
+      const nh = await sha256(n1);
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify({ hash: nh, updated: new Date().toISOString() }))));
+      let sha = null;
+      try { const g = await fetch(GATE_API, { headers: { Authorization: 'token ' + token } }); if (g.ok) sha = (await g.json()).sha; } catch(_) {}
+      const body = { message: '비밀번호 변경', content }; if (sha) body.sha = sha;
+      const put = await fetch(GATE_API, { method: 'PUT', headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (put.ok) { activeHash = nh; alert('비밀번호가 변경되었습니다. 모든 사용자에게 1~2분 내 적용됩니다.'); }
+      else { alert('변경 실패: ' + ((await put.json().catch(()=>({}))).message || put.status)); }
+    };
+  };
+  const showGate = () => {
+    if (unlocked) return;   // 대기 중 다른 탭에서 인증되면 입력창을 띄우지 않음
+    if (document.body) buildCover();
+    else document.addEventListener('DOMContentLoaded', buildCover);
+  };
+
+  if (bc) bc.postMessage({ type:'ask' });   // 열려있는 다른 탭에 인증 여부 질의
+  setTimeout(showGate, 250);                // 응답 없으면 비밀번호 입력창 표시
+  fetch(GATE_JSON + '?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(j => { if (j && j.hash) activeHash = j.hash; }).catch(()=>{});
+})();
+</script>
+
+<div id="app">
+  <h1>통다 DX 인패킹 → PDF 변환기</h1>
+  <p class="sub">선적서류_운임인보이스 엑셀을 업로드하면 비엘·패킹리스트·인보이스·운임내역서 4종 PDF(A4)를 파일마다 만들어 ZIP으로 묶어줍니다.</p>
+
+  <div id="dropzone">
+    <div class="big">엑셀 파일을 여기로 끌어다 놓거나 클릭해서 선택</div>
+    <div>.xlsx 여러 개 한번에 선택 가능</div>
+  </div>
+  <input type="file" id="fileInput" multiple accept=".xlsx">
+
+  <div id="fileList"></div>
+
+  <div id="actions">
+    <button id="convertBtn" disabled>변환 시작</button>
+    <button id="downloadBtn">ZIP 다운로드</button>
+  </div>
+
+  <div id="progressWrap">
+    <div id="progressBar"><div id="progressFill"></div></div>
+    <div id="progressLabel"></div>
+  </div>
+</div>
+
+<div id="renderHost"></div>
+
+<script>
+/* ========================= XML helpers ========================= */
+function children(el, name) {
+  const out = [];
+  if (!el) return out;
+  for (let i = 0; i < el.childNodes.length; i++) {
+    const n = el.childNodes[i];
+    if (n.nodeType === 1 && n.localName === name) out.push(n);
+  }
+  return out;
+}
+function child1(el, name) { return children(el, name)[0] || null; }
+
+/* ========================= sheet parsing ========================= */
+function colToNum(colLetters) {
+  let n = 0;
+  for (let i = 0; i < colLetters.length; i++) n = n * 26 + (colLetters.charCodeAt(i) - 64);
+  return n;
+}
+function splitAddr(addr) {
+  const m = addr.match(/^([A-Z]+)(\d+)$/);
+  return { col: colToNum(m[1]), row: parseInt(m[2], 10) };
+}
+
+function parseSharedStrings(doc) {
+  if (!doc) return [];
+  const siEls = children(doc.documentElement, 'si');
+  return siEls.map(si => {
+    let text = '';
+    for (let i = 0; i < si.childNodes.length; i++) {
+      const n = si.childNodes[i];
+      if (n.nodeType === 1 && n.localName === 't') text += n.textContent;
+      if (n.nodeType === 1 && n.localName === 'r') {
+        const t = child1(n, 't');
+        if (t) text += t.textContent;
+      }
+    }
+    return text;
+  });
+}
+
+function parseSheet(doc, sharedStrings) {
+  const root = doc.documentElement;
+  const sheetDataEl = child1(root, 'sheetData');
+  const rows = {};
+  children(sheetDataEl, 'row').forEach(rowEl => {
+    const r = parseInt(rowEl.getAttribute('r'), 10);
+    const cells = {};
+    children(rowEl, 'c').forEach(cEl => {
+      const addr = cEl.getAttribute('r');
+      const { col } = splitAddr(addr);
+      const t = cEl.getAttribute('t');
+      let value = '';
+      const vEl = child1(cEl, 'v');
+      const isEl = child1(cEl, 'is');
+      if (t === 's' && vEl) {
+        value = sharedStrings[parseInt(vEl.textContent, 10)] || '';
+      } else if (t === 'inlineStr' && isEl) {
+        const tEl = child1(isEl, 't');
+        value = tEl ? tEl.textContent : '';
+      } else if (vEl) {
+        value = vEl.textContent;
+      }
+      cells[col] = { value, type: t || 'n' };
+    });
+    rows[r] = { cells };
+  });
+  return { rows };
+}
+
+function parseDrawing(doc) {
+  if (!doc) return [];
+  const anchors = children(doc.documentElement, 'twoCellAnchor');
+  return anchors.map(a => {
+    const from = child1(a, 'from');
+    const pic = child1(a, 'pic');
+    let rId = null;
+    if (pic) {
+      const blipFill = child1(pic, 'blipFill');
+      const blip = blipFill && child1(blipFill, 'blip');
+      if (blip) rId = blip.getAttribute('r:embed') || blip.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'embed');
+    }
+    const g = (el, name) => { const c = child1(el, name); return c ? parseInt(c.textContent, 10) : 0; };
+    return { fromCol: g(from, 'col'), rId };
+  });
+}
+
+function parseRels(doc) {
+  if (!doc) return {};
+  const rels = {};
+  children(doc.documentElement, 'Relationship').forEach(r => { rels[r.getAttribute('Id')] = r.getAttribute('Target'); });
+  return rels;
+}
+
+/* ========================= workbook loader ========================= */
+const xmlParser = new DOMParser();
+function xml(text) { return xmlParser.parseFromString(text, 'application/xml'); }
+
+function arrayBufferToBase64(buffer) {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
+}
+
+async function loadWorkbook(arrayBuffer) {
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  const wbDoc = xml(await zip.file('xl/workbook.xml').async('string'));
+  const sheetsEl = child1(wbDoc.documentElement, 'sheets');
+  const sheetDefs = children(sheetsEl, 'sheet').map(s => ({
+    name: s.getAttribute('name'),
+    rId: s.getAttribute('r:id') || s.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id'),
+  }));
+  const wbRels = parseRels(xml(await zip.file('xl/_rels/workbook.xml.rels').async('string')));
+  let sharedStrings = [];
+  if (zip.file('xl/sharedStrings.xml')) {
+    sharedStrings = parseSharedStrings(xml(await zip.file('xl/sharedStrings.xml').async('string')));
+  }
+
+  async function loadSheetByNameOrIndex(name, index) {
+    let def = sheetDefs.find(s => s.name === name);
+    if (!def) def = sheetDefs[index];
+    if (!def) return null;
+    const target = wbRels[def.rId];
+    const doc = xml(await zip.file('xl/' + target).async('string'));
+    const sheet = parseSheet(doc, sharedStrings);
+
+    const sheetFile = target.split('/').pop();
+    const relsPath = `xl/worksheets/_rels/${sheetFile}.rels`;
+    let anchors = [];
+    let images = {};
+    const relsFile = zip.file(relsPath);
+    if (relsFile) {
+      const rels = parseRels(xml(await relsFile.async('string')));
+      const drawingRelId = Object.keys(rels).find(k => rels[k].includes('drawing'));
+      if (drawingRelId) {
+        const drawingTarget = rels[drawingRelId];
+        const drawingPath = 'xl/' + drawingTarget.replace('../', '');
+        const drawingFileObj = zip.file(drawingPath);
+        if (drawingFileObj) {
+          anchors = parseDrawing(xml(await drawingFileObj.async('string')));
+          const drawingFile = drawingTarget.split('/').pop();
+          const drawingRelsPath = `xl/drawings/_rels/${drawingFile}.rels`;
+          const drawingRelsFile = zip.file(drawingRelsPath);
+          if (drawingRelsFile) {
+            const drawingRels = parseRels(xml(await drawingRelsFile.async('string')));
+            for (const rid in drawingRels) {
+              const target2 = drawingRels[rid];
+              const mediaPath = 'xl/' + target2.replace('../', '');
+              const mediaFile = zip.file(mediaPath);
+              if (!mediaFile) continue;
+              const mediaBuf = await mediaFile.async('arraybuffer');
+              const ext = mediaPath.split('.').pop();
+              images[rid] = `data:image/${ext};base64,${arrayBufferToBase64(mediaBuf)}`;
+            }
+          }
+        }
+      }
+    }
+    return { sheet, anchors, images };
+  }
+  return { loadSheetByNameOrIndex };
+}
+
+/* ========================= field extraction ========================= */
+function cellVal(sheet, addr) {
+  const { col, row } = splitAddr(addr);
+  const r = sheet.rows[row];
+  const c = r && r.cells[col];
+  return c ? String(c.value).trim() : '';
+}
+function cellNum(sheet, addr) {
+  const n = parseFloat(cellVal(sheet, addr));
+  return isNaN(n) ? 0 : n;
+}
+
+function extractBL(sheet) {
+  const goods = [];
+  let startRow = null;
+  for (let r = 26; r <= 42; r++) {
+    const desc = cellVal(sheet, `E${r}`);
+    if (desc) {
+      if (startRow === null) startRow = r;
+      goods.push(desc);
+    } else if (startRow !== null) {
+      break;
+    }
+  }
+  startRow = startRow || 26;
+  return {
+    consignorName: cellVal(sheet, 'B2'),
+    blNo: cellVal(sheet, 'I2'),
+    consigneeName: cellVal(sheet, 'B5'),
+    consigneeAddr: [cellVal(sheet, 'B6'), cellVal(sheet, 'B7')].filter(Boolean),
+    consigneeBizNo: cellVal(sheet, 'B8'),
+    notifyParty: cellVal(sheet, 'B10'),
+    deliverToName: cellVal(sheet, 'H11'),
+    deliverToAddr: [cellVal(sheet, 'H12'), cellVal(sheet, 'H13')].filter(Boolean),
+    deliverToTel: cellVal(sheet, 'H14'),
+    placeOfReceipt: cellVal(sheet, 'C14'),
+    vesselVoyage: cellVal(sheet, 'B16'),
+    portOfLoading: cellVal(sheet, 'B18'),
+    portOfDischarge: cellVal(sheet, 'C18'),
+    containerSealNo: cellVal(sheet, 'B21'),
+    ctns: cellVal(sheet, `C${startRow}`),
+    goods,
+    grossWeight: cellVal(sheet, `I${startRow}`),
+    measurement: cellVal(sheet, `L${startRow}`),
+    term: cellVal(sheet, 'D44'),
+    freightPrepaidCollect: cellVal(sheet, 'E46'),
+    shippedOnBoardDate: cellVal(sheet, 'I47'),
+    sayLine: cellVal(sheet, 'C48'),
+    originalsCount: cellVal(sheet, 'C59'),
+  };
+}
+
+function extractHeaderBlock(sheet) {
+  return {
+    shipperName: cellVal(sheet, 'A4'),
+    shipperAddr: [cellVal(sheet, 'A5'), cellVal(sheet, 'A6')].filter(Boolean),
+    invoiceNo: cellVal(sheet, 'C4'),
+    invoiceDate: cellVal(sheet, 'F4'),
+    lcNoDate: cellVal(sheet, 'C6'),
+    consigneeName: cellVal(sheet, 'A8'),
+    consigneeAddr: [cellVal(sheet, 'A9'), cellVal(sheet, 'A10')].filter(Boolean),
+    consigneeBizNo: cellVal(sheet, 'A11'),
+    lcIssuingBank: cellVal(sheet, 'C8'),
+    remark: cellVal(sheet, 'C10'),
+    notifyParty: cellVal(sheet, 'A14'),
+    portOfLoading: cellVal(sheet, 'A17'),
+    finalDestination: cellVal(sheet, 'B17'),
+    carrier: cellVal(sheet, 'A19'),
+    sailingOnAbout: cellVal(sheet, 'B19'),
+  };
+}
+
+function extractPacking(sheet) {
+  const header = extractHeaderBlock(sheet);
+  const items = [];
+  let r = 21;
+  while (cellVal(sheet, `B${r}`)) {
+    items.push({
+      desc: cellVal(sheet, `B${r}`), ctns: cellVal(sheet, `C${r}`), qty: cellVal(sheet, `D${r}`),
+      unit: cellVal(sheet, `E${r}`), nw: cellVal(sheet, `F${r}`), gw: cellVal(sheet, `G${r}`),
+      measurement: cellVal(sheet, `H${r}`),
+    });
+    r++;
+  }
+  const totals = {
+    ctns: cellVal(sheet, `C${r}`), unit: cellVal(sheet, `E${r}`), nw: cellVal(sheet, `F${r}`),
+    gw: cellVal(sheet, `G${r}`), measurement: cellVal(sheet, `H${r}`),
+  };
+  return { header, items, totals };
+}
+
+function extractInvoice(sheet) {
+  const header = extractHeaderBlock(sheet);
+  const items = [];
+  let r = 21;
+  while (cellVal(sheet, `J${r}`)) {
+    items.push({
+      desc: cellVal(sheet, `J${r}`), qty: cellVal(sheet, `K${r}`), unit: cellVal(sheet, `L${r}`),
+      unitPrice: cellVal(sheet, `M${r}`), amount: cellVal(sheet, `N${r}`),
+    });
+    r++;
+  }
+  const totalAmount = cellVal(sheet, `N${r}`);
+  return { header, items, totalAmount };
+}
+
+function extractFreight(sheet) {
+  const charges = [];
+  for (let r = 21; r <= 25; r++) {
+    const name = cellVal(sheet, `C${r}`);
+    if (!name) continue;
+    charges.push({
+      name, curr: cellVal(sheet, `G${r}`), unitPrice: cellNum(sheet, `H${r}`),
+      fxAmount: cellNum(sheet, `I${r}`), fxRate: cellNum(sheet, `J${r}`), krwAmount: cellNum(sheet, `K${r}`),
+    });
+  }
+  const totalFx = charges.reduce((s, c) => s + c.fxAmount, 0);
+  const totalKrw = charges.reduce((s, c) => s + c.krwAmount, 0);
+  return {
+    companyName: cellVal(sheet, 'C2'), companyAddr: cellVal(sheet, 'C3'), companyTel: cellVal(sheet, 'C4'),
+    invoiceNo: cellVal(sheet, 'F8'), blNo: cellVal(sheet, 'F9'), customer: cellVal(sheet, 'F10'),
+    outputDate: cellVal(sheet, 'K11'), vesselVoy: cellVal(sheet, 'F14'), pol: cellVal(sheet, 'F15'),
+    pod: cellVal(sheet, 'F16'), arrival: cellVal(sheet, 'K16'), weight: cellVal(sheet, 'F17'),
+    weightUnit: cellVal(sheet, 'G17'), pkgs: cellVal(sheet, 'K17'), pkgsUnit: cellVal(sheet, 'L17'),
+    measurement: cellVal(sheet, 'F18'), measurementUnit: cellVal(sheet, 'G18'), term: cellVal(sheet, 'K18'),
+    charges, totalFx, totalKrw, bankInfo: cellVal(sheet, 'C36'),
+  };
+}
+
+/* ========================= templates ========================= */
+function esc(s) {
+  return String(s === undefined || s === null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function intFmt(s) {
+  const n = parseFloat(s);
+  if (isNaN(n)) return esc(s);
+  return String(n);
+}
+
+const PAGE_W = 794, PAGE_H = 1123;
+const SHARED_CSS = `
+.doc{font-family:'Segoe UI',Arial,sans-serif;color:#111;width:${PAGE_W}px;min-height:${PAGE_H}px;background:#fff;box-sizing:border-box;overflow:hidden;position:relative;}
+.doc table{border-collapse:collapse;width:100%;}
+.doc td,.doc th{box-sizing:border-box;}
+`;
+
+function renderBL(d, images) {
+  const addrLines = (arr) => arr.map(esc).join('<br>');
+  return `
+<div class="doc bl">
+<style>
+.bl{font-size:10.5px;line-height:1.35;position:relative;padding:26px;}
+.bl table.grid{border:1px solid #000;}
+.bl table.grid td{border:1px solid #000;padding:3px 6px;vertical-align:top;}
+.bl .lbl{color:#1b3f8f;font-weight:700;font-size:9.5px;}
+.bl .val{color:#000;font-weight:700;font-size:10.5px;}
+.bl .title{font-weight:700;color:#1b3f8f;font-size:12px;}
+.bl .blno{font-weight:700;font-size:11px;}
+.bl .goods-hd{color:#1b3f8f;font-weight:700;font-size:9px;background:#fff;border-bottom:1px solid #000;}
+.bl .center{text-align:center;}
+.bl .particulars{text-align:center;font-weight:700;color:#1b3f8f;font-size:9px;background:#eef1f8;}
+</style>
+<table class="grid">
+  <tr>
+    <td style="width:58%">
+      <div class="lbl">Consignor/Shipper</div>
+      <div class="val">${esc(d.consignorName)}</div>
+    </td>
+    <td style="width:42%">
+      <div class="title">MULTIMODAL TRANSPORT BILL OF LADING</div>
+      <div class="lbl" style="margin-top:6px">B/L No. <span class="blno">${esc(d.blNo)}</span></div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div class="lbl">Consignee</div>
+      <div class="val">${esc(d.consigneeName)}<br>${addrLines(d.consigneeAddr)}<br>${esc(d.consigneeBizNo)}</div>
+    </td>
+    <td rowspan="2" style="vertical-align:top"></td>
+  </tr>
+  <tr>
+    <td>
+      <div class="lbl">Notify party</div>
+      <div class="val">${esc(d.notifyParty)}</div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <table style="border:none;width:100%"><tr>
+        <td style="border:none;padding:0;width:50%">
+          <div class="lbl" style="font-size:8.5px">For deliver of goods please apply to:</div>
+          <div class="val" style="font-size:9.5px">${esc(d.deliverToName)}<br>${addrLines(d.deliverToAddr)}<br>${esc(d.deliverToTel)}</div>
+        </td>
+        <td style="border:none;padding:0;width:50%"></td>
+      </tr></table>
+    </td>
+  </tr>
+  <tr>
+    <td style="width:29%"><div class="lbl">Pre-Carriage by</div></td>
+    <td style="width:29%"><div class="lbl">Place of Receipt</div><div class="val">${esc(d.placeOfReceipt)}</div></td>
+  </tr>
+  <tr>
+    <td colspan="2"><div class="lbl">Vessel/Voyage No.</div><div class="val">${esc(d.vesselVoyage)}</div></td>
+  </tr>
+  <tr>
+    <td><div class="lbl">Port of Loading</div><div class="val">${esc(d.portOfLoading)}</div></td>
+    <td><div class="lbl">Port of Discharge</div><div class="val">${esc(d.portOfDischarge)}</div></td>
+  </tr>
+  <tr><td colspan="2" class="particulars">PARTICULARS FURNISHED BY CONSIGNOR/SHIPPER</td></tr>
+  <tr>
+    <td colspan="2" style="padding:0">
+      <table style="width:100%">
+        <tr class="goods-hd">
+          <td style="width:14%;border-bottom:1px solid #000">Marks and No.<br>Container No. &amp; Seal No.</td>
+          <td style="width:12%;border-bottom:1px solid #000">No.&amp; Kinds<br>of Packages</td>
+          <td style="width:38%;border-bottom:1px solid #000">Description of Goods</td>
+          <td style="width:18%;border-bottom:1px solid #000">Gross Weight</td>
+          <td style="width:18%;border-bottom:1px solid #000">Measurement</td>
+        </tr>
+        <tr>
+          <td style="border:none;height:34px"></td>
+          <td rowspan="2" style="border:none;font-weight:700;vertical-align:top;padding-top:4px">${esc(d.ctns)}</td>
+          <td rowspan="2" style="border:none;font-weight:700;vertical-align:top;padding-top:4px">${d.goods.map(esc).join('<br>')}</td>
+          <td rowspan="2" style="border:none;font-weight:700;vertical-align:top;padding-top:4px">${esc(d.grossWeight)}</td>
+          <td rowspan="2" style="border:none;font-weight:700;vertical-align:top;padding-top:4px">${esc(d.measurement)}</td>
+        </tr>
+        <tr><td style="border:none"></td></tr>
+        <tr><td colspan="5" style="border:none;height:70px;position:relative">
+          <div style="position:relative;height:70px">
+          ${images.map(img => `<img src="${img.src}" style="position:absolute;${img.slot === 'center' ? 'left:22%;top:-6px' : 'left:66%;top:14px'};width:${img.slot === 'center' ? '30%' : '17%'};pointer-events:none;">`).join('')}
+          </div>
+        </td></tr>
+        <tr><td colspan="2" style="border:none;font-weight:700">${esc(d.term)}</td><td colspan="3" style="border:none"></td></tr>
+        <tr>
+          <td colspan="2" style="border:none;font-weight:700">${esc(d.freightPrepaidCollect)}</td>
+          <td colspan="3" style="border:none;font-weight:700">SHIPPED ON-BOARD<br>${esc(d.shippedOnBoardDate)}</td>
+        </tr>
+        <tr><td colspan="5" style="border-top:1px solid #000;font-weight:700;padding-top:6px">${esc(d.sayLine)}</td></tr>
+      </table>
+    </td>
+  </tr>
+  <tr><td colspan="2" style="font-size:9px">Excess.Value Declaration: _______________________</td></tr>
+  <tr>
+    <td><div class="lbl">Total Number of Containers of Packages (in words)</div></td>
+    <td><div class="lbl">Freight Payable at</div></td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <table style="width:100%">
+        <tr>
+          <td style="width:20%;font-weight:700">FREIGHT &amp;CHARGES</td>
+          <td style="width:20%" class="lbl">Prepaid</td>
+          <td style="width:20%" class="lbl">Collect</td>
+          <td style="width:40%"></td>
+        </tr>
+        <tr><td class="val" style="height:28px">${esc(d.freightPrepaidCollect)}</td><td></td><td></td><td></td></tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td><div class="lbl">Place and Date of Issue</div></td>
+    <td>
+      <table style="width:100%"><tr>
+        <td style="width:50%" class="lbl">No.of Original B/L<br><span class="val">${esc(d.originalsCount)}</span></td>
+        <td style="width:50%" class="lbl">Signature</td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+</div>`;
+}
+
+function headerRows(h) {
+  return `
+  <tr><td class="hd2" style="width:60%">SHIPPER/EXPORTER</td><td class="hd2" style="width:40%">NO. &amp; DATE OF INVOICE</td></tr>
+  <tr><td class="val" rowspan="3">${esc(h.shipperName)}<br>${h.shipperAddr.map(esc).join('<br>')}</td><td class="val">${esc(h.invoiceNo)} &nbsp; ${esc(h.invoiceDate)}</td></tr>
+  <tr><td class="hd2">NO. &amp; DATE OF L/C</td></tr>
+  <tr><td class="val">${esc(h.lcNoDate)}</td></tr>
+  <tr><td class="hd2">CONSIGNEE / BUYER</td><td class="hd2">L/C ISSUING BANK</td></tr>
+  <tr><td class="val" rowspan="4">${esc(h.consigneeName)}<br>${h.consigneeAddr.map(esc).join('<br>')}<br>${esc(h.consigneeBizNo)}</td><td class="val">${esc(h.lcIssuingBank)}</td></tr>
+  <tr><td class="hd2">REMARK</td></tr>
+  <tr><td class="val">${esc(h.remark)}</td></tr>
+  <tr><td></td></tr>
+  <tr><td class="hd2" colspan="2">NOTIFY PARTY</td></tr>
+  <tr><td class="val" colspan="2" style="height:30px">${esc(h.notifyParty)}</td></tr>
+  <tr><td class="hd2">PORT OF LOADING</td><td class="hd2">FINAL DESTINATION</td></tr>
+  <tr><td class="val center">${esc(h.portOfLoading)}</td><td class="val center">${esc(h.finalDestination)}</td></tr>
+  <tr><td class="hd2">CARRIER</td><td class="hd2">SAILING ON / ABOUT</td></tr>
+  <tr><td class="val">${esc(h.carrier)}</td><td class="val">${esc(h.sailingOnAbout)}</td></tr>
+`;
+}
+
+const BOX_CSS = `
+.box{font-size:10px;line-height:1.3;padding:26px;}
+.box table.grid{border:2px solid #000;}
+.box table.grid td{border:1px solid #999;padding:2px 6px;vertical-align:top;}
+.box .title{text-align:center;font-size:20px;font-weight:700;letter-spacing:1px;padding:8px;border-bottom:2px solid #000 !important;}
+.box .hd2{font-weight:700;background:#fff;font-size:9px;}
+.box .val{font-weight:600;}
+.box .center{text-align:center;}
+.box .right{text-align:right;padding-right:8px;}
+.box table.items{border-top:none;margin-top:-1px;}
+.box table.items td{font-size:9.5px;}
+`;
+
+function renderPacking(pk) {
+  const { header: h, items, totals } = pk;
+  const rows = items.map(it => `
+    <tr>
+      <td></td>
+      <td class="center">${esc(it.desc)}</td>
+      <td class="center">${esc(it.ctns)}</td>
+      <td class="center">${intFmt(it.qty)}</td>
+      <td class="center">${esc(it.unit)}</td>
+      <td class="center">${esc(it.nw)}</td>
+      <td class="center">${esc(it.gw)}</td>
+      <td class="center">${esc(it.measurement)}</td>
+    </tr>`).join('');
+  return `
+<div class="doc box">
+<style>${BOX_CSS}</style>
+<table class="grid">
+  <tr><td colspan="2" class="title">PACKING LIST</td></tr>
+  ${headerRows(h)}
+</table>
+<table class="grid items">
+  <tr class="hd2">
+    <td style="width:12%">SHIPPING MARK</td>
+    <td style="width:26%">DESCRIPTION OF GOODS</td>
+    <td style="width:9%">CTNS</td>
+    <td style="width:9%">QUANTITY</td>
+    <td style="width:9%">수량단위</td>
+    <td style="width:12%">N.W</td>
+    <td style="width:12%">G.W</td>
+    <td style="width:11%">MEASUREMENT</td>
+  </tr>
+  ${rows}
+  <tr class="val">
+    <td></td><td></td>
+    <td class="center">${intFmt(totals.ctns)}</td>
+    <td></td>
+    <td class="center">${esc(totals.unit)}</td>
+    <td class="center">${esc(totals.nw)}</td>
+    <td class="center">${esc(totals.gw)}</td>
+    <td class="center">${esc(totals.measurement)}</td>
+  </tr>
+</table>
+</div>`;
+}
+
+function renderInvoice(iv) {
+  const { header: h, items, totalAmount } = iv;
+  const rows = items.map(it => `
+    <tr>
+      <td></td>
+      <td class="center">${esc(it.desc)}</td>
+      <td class="center">${intFmt(it.qty)}</td>
+      <td class="center">${esc(it.unit)}</td>
+      <td class="right">${esc(it.unitPrice)}</td>
+      <td class="right">${esc(it.amount)}</td>
+    </tr>`).join('');
+  return `
+<div class="doc box">
+<style>${BOX_CSS}</style>
+<table class="grid">
+  <tr><td colspan="2" class="title">COMMERCIAL INVOICE</td></tr>
+  ${headerRows(h)}
+</table>
+<table class="grid items">
+  <tr class="hd2">
+    <td style="width:14%">SHIPPING MARK</td>
+    <td style="width:30%">DESCRIPTION OF GOODS</td>
+    <td style="width:12%">QUANTITY</td>
+    <td style="width:12%">수량단위</td>
+    <td style="width:16%">UNIT PRICE</td>
+    <td style="width:16%">AMOUNT (USD)</td>
+  </tr>
+  ${rows}
+  <tr class="val"><td colspan="5" class="right" style="border:none">TOTAL</td><td class="right">${esc(totalAmount)}</td></tr>
+</table>
+</div>`;
+}
+
+function renderFreight(fr) {
+  const rows = fr.charges.map(c => `
+    <tr>
+      <td>${esc(c.name)}</td>
+      <td class="center">${esc(c.curr)}</td>
+      <td class="right">${c.unitPrice ? c.unitPrice.toFixed(2) : ''}</td>
+      <td class="right">${c.fxAmount ? c.fxAmount.toFixed(2) : ''}</td>
+      <td class="right">${c.fxRate || ''}</td>
+      <td class="right">${c.krwAmount.toLocaleString()}</td>
+      <td></td>
+    </tr>`).join('');
+  return `
+<div class="doc freight">
+<style>
+.freight{font-size:11px;padding:36px 40px;}
+.freight .head{text-align:center;margin-bottom:14px;}
+.freight .company{font-size:22px;font-weight:700;letter-spacing:.5px;}
+.freight .addr{font-size:10px;margin-top:4px;}
+.freight .invoice-title{text-align:center;font-size:20px;font-weight:700;margin:16px 0;}
+.freight table.info{width:100%;border-collapse:collapse;font-size:10.5px;}
+.freight table.info td{padding:3px 4px;vertical-align:top;}
+.freight .flabel{font-weight:700;width:90px;}
+.freight .fval{font-weight:400;}
+.freight table.fee{width:100%;border-collapse:collapse;margin-top:10px;border:1.5px solid #000;}
+.freight table.fee th{border:1px solid #000;background:#f2f2f2;font-size:10px;padding:4px;}
+.freight table.fee td{border:1px solid #000;font-size:10px;padding:4px;}
+.freight .center{text-align:center;}
+.freight .right{text-align:right;padding-right:8px;}
+.freight .total-row td{font-weight:700;}
+.freight .claim{margin-top:8px;text-align:right;font-size:11px;font-weight:700;}
+.freight .bank{margin-top:60px;font-size:9px;color:#333;white-space:pre-line;}
+</style>
+<div class="head">
+  <div class="company">${esc(fr.companyName)}</div>
+  <div class="addr">${esc(fr.companyAddr)}</div>
+  <div class="addr">${esc(fr.companyTel)}</div>
+</div>
+<div class="invoice-title">INVOICE</div>
+<table class="info" style="border-bottom:1px solid #000;padding-bottom:4px;">
+  <tr><td class="flabel">INVOICE NO</td><td class="fval">${esc(fr.invoiceNo)}</td><td></td><td></td></tr>
+</table>
+<table class="info" style="border-bottom:1.5px solid #000;">
+  <tr><td class="flabel">B/L NO</td><td class="fval">: ${esc(fr.blNo)}</td><td class="flabel" style="width:80px">&nbsp;</td><td class="fval"></td></tr>
+  <tr><td class="flabel">거래처</td><td class="fval">: ${esc(fr.customer)}</td><td class="flabel">출력일자</td><td class="fval">: ${esc(fr.outputDate)}</td></tr>
+  <tr><td></td><td></td><td class="flabel">MRN</td><td class="fval">:</td></tr>
+  <tr><td></td><td></td><td class="flabel">MSN/HSN</td><td class="fval">:</td></tr>
+</table>
+<table class="info">
+  <tr><td class="flabel">VESSEL/VOY</td><td class="fval">: ${esc(fr.vesselVoy)}</td><td></td><td></td></tr>
+  <tr><td class="flabel">P.O.L.</td><td class="fval">: ${esc(fr.pol)}</td><td></td><td></td></tr>
+  <tr><td class="flabel">P.O.D.</td><td class="fval">: ${esc(fr.pod)}</td><td class="flabel">ARRIVAL</td><td class="fval">: ${esc(fr.arrival)}</td></tr>
+  <tr><td class="flabel">WEIGHT</td><td class="fval">: ${esc(fr.weight)} ${esc(fr.weightUnit)}</td><td class="flabel">PKG'S</td><td class="fval">: ${intFmt(fr.pkgs)} ${esc(fr.pkgsUnit)}</td></tr>
+  <tr><td class="flabel">MEASUREMENT</td><td class="fval">: ${esc(fr.measurement)} ${esc(fr.measurementUnit)}</td><td class="flabel">TERM</td><td class="fval">: ${esc(fr.term)}</td></tr>
+</table>
+<table class="fee">
+  <tr><th>운임내역</th><th style="width:9%">CURR</th><th style="width:13%">단가</th><th style="width:13%">외화금액</th><th style="width:9%">환율</th><th style="width:15%">원화금액</th><th style="width:12%">부가세</th></tr>
+  ${rows}
+  <tr class="total-row"><td colspan="3" class="center">TOTAL</td><td class="right">${fr.totalFx.toFixed(2)}</td><td></td><td class="right">${fr.totalKrw.toLocaleString()}</td><td></td></tr>
+</table>
+<div class="claim">청구금액 &nbsp; KRW &nbsp; ${fr.totalKrw.toLocaleString()}</div>
+<div class="bank">${esc(fr.bankInfo)}</div>
+</div>`;
+}
+
+/* ========================= app / UI ========================= */
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const fileListEl = document.getElementById('fileList');
+const convertBtn = document.getElementById('convertBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const progressWrap = document.getElementById('progressWrap');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+const renderHost = document.getElementById('renderHost');
+(function injectSharedDocCss() {
+  const style = document.createElement('style');
+  style.textContent = SHARED_CSS;
+  document.head.appendChild(style);
+})();
+
+let files = []; // {file, id}
+let outputZipBlob = null;
+
+function renderFileList() {
+  fileListEl.innerHTML = '';
+  files.forEach(f => {
+    const row = document.createElement('div');
+    row.className = 'frow';
+    row.innerHTML = `<span class="fname">${esc(f.file.name)}</span><span class="status" id="status-${f.id}"></span><span class="rm" data-id="${f.id}">✕</span>`;
+    fileListEl.appendChild(row);
+  });
+  convertBtn.disabled = files.length === 0;
+  fileListEl.querySelectorAll('.rm').forEach(el => {
+    el.addEventListener('click', () => {
+      files = files.filter(f => String(f.id) !== el.dataset.id);
+      renderFileList();
+    });
+  });
+}
+
+let idCounter = 0;
+function addFiles(fileArray) {
+  for (const file of fileArray) {
+    if (!/\.xlsx$/i.test(file.name)) continue;
+    files.push({ file, id: ++idCounter });
+  }
+  renderFileList();
+  downloadBtn.style.display = 'none';
+  outputZipBlob = null;
+}
+
+dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropzone.classList.remove('drag');
+  addFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', () => { addFiles(fileInput.files); fileInput.value = ''; });
+
+function baseName(filename) {
+  let name = filename.replace(/\.xlsx$/i, '');
+  name = name.replace(/^선적서류_운임인보이스_/, '');
+  return name;
+}
+
+function setStatus(id, text, cls) {
+  const el = document.getElementById(`status-${id}`);
+  if (el) { el.textContent = text; el.className = 'status' + (cls ? ' ' + cls : ''); }
+}
+
+async function renderToPdfBlob(html) {
+  renderHost.innerHTML = html;
+  const el = renderHost.querySelector('.doc');
+  const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+  const imgData = canvas.toDataURL('image/png');
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+  renderHost.innerHTML = '';
+  return pdf.output('blob');
+}
+
+convertBtn.addEventListener('click', async () => {
+  convertBtn.disabled = true;
+  progressWrap.style.display = 'block';
+  downloadBtn.style.display = 'none';
+  const zip = new JSZip();
+  let done = 0;
+  const total = files.length;
+
+  for (const f of files) {
+    setStatus(f.id, '처리중...');
+    try {
+      const buf = await f.file.arrayBuffer();
+      const wb = await loadWorkbook(buf);
+      const blBundle = await wb.loadSheetByNameOrIndex('비엘', 0);
+      const pkBundle = await wb.loadSheetByNameOrIndex('인패킹', 1);
+      const frBundle = await wb.loadSheetByNameOrIndex('운임인보이스', 2);
+      if (!blBundle || !pkBundle || !frBundle) throw new Error('시트를 찾을 수 없습니다');
+
+      const blData = extractBL(blBundle.sheet);
+      const pkData = extractPacking(pkBundle.sheet);
+      const ivData = extractInvoice(pkBundle.sheet);
+      const frData = extractFreight(frBundle.sheet);
+
+      const blImages = blBundle.anchors
+        .slice()
+        .sort((a, b) => a.fromCol - b.fromCol)
+        .map((a, i) => ({ src: blBundle.images[a.rId], slot: i === 0 ? 'center' : 'right' }))
+        .filter(img => img.src);
+
+      const base = baseName(f.file.name);
+      const outputs = [
+        [`${base} 비엘.pdf`, renderBL(blData, blImages)],
+        [`${base} 패킹리스트.pdf`, renderPacking(pkData)],
+        [`${base} 인보이스.pdf`, renderInvoice(ivData)],
+        [`${base} 운임내역서.pdf`, renderFreight(frData)],
+      ];
+
+      for (const [name, html] of outputs) {
+        const blob = await renderToPdfBlob(html);
+        zip.file(name, blob);
+      }
+      setStatus(f.id, '완료', 'ok');
+    } catch (err) {
+      console.error(err);
+      setStatus(f.id, '오류: ' + err.message, 'err');
+    }
+    done++;
+    const pct = Math.round((done / total) * 100);
+    progressFill.style.width = pct + '%';
+    progressLabel.textContent = `${done} / ${total} 완료`;
+  }
+
+  outputZipBlob = await zip.generateAsync({ type: 'blob' });
+  downloadBtn.style.display = 'inline-block';
+  convertBtn.disabled = false;
+});
+
+downloadBtn.addEventListener('click', () => {
+  if (!outputZipBlob) return;
+  const url = URL.createObjectURL(outputZipBlob);
+  const a = document.createElement('a');
+  const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  a.href = url;
+  a.download = `DX_PDF_변환_${today}.zip`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>

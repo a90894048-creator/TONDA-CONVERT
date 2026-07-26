@@ -361,6 +361,8 @@ function extractBL(sheet) {
     portOfLoading: cellVal(sheet, 'B18'),
     portOfDischarge: cellVal(sheet, 'C18'),
     containerSealNo: cellVal(sheet, 'B21'),
+    saidToContain: cellVal(sheet, 'E23'),
+    shipperLoadCountSeal: cellVal(sheet, 'E24'),
     ctns: cellVal(sheet, `C${startRow}`),
     goods,
     grossWeight: cellVal(sheet, `I${startRow}`),
@@ -476,7 +478,7 @@ function renderBL(d, images) {
 .bl table.grid{border:1px solid #000;}
 .bl table.grid td{border:1px solid #000;padding:3px 6px;vertical-align:top;}
 .bl .lbl{color:#1b3f8f;font-weight:700;font-size:9.5px;}
-.bl .val{color:#000;font-weight:700;font-size:10.5px;}
+.bl .val{color:#000;font-weight:700;font-size:10.5px;word-break:break-word;}
 .bl .title{font-weight:700;color:#1b3f8f;font-size:12px;}
 .bl .blno{font-weight:700;font-size:11px;}
 .bl .goods-hd{color:#1b3f8f;font-weight:700;font-size:9px;background:#fff;border-bottom:1px solid #000;}
@@ -485,11 +487,11 @@ function renderBL(d, images) {
 </style>
 <table class="grid">
   <tr>
-    <td style="width:58%">
+    <td style="width:51%">
       <div class="lbl">Consignor/Shipper</div>
       <div class="val">${esc(d.consignorName)}</div>
     </td>
-    <td style="width:42%">
+    <td style="width:49%">
       <div class="title">MULTIMODAL TRANSPORT BILL OF LADING</div>
       <div class="lbl" style="margin-top:6px">B/L No. <span class="blno">${esc(d.blNo)}</span></div>
     </td>
@@ -541,7 +543,14 @@ function renderBL(d, images) {
           <td style="width:18%;border-bottom:1px solid #000">Measurement</td>
         </tr>
         <tr>
-          <td style="border:none;height:34px"></td>
+          <td style="border:none"></td>
+          <td style="border:none"></td>
+          <td style="border:none;font-weight:700;padding-top:4px">${esc(d.saidToContain)}<br>${esc(d.shipperLoadCountSeal)}</td>
+          <td style="border:none"></td>
+          <td style="border:none"></td>
+        </tr>
+        <tr>
+          <td style="border:none;height:16px"></td>
           <td rowspan="2" style="border:none;font-weight:700;vertical-align:top;padding-top:4px">${esc(d.ctns)}</td>
           <td rowspan="2" style="border:none;font-weight:700;vertical-align:top;padding-top:4px">${d.goods.map(esc).join('<br>')}</td>
           <td rowspan="2" style="border:none;font-weight:700;vertical-align:top;padding-top:4px">${esc(d.grossWeight)}</td>

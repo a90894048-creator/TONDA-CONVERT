@@ -121,8 +121,7 @@
   .modal-body img { max-width: 100%; border-radius: 6px; margin-bottom: 10px; }
 </style>
 </head>
-<body>
-<script>
+<body><script>
 /* ── TONDA 접근 잠금 (브라우저 닫으면 재입력) ── */
 (function(){
   if (location.protocol === 'file:') return;
@@ -269,7 +268,7 @@
       <div class="card-title">우편번호 조회 DB (선택)</div>
       <span class="pill pill-blue">주소 매칭</span>
     </div>
-    <div class="card-sub">"우편번호 자동 채우기"를 누르면 필요한 지역 DB를 GitHub에서 자동으로 가져옵니다(인터넷 필요, 최초 1회만 지역당 다운로드하며 이후 브라우저에 저장되어 재사용). 오프라인으로 쓰려면 「지역별_우편번호DB」 폴더 파일을 직접 올려도 됩니다.</div>
+    <div class="card-sub">OCR 인식이 끝나면 주소로 필요한 지역 DB를 GitHub에서 자동으로 가져와 우편번호까지 바로 채웁니다(인터넷 필요, 최초 1회만 지역당 다운로드하며 이후 브라우저에 저장되어 재사용). 나중에 주소를 수정했을 때는 아래 "우편번호 자동 채우기"를 다시 눌러 재매칭하세요. 오프라인으로 쓰려면 「지역별_우편번호DB」 폴더 파일을 직접 올려도 됩니다.</div>
 
     <div class="db-dropzone" id="dbDropzone">
       <input type="file" id="dbFileInput" accept=".xlsx,.xls,.csv" multiple />
@@ -754,6 +753,7 @@ async function runAll() {
           it.rawText = text || '';
           it.fields = parseBizCert(it.rawText);
         }
+        await autoFillZipForItem(it);
         it.status = '완료';
       } catch (err) {
         console.error(err);
@@ -1048,6 +1048,20 @@ async function ensureRegionLoaded(regionName) {
   } catch (err) {
     console.error(`우편번호 DB(${regionName}) 자동 불러오기 실패`, err);
   }
+}
+
+// OCR로 주소가 잡히면 바로 그 자리에서 우편번호까지 채움 (버튼을 따로 안 눌러도 됨)
+async function autoFillZipForItem(it) {
+  const addr = it.fields && it.fields.bizAddr;
+  if (!addr) return;
+  const region = detectRegionFromAddr(addr);
+  if (region && !loadedRegions.has(region)) {
+    progressText.textContent = `"${it.name}" 우편번호 DB 불러오는 중… (${region})`;
+    await ensureRegionLoaded(region);
+  }
+  const key = normAddrKey(addr);
+  const zip = key ? zipIndex.get(key) : null;
+  if (zip) it.fields.zip = zip;
 }
 
 // ---------- 표 렌더링 ----------

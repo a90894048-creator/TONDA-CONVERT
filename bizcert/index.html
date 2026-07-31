@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>사업자등록증 → 엑셀 변환기</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Malgun Gothic', system-ui, sans-serif; background: #f4f5f7; color: #1a1a1a; min-height: 100vh; }
+
+  header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 0 2rem; height: 52px; display: flex; align-items: center; gap: 10px; }
+  .logo { font-size: 16px; font-weight: 600; }
+  .badge { font-size: 11px; background: #e8f0fe; color: #1a6cf5; padding: 2px 8px; border-radius: 20px; }
+  #lib-status { font-size: 11px; padding: 3px 10px; border-radius: 6px; margin-left: auto; }
+  .lib-ok   { background: #e8f5e9; color: #2e7d32; }
+  .lib-fail { background: #fce4ec; color: #c62828; }
+
+  .container { max-width: 1280px; margin: 0 auto; padding: 1.5rem 1.5rem 2rem; display: flex; flex-direction: column; gap: 1rem; }
+
+  .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 1.25rem; }
+  .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .card-icon { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .icon-in  { background: #fff3e0; }
+  .icon-out { background: #e8f5e9; }
+  .card-title { font-size: 15px; font-weight: 600; }
+  .card-sub { font-size: 12px; color: #888; margin-bottom: 1rem; }
+  .pill { margin-left: auto; font-size: 11px; padding: 2px 10px; border-radius: 20px; }
+  .pill-orange { background: #fff3e0; color: #e65100; }
+  .pill-green  { background: #e8f5e9; color: #2e7d32; }
+  .pill-blue   { background: #e8f0fe; color: #1a6cf5; }
+
+  .dropzone { border: 1.5px dashed #ccc; border-radius: 8px; padding: 32px 16px; text-align: center; cursor: pointer; background: #fafafa; position: relative; transition: background 0.15s, border-color 0.15s; }
+  .dropzone:hover, .dropzone.drag-over { background: #f0f4ff; border-color: #1a6cf5; }
+  .dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .dz-icon { font-size: 34px; margin-bottom: 8px; }
+  .dz-text { font-size: 14px; color: #555; }
+  .dz-hint { font-size: 11px; color: #aaa; margin-top: 3px; }
+
+  .file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .file-item { display: flex; align-items: center; gap: 10px; background: #f7f8fa; border: 1px solid #ececec; border-radius: 8px; padding: 8px 12px; font-size: 12px; }
+  .file-item .fname { flex: 1; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fi-badge { font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 600; white-space: nowrap; }
+  .b-ok { background: #e8f5e9; color: #2e7d32; }
+  .b-warn { background: #fff3e0; color: #e65100; }
+  .b-err { background: #fce4ec; color: #c62828; }
+  .b-load { background: #e8f0fe; color: #1a6cf5; }
+  .fi-remove { background: none; border: none; color: #bbb; cursor: pointer; font-size: 14px; padding: 0 2px; }
+  .fi-remove:hover { color: #e53935; }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 7px 14px; border-radius: 8px; border: 1px solid #d0d0d0; background: #fff; cursor: pointer; color: #1a1a1a; transition: background 0.12s; font-family: inherit; }
+  .btn:hover { background: #f4f5f7; }
+  .btn-blue { background: #1a6cf5; color: #fff; border-color: #1a6cf5; }
+  .btn-blue:hover { background: #1558c9; }
+  .btn-blue:disabled { background: #a9c6f7; border-color: #a9c6f7; cursor: not-allowed; }
+  .btn-green { background: #2e7d32; color: #fff; border-color: #2e7d32; }
+  .btn-green:hover { background: #256128; }
+  .btn-green:disabled { background: #a5d6a7; border-color: #a5d6a7; cursor: not-allowed; }
+  .btn-sm { font-size: 12px; padding: 5px 12px; }
+  .btn-danger { color: #e53935; border-color: #f1c4c4; }
+  .btn-danger:hover { background: #fdecec; }
+
+  .output-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; flex-wrap: wrap; }
+  .output-actions { display: flex; gap: 8px; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1rem; }
+  .stat-card { background: #f4f5f7; border-radius: 8px; padding: 10px 14px; text-align: center; }
+  .sv { font-size: 22px; font-weight: 600; }
+  .sl { font-size: 11px; color: #888; margin-top: 2px; }
+  .sv-total { color: #1a6cf5; }
+  .sv-ok    { color: #2e7d32; }
+  .sv-run   { color: #6a1b9a; }
+  .sv-err   { color: #e53935; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid #e0e0e0; border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: #1a1a2e; }
+  th { padding: 9px 10px; text-align: left; font-weight: 500; color: #fff; border-bottom: 1px solid #2a2a40; white-space: nowrap; }
+  td { padding: 6px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+  tbody tr:nth-child(even) { background: #f8f9fa; }
+  tbody tr:hover { background: #eef4ff; }
+  td.editable { min-width: 110px; white-space: nowrap; }
+  td.editable[contenteditable="true"] { cursor: text; outline: none; }
+  td.editable[contenteditable="true"]:focus { background: #fffde7; box-shadow: inset 0 0 0 1.5px #1a6cf5; }
+  td.addr { min-width: 220px; white-space: normal; }
+  .thumb { max-height: 54px; max-width: 70px; border-radius: 4px; display: block; cursor: zoom-in; }
+  .no-img { color: #ccc; font-size: 11px; }
+  .raw-btn { font-size: 11px; padding: 3px 8px; border-radius: 6px; border: 1px solid #d0d0d0; background: #fff; cursor: pointer; color: #666; }
+  .raw-btn:hover { background: #f4f5f7; }
+  .row-del { background: none; border: none; color: #bbb; cursor: pointer; font-size: 15px; }
+  .row-del:hover { color: #e53935; }
+
+  .table-note { font-size: 11px; color: #aaa; margin-top: 6px; }
+  .empty-msg  { text-align: center; padding: 2.5rem; color: #aaa; font-size: 13px; }
+  td.zip-ok   { background: #e8f5e9; }
+  td.zip-miss { background: #fff8e1; }
+
+  .db-dropzone { border: 1.5px dashed #ccc; border-radius: 8px; padding: 18px 16px; text-align: center; cursor: pointer; background: #fafafa; position: relative; transition: background 0.15s, border-color 0.15s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .db-dropzone:hover, .db-dropzone.drag-over { background: #f0f4ff; border-color: #1a6cf5; }
+  .db-dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .db-status-list { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; font-size: 12px; }
+  .db-status-row { display: flex; align-items: center; gap: 8px; background: #f7f8fa; border: 1px solid #ececec; border-radius: 6px; padding: 6px 10px; }
+  .db-status-row .dname { flex: 1; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .db-empty-hint { font-size: 12px; color: #aaa; margin-top: 8px; }
+
+  .progress-bar { display: none; margin-top: 10px; background: #e8f0fe; border-radius: 8px; padding: 9px 12px; font-size: 12px; color: #1a6cf5; align-items: center; gap: 8px; }
+  .progress-bar.show { display: flex; }
+  .spinner { width: 13px; height: 13px; border: 2px solid #c6d9f9; border-top-color: #1a6cf5; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 50; align-items: center; justify-content: center; padding: 30px; }
+  .modal-bg.show { display: flex; }
+  .modal-box { background: #fff; border-radius: 10px; max-width: 720px; max-height: 85vh; width: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .modal-head { padding: 12px 16px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 8px; }
+  .modal-head b { font-size: 13px; flex: 1; }
+  .modal-close { background: none; border: none; font-size: 18px; cursor: pointer; color: #999; }
+  .modal-body { padding: 14px 16px; overflow: auto; }
+  .modal-body pre { white-space: pre-wrap; font-family: 'Consolas', monospace; font-size: 12px; line-height: 1.6; color: #333; }
+  .modal-body img { max-width: 100%; border-radius: 6px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<script>
+/* ── TONDA 접근 잠금 (브라우저 닫으면 재입력) ── */
+(function(){
+  if (location.protocol === 'file:') return;
+  let unlocked = sessionStorage.getItem('tonda_gate_ok') === '1';
+  const GATE_JSON = 'https://raw.githubusercontent.com/a90894048-creator/TONDA-CONVERT/main/gate.json';
+  const GATE_API  = 'https://api.github.com/repos/a90894048-creator/TONDA-CONVERT/contents/gate.json';
+  let activeHash = '388ff3adccc5444ba184b8e4edd589fbfc30dc56cada02ecc83004ead7f24aeb';
+  const sha256 = async s => { const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); };
+
+  let bc = null; try { bc = new BroadcastChannel('tonda_gate'); } catch(_) {}
+  let cover = null;
+  const removeCover = () => { if (cover) { cover.remove(); cover = null; if (document.body) document.body.style.overflow = ''; } };
+  const markUnlocked = broadcast => {
+    unlocked = true;
+    sessionStorage.setItem('tonda_gate_ok','1');
+    removeCover();
+    if (broadcast && bc) bc.postMessage({ type:'grant' });
+  };
+  if (bc) bc.onmessage = e => {
+    const m = e.data || {};
+    if (m.type === 'ask') { if (unlocked && bc) bc.postMessage({ type:'grant' }); }
+    else if (m.type === 'grant') { if (!unlocked) markUnlocked(false); }
+  };
+  if (unlocked) return;
+
+  const buildCover = () => {
+    if (unlocked) return;
+    cover = document.createElement('div');
+    cover.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#f4f5f7;display:flex;align-items:center;justify-content:center;font-family:"Malgun Gothic",Arial,sans-serif;';
+    cover.innerHTML = '<div style="width:320px;background:#fff;border:1px solid #ececec;border-radius:16px;padding:32px 28px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.08);">'
+      + '<div style="width:54px;height:54px;border-radius:14px;background:#e8f0fe;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px;">🔒</div>'
+      + '<div style="font-size:17px;font-weight:700;color:#1a1a2e;margin-bottom:4px;">TONDA 통관 변환기</div>'
+      + '<div style="font-size:13px;color:#888;margin-bottom:20px;">접근하려면 비밀번호를 입력하세요</div>'
+      + '<input id="_gpw" type="password" placeholder="비밀번호" style="width:100%;padding:10px 12px;border:1px solid #d0d7e3;border-radius:8px;text-align:center;font-size:14px;margin-bottom:10px;box-sizing:border-box;">'
+      + '<button id="_gok" style="width:100%;padding:10px;border:none;border-radius:8px;background:#1a1a2e;color:#fff;font-weight:700;font-size:14px;cursor:pointer;">확인</button>'
+      + '<div id="_gerr" style="font-size:12px;color:#e74c3c;margin-top:10px;min-height:15px;"></div>'
+      + '<div style="font-size:11px;color:#aaa;">브라우저를 닫으면 다시 입력해야 합니다</div>'
+      + '<div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f0f0;"><a id="_gchg" href="#" style="font-size:11px;color:#2563eb;text-decoration:none;">🔑 비밀번호 변경</a></div>'
+      + '</div>';
+    document.documentElement.appendChild(cover);
+    if (document.body) document.body.style.overflow = 'hidden';
+    const pw = cover.querySelector('#_gpw'), err = cover.querySelector('#_gerr');
+    const unlock = async () => {
+      if (await sha256(pw.value) === activeHash) { markUnlocked(true); }
+      else { err.textContent = '비밀번호가 올바르지 않습니다'; pw.select(); }
+    };
+    cover.querySelector('#_gok').onclick = unlock;
+    pw.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+    pw.focus();
+    cover.querySelector('#_gchg').onclick = async e => {
+      e.preventDefault();
+      const cur = prompt('현재 비밀번호'); if (cur == null) return;
+      if (await sha256(cur) !== activeHash) { alert('현재 비밀번호가 올바르지 않습니다.'); return; }
+      const n1 = prompt('새 비밀번호'); if (!n1) return;
+      const n2 = prompt('새 비밀번호 확인'); if (n1 !== n2) { alert('새 비밀번호가 일치하지 않습니다.'); return; }
+      let token = localStorage.getItem('tonda_gh_token') || prompt('GitHub 토큰 (변경 권한 필요)');
+      if (!token) return; localStorage.setItem('tonda_gh_token', token);
+      const nh = await sha256(n1);
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify({ hash: nh, updated: new Date().toISOString() }))));
+      let sha = null;
+      try { const g = await fetch(GATE_API, { headers: { Authorization: 'token ' + token } }); if (g.ok) sha = (await g.json()).sha; } catch(_) {}
+      const body = { message: '비밀번호 변경', content }; if (sha) body.sha = sha;
+      const put = await fetch(GATE_API, { method: 'PUT', headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (put.ok) { activeHash = nh; alert('비밀번호가 변경되었습니다. 모든 사용자에게 1~2분 내 적용됩니다.'); }
+      else { alert('변경 실패: ' + ((await put.json().catch(()=>({}))).message || put.status)); }
+    };
+  };
+  const showGate = () => {
+    if (unlocked) return;
+    if (document.body) buildCover();
+    else document.addEventListener('DOMContentLoaded', buildCover);
+  };
+
+  if (bc) bc.postMessage({ type:'ask' });
+  setTimeout(showGate, 250);
+  fetch(GATE_JSON + '?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(j => { if (j && j.hash) activeHash = j.hash; }).catch(()=>{});
+})();
+</script>
+
+
+<header>
+  <span class="logo">📇 사업자등록증 → 엑셀 변환기</span>
+  <span class="badge">OCR 자동 인식</span>
+  <span id="lib-status">라이브러리 확인 중…</span>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-in">🧠</div>
+      <div class="card-title">OCR 엔진</div>
+      <span class="pill pill-blue">정확도 설정</span>
+    </div>
+    <div class="card-sub">Tesseract는 무료·오프라인이지만 인식률이 낮을 수 있습니다. Claude API를 쓰면 이미지를 AI가 직접 읽어 훨씬 정확합니다(이미지 1장당 소액 과금, 인터넷 필요).</div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+        <input type="radio" name="ocrEngine" id="engineTesseract" value="tesseract" />
+        Tesseract (무료, 오프라인, 인식률 낮음)
+      </label>
+      <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+        <input type="radio" name="ocrEngine" id="engineClaude" value="claude" />
+        Claude API (유료, 인식률 높음)
+      </label>
+    </div>
+    <div id="claudeSettings" style="display:none; margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+      <input type="password" id="claudeApiKeyInput" placeholder="Anthropic API 키 (sk-ant-...)" style="font-size:12px; padding:7px 10px; border:1px solid #d0d0d0; border-radius:6px; font-family:monospace;" />
+      <input type="text" id="claudeModelInput" placeholder="모델 ID" style="font-size:12px; padding:7px 10px; border:1px solid #d0d0d0; border-radius:6px; font-family:monospace;" />
+      <div class="db-empty-hint" style="margin-top:0;">API 키는 이 브라우저에만 저장됩니다(외부 전송 없음). <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>에서 발급받으세요.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-in">📥</div>
+      <div class="card-title">사업자등록증 업로드</div>
+      <span class="pill pill-orange">이미지 · PDF</span>
+    </div>
+    <div class="card-sub">여러 장을 한 번에 올리면 각 파일에서 정보를 자동 인식해 표로 모읍니다. 인식 결과는 표에서 바로 수정할 수 있습니다.</div>
+
+    <div class="dropzone" id="dropzone">
+      <input type="file" id="fileInput" accept="image/*,.pdf" multiple />
+      <div class="dz-icon">📎</div>
+      <div class="dz-text">클릭하거나 파일을 끌어다 놓으세요</div>
+      <div class="dz-hint">JPG · PNG · PDF (여러 장 동시 업로드 가능)</div>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <div class="progress-bar" id="progressBar">
+      <div class="spinner"></div>
+      <span id="progressText">처리 중…</span>
+    </div>
+
+    <div style="margin-top:12px; display:flex; gap:8px;">
+      <button class="btn btn-blue" id="startBtn" disabled>🔍 OCR 인식 시작</button>
+      <button class="btn btn-danger" id="clearBtn">전체 지우기</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-in">📮</div>
+      <div class="card-title">우편번호 조회 DB (선택)</div>
+      <span class="pill pill-blue">주소 매칭</span>
+    </div>
+    <div class="card-sub">"우편번호 자동 채우기"를 누르면 필요한 지역 DB를 GitHub에서 자동으로 가져옵니다(인터넷 필요, 최초 1회만 지역당 다운로드하며 이후 브라우저에 저장되어 재사용). 오프라인으로 쓰려면 「지역별_우편번호DB」 폴더 파일을 직접 올려도 됩니다.</div>
+
+    <div class="db-dropzone" id="dbDropzone">
+      <input type="file" id="dbFileInput" accept=".xlsx,.xls,.csv" multiple />
+      <span style="font-size:20px;">📎</span>
+      <span style="font-size:13px;color:#666;">(선택) 우편번호 DB 엑셀 파일을 직접 올리려면 여기에 놓으세요</span>
+    </div>
+
+    <div class="db-status-list" id="dbStatusList"></div>
+    <div class="db-empty-hint" id="dbEmptyHint">아직 불러온 우편번호 DB가 없습니다. "우편번호 자동 채우기"를 누르면 필요한 지역을 GitHub에서 자동으로 가져옵니다.</div>
+
+    <div style="margin-top:12px; display:flex; gap:8px;">
+      <button class="btn btn-blue" id="fillZipBtn">📮 우편번호 자동 채우기</button>
+      <button class="btn btn-danger" id="clearDbBtn">DB 지우기</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="output-header">
+      <div class="card-header" style="margin:0;">
+        <div class="card-icon icon-out">📊</div>
+        <div class="card-title">추출 결과</div>
+        <span class="pill pill-green">엑셀 변환</span>
+      </div>
+      <div class="output-actions">
+        <button class="btn btn-green" id="exportBtn" disabled>⬇ 거래처 엑셀로 저장</button>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="sv sv-total" id="stTotal">0</div><div class="sl">전체 파일</div></div>
+      <div class="stat-card"><div class="sv sv-ok" id="stOk">0</div><div class="sl">인식 완료</div></div>
+      <div class="stat-card"><div class="sv sv-run" id="stRun">0</div><div class="sl">처리 중</div></div>
+      <div class="stat-card"><div class="sv sv-err" id="stErr">0</div><div class="sl">오류</div></div>
+    </div>
+
+    <div id="tableArea">
+      <div class="empty-msg">업로드 후 「OCR 인식 시작」을 누르면 결과가 여기에 표시됩니다.</div>
+    </div>
+    <div class="table-note">표의 각 항목(상호, 사업자등록번호 등)은 클릭해서 직접 수정할 수 있습니다. OCR 인식률은 사진 화질에 따라 달라질 수 있으니 저장 전 확인해 주세요.</div>
+  </div>
+
+</div>
+
+<div class="modal-bg" id="rawModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <b id="rawModalTitle">원문 텍스트</b>
+      <button class="modal-close" id="rawModalClose">✕</button>
+    </div>
+    <div class="modal-body" id="rawModalBody"></div>
+  </div>
+</div>
+
+<script>
+// ---------- 라이브러리 상태 확인 ----------
+(function checkLibs(){
+  const el = document.getElementById('lib-status');
+  const ok = window.XLSX && window.Tesseract && window.pdfjsLib;
+  if (ok) {
+    if (window.pdfjsLib.GlobalWorkerOptions) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+    el.textContent = '✓ 라이브러리 로드 완료';
+    el.className = 'lib-ok';
+  } else {
+    el.textContent = '✗ 라이브러리 로드 실패 (인터넷 연결 확인)';
+    el.className = 'lib-fail';
+  }
+})();
+
+// ---------- 상태 ----------
+let items = []; // { id, file, name, status('대기'|'처리중'|'완료'|'오류'), thumbDataUrl, rawText, fields{} }
+let seq = 0;
+
+// ---------- OCR 엔진 설정 (Tesseract / Claude API) ----------
+let ocrEngine = localStorage.getItem('bizcert_ocr_engine') || 'tesseract';
+let claudeApiKey = localStorage.getItem('bizcert_claude_key') || '';
+let claudeModel = localStorage.getItem('bizcert_claude_model') || 'claude-sonnet-5';
+
+const engineTesseractRadio = document.getElementById('engineTesseract');
+const engineClaudeRadio = document.getElementById('engineClaude');
+const claudeSettings = document.getElementById('claudeSettings');
+const claudeApiKeyInput = document.getElementById('claudeApiKeyInput');
+const claudeModelInput = document.getElementById('claudeModelInput');
+
+engineTesseractRadio.checked = ocrEngine === 'tesseract';
+engineClaudeRadio.checked = ocrEngine === 'claude';
+claudeSettings.style.display = ocrEngine === 'claude' ? 'flex' : 'none';
+claudeApiKeyInput.value = claudeApiKey;
+claudeModelInput.value = claudeModel;
+
+[engineTesseractRadio, engineClaudeRadio].forEach(radio => {
+  radio.addEventListener('change', () => {
+    ocrEngine = document.querySelector('input[name="ocrEngine"]:checked').value;
+    localStorage.setItem('bizcert_ocr_engine', ocrEngine);
+    claudeSettings.style.display = ocrEngine === 'claude' ? 'flex' : 'none';
+  });
+});
+claudeApiKeyInput.addEventListener('input', () => {
+  claudeApiKey = claudeApiKeyInput.value.trim();
+  localStorage.setItem('bizcert_claude_key', claudeApiKey);
+});
+claudeModelInput.addEventListener('input', () => {
+  claudeModel = claudeModelInput.value.trim() || 'claude-sonnet-5';
+  localStorage.setItem('bizcert_claude_model', claudeModel);
+});
+
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const fileList = document.getElementById('fileList');
+const startBtn = document.getElementById('startBtn');
+const clearBtn = document.getElementById('clearBtn');
+const exportBtn = document.getElementById('exportBtn');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+const tableArea = document.getElementById('tableArea');
+
+const FIELD_DEFS = [
+  { key: 'companyName', label: '상호(법인명)' },
+  { key: 'bizNo',       label: '사업자등록번호' },
+  { key: 'zip',         label: '우편번호' },
+  { key: 'corpNo',      label: '법인등록번호' },
+  { key: 'owner',       label: '대표자' },
+  { key: 'openDate',    label: '개업연월일' },
+  { key: 'bizAddr',     label: '사업장소재지' },
+  { key: 'hqAddr',      label: '본점소재지' },
+  { key: 'bizType',     label: '업태' },
+  { key: 'bizItem',     label: '종목' },
+  { key: 'issueDate',   label: '발급(교부)일자' },
+  { key: 'phone',       label: '전화번호' },
+  { key: 'fax',         label: '팩스번호' },
+  { key: 'email',       label: 'email' },
+  { key: 'postSettle',  label: '사후정산대상' },
+  { key: 'preRelease',  label: '신고전반출담보' },
+];
+
+// ---------- 드래그앤드롭 ----------
+['dragenter','dragover'].forEach(ev => dropzone.addEventListener(ev, e => {
+  e.preventDefault(); dropzone.classList.add('drag-over');
+}));
+['dragleave','drop'].forEach(ev => dropzone.addEventListener(ev, e => {
+  e.preventDefault(); dropzone.classList.remove('drag-over');
+}));
+dropzone.addEventListener('drop', e => {
+  addFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', e => {
+  addFiles(e.target.files);
+  fileInput.value = '';
+});
+
+function addFiles(fileArr) {
+  Array.from(fileArr).forEach(file => {
+    const isImg = file.type.startsWith('image/');
+    const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+    if (!isImg && !isPdf) return;
+    items.push({
+      id: ++seq, file, name: file.name, status: '대기',
+      thumbDataUrl: null, rawText: '', fields: {}
+    });
+  });
+  renderFileList();
+  updateButtons();
+}
+
+function renderFileList() {
+  fileList.innerHTML = '';
+  items.forEach(it => {
+    const row = document.createElement('div');
+    row.className = 'file-item';
+    const badgeClass = it.status === '완료' ? 'b-ok' : it.status === '처리중' ? 'b-load' : it.status === '오류' ? 'b-err' : 'b-warn';
+    row.innerHTML = `
+      <span class="fname">${escapeHtml(it.name)}</span>
+      <span class="fi-badge ${badgeClass}">${it.status}</span>
+      <button class="fi-remove" data-id="${it.id}">✕</button>
+    `;
+    row.querySelector('.fi-remove').addEventListener('click', () => {
+      items = items.filter(x => x.id !== it.id);
+      renderFileList(); renderTable(); updateStats(); updateButtons();
+    });
+    fileList.appendChild(row);
+  });
+}
+
+function updateButtons() {
+  startBtn.disabled = items.length === 0;
+  exportBtn.disabled = !items.some(it => it.status === '완료');
+}
+
+clearBtn.addEventListener('click', () => {
+  items = [];
+  renderFileList(); renderTable(); updateStats(); updateButtons();
+  progressBar.classList.remove('show');
+});
+
+// ---------- 우편번호 DB 업로드 ----------
+const dbDropzone = document.getElementById('dbDropzone');
+const dbFileInput = document.getElementById('dbFileInput');
+const dbStatusList = document.getElementById('dbStatusList');
+const dbEmptyHint = document.getElementById('dbEmptyHint');
+const fillZipBtn = document.getElementById('fillZipBtn');
+const clearDbBtn = document.getElementById('clearDbBtn');
+
+['dragenter','dragover'].forEach(ev => dbDropzone.addEventListener(ev, e => {
+  e.preventDefault(); dbDropzone.classList.add('drag-over');
+}));
+['dragleave','drop'].forEach(ev => dbDropzone.addEventListener(ev, e => {
+  e.preventDefault(); dbDropzone.classList.remove('drag-over');
+}));
+dbDropzone.addEventListener('drop', e => handleDbFiles(e.dataTransfer.files));
+dbFileInput.addEventListener('change', e => {
+  handleDbFiles(e.target.files);
+  dbFileInput.value = '';
+});
+
+function handleDbFiles(fileArr) {
+  Array.from(fileArr).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const wb = XLSX.read(reader.result, { type: 'array' });
+        indexZipWorkbook(wb, file.name);
+      } catch (err) {
+        console.error(err);
+        zipDbSheets.push({ name: `${file.name} - 읽기 오류`, count: 0 });
+      }
+      renderDbStatus();
+      saveZipDbToIdb();
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function renderDbStatus() {
+  dbStatusList.innerHTML = '';
+  zipDbSheets.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'db-status-row';
+    row.innerHTML = `<span class="dname">${escapeHtml(s.name)}</span><span class="fi-badge b-ok">${s.count.toLocaleString()}건</span>`;
+    dbStatusList.appendChild(row);
+  });
+  dbEmptyHint.style.display = zipDbSheets.length === 0 ? 'block' : 'none';
+  // 우편번호 DB가 없어도 클릭 시 GitHub에서 자동으로 가져오므로 항상 활성화
+}
+
+clearDbBtn.addEventListener('click', () => {
+  zipIndex = new Map();
+  zipDbSheets = [];
+  loadedRegions = new Set();
+  renderDbStatus();
+  clearZipDbIdb();
+});
+
+fillZipBtn.addEventListener('click', async () => {
+  fillZipBtn.disabled = true;
+  progressBar.classList.add('show');
+  try {
+    const neededRegions = new Set();
+    items.forEach(it => {
+      const addr = it.fields && it.fields.bizAddr;
+      if (!addr) return;
+      const region = detectRegionFromAddr(addr);
+      if (region) neededRegions.add(region);
+    });
+    for (const region of neededRegions) {
+      if (loadedRegions.has(region)) continue;
+      progressText.textContent = `우편번호 DB 불러오는 중… (${region})`;
+      await ensureRegionLoaded(region);
+    }
+    let hit = 0, miss = 0;
+    items.forEach(it => {
+      if (!it.fields || !it.fields.bizAddr) return;
+      const key = normAddrKey(it.fields.bizAddr);
+      const zip = key ? zipIndex.get(key) : null;
+      if (zip) { it.fields.zip = zip; hit++; }
+      else miss++;
+    });
+    renderTable();
+    alert(`우편번호 매칭 완료: ${hit}건 찾음, ${miss}건 실패(직접 입력 필요)`);
+  } finally {
+    progressBar.classList.remove('show');
+    fillZipBtn.disabled = false;
+  }
+});
+
+// ---------- OCR ----------
+let worker = null;
+
+async function ensureWorker() {
+  if (worker) return worker;
+  progressText.textContent = '한국어 인식 모델 준비 중… (최초 1회, 인터넷 필요)';
+  progressBar.classList.add('show');
+  worker = await Tesseract.createWorker('kor+eng', 1, {
+    logger: m => {
+      if (m.status && typeof m.progress === 'number') {
+        progressText.textContent = `${m.status} (${Math.round(m.progress * 100)}%)`;
+      }
+    }
+  });
+  return worker;
+}
+
+async function pdfFirstPageToDataUrl(file) {
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  const page = await pdf.getPage(1);
+  const viewport = page.getViewport({ scale: 2.2 });
+  const canvas = document.createElement('canvas');
+  canvas.width = viewport.width; canvas.height = viewport.height;
+  const ctx = canvas.getContext('2d');
+  await page.render({ canvasContext: ctx, viewport }).promise;
+  return canvas.toDataURL('image/png');
+}
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+// ---------- OCR 전처리 (그레이스케일 + 대비 강화 + 이진화) ----------
+// 사업자등록증 등 관공서 서식은 옅은 배경 무늬/워터마크 때문에 원본 그대로는 OCR 인식률이 떨어짐.
+// Otsu 임계값으로 흑백 이진화하면 배경과 글자의 대비가 극대화되어 Tesseract 인식률이 크게 개선됨.
+function otsuThreshold(hist, total) {
+  let sum = 0;
+  for (let i = 0; i < 256; i++) sum += i * hist[i];
+  let sumB = 0, wB = 0, varMax = 0, threshold = 128;
+  for (let t = 0; t < 256; t++) {
+    wB += hist[t];
+    if (wB === 0) continue;
+    const wF = total - wB;
+    if (wF === 0) break;
+    sumB += t * hist[t];
+    const mB = sumB / wB;
+    const mF = (sum - sumB) / wF;
+    const varBetween = wB * wF * (mB - mF) * (mB - mF);
+    if (varBetween > varMax) { varMax = varBetween; threshold = t; }
+  }
+  return threshold;
+}
+
+function loadImage(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = dataUrl;
+  });
+}
+
+async function preprocessForOcr(dataUrl) {
+  const img = await loadImage(dataUrl);
+  const maxDim = Math.max(img.width, img.height);
+  const scale = maxDim < 1800 ? Math.min(1800 / maxDim, 2.5) : 1;
+  const w = Math.round(img.width * scale);
+  const h = Math.round(img.height * scale);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, w, h);
+
+  const imgData = ctx.getImageData(0, 0, w, h);
+  const data = imgData.data;
+  const gray = new Uint8ClampedArray(w * h);
+  const hist = new Array(256).fill(0);
+  for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+    const g = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
+    gray[p] = g;
+    hist[g]++;
+  }
+  const threshold = otsuThreshold(hist, w * h);
+  for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+    const v = gray[p] >= threshold ? 255 : 0;
+    data[i] = data[i + 1] = data[i + 2] = v;
+  }
+  ctx.putImageData(imgData, 0, 0);
+  return canvas.toDataURL('image/png');
+}
+
+startBtn.addEventListener('click', runAll);
+
+const CLAUDE_EXTRACT_PROMPT = `이 이미지는 한국의 사업자등록증입니다. 다음 항목을 정확히 읽어서 아래 JSON 형식으로만 답하세요. 다른 설명, 코드블록 표시 없이 JSON 객체만 출력하세요.
+{
+  "companyName": "상호(법인명), 괄호 영문표기 포함",
+  "bizNo": "사업자등록번호 10자리 숫자만, 하이픈 없이",
+  "corpNo": "법인등록번호(있으면 하이픈 포함, 없으면 빈 문자열)",
+  "owner": "대표자(성명)",
+  "openDate": "개업연월일, YYYY.MM.DD 형식",
+  "bizAddr": "사업장소재지 전체 주소(괄호 안 참고항목 포함)",
+  "hqAddr": "본점소재지(있으면, 없으면 빈 문자열)",
+  "bizType": "업태(여러 개면 쉼표로 구분)",
+  "bizItem": "종목(여러 개면 쉼표로 구분)",
+  "issueDate": "발급(교부)일자, YYYY.MM.DD 형식"
+}
+값을 찾을 수 없는 항목은 빈 문자열("")로 두세요. 반드시 위 키 이름 그대로, JSON 객체 하나만 출력하세요.`;
+
+async function recognizeWithClaude(dataUrl) {
+  const m = dataUrl.match(/^data:([^;]+);base64,(.*)$/);
+  if (!m) throw new Error('이미지 데이터 형식 오류');
+  const mediaType = m[1], base64 = m[2];
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': claudeApiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: claudeModel,
+      max_tokens: 1024,
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
+          { type: 'text', text: CLAUDE_EXTRACT_PROMPT },
+        ],
+      }],
+    }),
+  });
+  if (!resp.ok) {
+    const errBody = await resp.text();
+    throw new Error(`Claude API 오류 (${resp.status}): ${errBody.slice(0, 300)}`);
+  }
+  const json = await resp.json();
+  const raw = (json.content && json.content[0] && json.content[0].text) || '';
+  const cleaned = raw.replace(/^```(json)?/i, '').replace(/```\s*$/, '').trim();
+  let parsed;
+  try {
+    parsed = JSON.parse(cleaned);
+  } catch (e) {
+    throw new Error('AI 응답을 JSON으로 해석하지 못했습니다: ' + raw.slice(0, 200));
+  }
+  return { rawText: raw, fields: parsed };
+}
+
+function withFieldDefaults(fields) {
+  const f = Object.assign({}, fields);
+  f.bizNo = (f.bizNo || '').replace(/\D/g, '');
+  f.zip = f.zip || '';
+  f.phone = f.phone || '';
+  f.fax = f.fax || '';
+  f.email = f.email || '';
+  f.postSettle = f.postSettle || 'N';
+  f.preRelease = f.preRelease || 'N';
+  return f;
+}
+
+async function runAll() {
+  startBtn.disabled = true;
+  try {
+    if (ocrEngine === 'tesseract') await ensureWorker();
+    for (const it of items) {
+      if (it.status === '완료') continue;
+      it.status = '처리중';
+      renderFileList(); updateStats();
+      progressBar.classList.add('show');
+      progressText.textContent = `"${it.name}" 인식 중…`;
+      try {
+        if (ocrEngine === 'claude' && !claudeApiKey) {
+          throw new Error('Claude API 키를 먼저 입력해주세요.');
+        }
+        const isPdf = it.file.type === 'application/pdf' || /\.pdf$/i.test(it.name);
+        const dataUrl = isPdf ? await pdfFirstPageToDataUrl(it.file) : await fileToDataUrl(it.file);
+        it.thumbDataUrl = dataUrl;
+
+        if (ocrEngine === 'claude') {
+          progressText.textContent = `"${it.name}" Claude로 인식 중…`;
+          const { rawText, fields } = await recognizeWithClaude(dataUrl);
+          it.rawText = rawText;
+          it.fields = withFieldDefaults(fields);
+        } else {
+          progressText.textContent = `"${it.name}" 전처리 중…`;
+          const ocrInput = await preprocessForOcr(dataUrl);
+          it.ocrInputDataUrl = ocrInput;
+          progressText.textContent = `"${it.name}" 인식 중…`;
+          const { data: { text } } = await worker.recognize(ocrInput);
+          it.rawText = text || '';
+          it.fields = parseBizCert(it.rawText);
+        }
+        it.status = '완료';
+      } catch (err) {
+        console.error(err);
+        it.status = '오류';
+        it.rawText = '오류: ' + err.message;
+      }
+      renderFileList(); renderTable(); updateStats(); updateButtons();
+    }
+  } finally {
+    progressBar.classList.remove('show');
+    startBtn.disabled = items.length === 0;
+  }
+}
+
+// ---------- 사업자등록증 텍스트 파싱 ----------
+function parseBizCert(rawText) {
+  const text = rawText.replace(/\r/g, '');
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const joined = lines.join(' ');
+  const f = {};
+
+  const bizNoMatch = joined.match(/(\d{3})\s*[-–]\s*(\d{2})\s*[-–]\s*(\d{5})/);
+  f.bizNo = bizNoMatch ? `${bizNoMatch[1]}${bizNoMatch[2]}${bizNoMatch[3]}` : '';
+
+  const corpNoMatch = joined.match(/(\d{6})\s*[-–]\s*(\d{7})/);
+  f.corpNo = corpNoMatch ? `${corpNoMatch[1]}-${corpNoMatch[2]}` : '';
+
+  // OCR이 표/체크박스 테두리를 문자로 잘못 읽는 경우가 많아(|, [, ], □, • 등) 값 앞뒤의 잡음을 제거
+  // 괄호( )는 "(주)회사명"처럼 값의 일부인 경우가 많아 노이즈 대상에서 제외
+  function cleanValue(s) {
+    if (!s) return '';
+    const noise = /^[\s|｜\[\]【】{}<>□■☐☑▢✓✔·•∙:：\-–—_=,，、~`'"]+|[\s|｜\[\]【】{}<>□■☐☑▢✓✔·•∙:：\-–—_=,，、~`'"]+$/g;
+    let v = String(s).replace(noise, '').replace(/\s{2,}/g, ' ').trim();
+    // 잡음만 남아 실제 글자(한글/영문/숫자)가 없으면 값 없음으로 처리
+    if (!/[가-힣a-zA-Z0-9]/.test(v)) return '';
+    return v;
+  }
+
+  // 사업자등록증에 등장하는 모든 라벨 패턴 - 줄바꿈된 값이 다음 라벨과 섞이지 않도록 구분하는 데 사용
+  const ALL_LABEL_RES = [
+    /상\s*호/, /법\s*인\s*명/, /성\s*명/, /대\s*표\s*자/, /생\s*년\s*월\s*일/,
+    /사\s*업\s*장\s*소\s*재\s*지/, /본\s*점\s*소\s*재\s*지/, /개\s*업\s*연\s*월\s*일/,
+    /업\s*태/, /종\s*목/, /등\s*록\s*번\s*호/, /발\s*급\s*사\s*유/, /공\s*동\s*사\s*업\s*자/,
+  ];
+  function looksLikeNewLabel(line) {
+    return ALL_LABEL_RES.some(re => re.test(line));
+  }
+
+  function labelValue(labelRegexes, opts) {
+    opts = opts || {};
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      let m = null;
+      for (const re of labelRegexes) { m = re.exec(line); if (m) break; }
+      if (!m) continue;
+      let rest = line.slice(m.index + m[0].length);
+      // "법인명(단체명)", "상호(법인명)" 처럼 라벨 뒤에 붙는 보조 라벨만 제거 ("(주)회사명" 같은 실제 값은 보존)
+      rest = rest.replace(/^\s*[\(（](법인명|단체명|상호|대표자|성명)[\)）]\s*/, '');
+      if (opts.stopLabels) {
+        for (const sl of opts.stopLabels) {
+          const idx = rest.search(sl);
+          if (idx !== -1) rest = rest.slice(0, idx);
+        }
+      }
+      let val = cleanValue(rest);
+      let lastIdx = i;
+      if (!val && i + 1 < lines.length && !looksLikeNewLabel(lines[i + 1])) {
+        val = cleanValue(lines[i + 1]);
+        lastIdx = i + 1;
+      }
+      if (!val) continue;
+      // 주소처럼 괄호가 안 닫힌 채 다음 줄로 넘어가는 경우(예: "...문래파" \n "라곤)") 이어붙이기
+      if (opts.mergeWrapped) {
+        let guard = 0;
+        while (
+          (val.match(/\(/g) || []).length > (val.match(/\)/g) || []).length &&
+          lastIdx + 1 < lines.length && !looksLikeNewLabel(lines[lastIdx + 1]) && guard < 3
+        ) {
+          lastIdx++;
+          val += lines[lastIdx].trim();
+          guard++;
+        }
+      }
+      return val;
+    }
+    return '';
+  }
+
+  f.companyName = labelValue([/상\s*호/, /법\s*인\s*명/], { stopLabels: [/생\s*년\s*월\s*일/] });
+  f.owner = labelValue([/성\s*명/, /대\s*표\s*자/], { stopLabels: [/생\s*년\s*월\s*일/] });
+  f.bizAddr = labelValue([/사\s*업\s*장\s*소\s*재\s*지/], { stopLabels: [/\(본점\)/, /본\s*점\s*소\s*재\s*지/], mergeWrapped: true });
+  f.hqAddr = labelValue([/본\s*점\s*소\s*재\s*지/], { mergeWrapped: true });
+
+  const openDateM = joined.match(/개\s*업\s*연?\s*월?\s*일?\s*[:：]?\s*(\d{4})\s*[.년]\s*(\d{1,2})\s*[.월]\s*(\d{1,2})\s*일?/);
+  if (openDateM) f.openDate = `${openDateM[1]}.${openDateM[2].padStart(2,'0')}.${openDateM[3].padStart(2,'0')}`;
+  else f.openDate = '';
+
+  const btRe = /업\s*태/, itRe = /종\s*목/;
+  const btLine = lines.find(l => btRe.test(l));
+  if (btLine) {
+    const btM = btRe.exec(btLine);
+    let seg = btLine.slice(btM.index + btM[0].length);
+    const itM = itRe.exec(seg);
+    if (itM) {
+      f.bizType = cleanValue(seg.slice(0, itM.index));
+      f.bizItem = cleanValue(seg.slice(itM.index + itM[0].length));
+    } else {
+      f.bizType = cleanValue(seg);
+    }
+  }
+  f.bizType = f.bizType || '';
+  if (!f.bizType) {
+    const btIdx = lines.findIndex(l => btRe.test(l));
+    if (btIdx !== -1 && btIdx + 1 < lines.length) f.bizType = cleanValue(lines[btIdx + 1]);
+  }
+  f.bizType = f.bizType || '';
+  if (!f.bizItem) {
+    const itLine = lines.find(l => itRe.test(l) && !btRe.test(l));
+    if (itLine) {
+      const itM = itRe.exec(itLine);
+      f.bizItem = cleanValue(itLine.slice(itM.index + itM[0].length));
+    }
+  }
+  f.bizItem = f.bizItem || '';
+
+  const allDates = [...joined.matchAll(/(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/g)]
+    .map(m => `${m[1]}.${m[2].padStart(2,'0')}.${m[3].padStart(2,'0')}`);
+  f.issueDate = allDates.length ? allDates[allDates.length - 1] : '';
+
+  f.zip = '';
+  f.phone = '';
+  f.fax = '';
+  f.email = '';
+  f.postSettle = 'N';
+  f.preRelease = 'N';
+
+  return f;
+}
+
+// ---------- 우편번호 DB (지역별 주소+우편번호 엑셀 업로드) ----------
+let zipIndex = new Map(); // key -> 우편번호
+let zipDbSheets = []; // {name, count}
+
+// IndexedDB에 저장해두면 새로고침해도 다시 업로드할 필요 없음 (localStorage는 용량이 작아 큰 지역 파일엔 부족)
+const ZIPDB_IDB_NAME = 'bizcert_zipdb';
+const ZIPDB_IDB_STORE = 'kv';
+
+function openZipDbIdb() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(ZIPDB_IDB_NAME, 1);
+    req.onupgradeneeded = () => { req.result.createObjectStore(ZIPDB_IDB_STORE); };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function saveZipDbToIdb() {
+  try {
+    const db = await openZipDbIdb();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(ZIPDB_IDB_STORE, 'readwrite');
+      tx.objectStore(ZIPDB_IDB_STORE).put(Array.from(zipIndex.entries()), 'entries');
+      tx.objectStore(ZIPDB_IDB_STORE).put(zipDbSheets, 'sheets');
+      tx.objectStore(ZIPDB_IDB_STORE).put(Array.from(loadedRegions), 'regions');
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  } catch (err) {
+    console.error('우편번호 DB 저장 실패', err);
+  }
+}
+
+async function loadZipDbFromIdb() {
+  try {
+    const db = await openZipDbIdb();
+    const [entries, sheets, regions] = await new Promise((resolve, reject) => {
+      const tx = db.transaction(ZIPDB_IDB_STORE, 'readonly');
+      const eReq = tx.objectStore(ZIPDB_IDB_STORE).get('entries');
+      const sReq = tx.objectStore(ZIPDB_IDB_STORE).get('sheets');
+      const rReq = tx.objectStore(ZIPDB_IDB_STORE).get('regions');
+      tx.oncomplete = () => resolve([eReq.result, sReq.result, rReq.result]);
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+    if (entries && entries.length) {
+      zipIndex = new Map(entries);
+      zipDbSheets = sheets || [];
+      loadedRegions = new Set(regions || []);
+      renderDbStatus();
+    }
+  } catch (err) {
+    console.error('우편번호 DB 불러오기 실패', err);
+  }
+}
+
+async function clearZipDbIdb() {
+  try {
+    const db = await openZipDbIdb();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(ZIPDB_IDB_STORE, 'readwrite');
+      tx.objectStore(ZIPDB_IDB_STORE).clear();
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  } catch (err) {
+    console.error('우편번호 DB 삭제 실패', err);
+  }
+}
+
+function normAddrKey(addrStr) {
+  if (!addrStr) return null;
+  const s = String(addrStr).trim();
+  const tokens = s.split(/\s+/).filter(Boolean);
+  let sigungu = tokens.find(t => /[가-힣]+(구|군)$/.test(t));
+  if (!sigungu) sigungu = tokens.slice(1).find(t => /[가-힣]+시$/.test(t));
+  // 세종특별자치시처럼 시군구 단위가 따로 없는 경우 시도명 자체를 기준으로 사용
+  if (!sigungu) sigungu = tokens[0];
+  const roadMatch = s.match(/([가-힣0-9]+(?:로|길))\s*(지하)?\s*(\d+)(?:[-.](\d+))?/);
+  if (!sigungu || !roadMatch) return null;
+  const roadNorm = roadMatch[1].replace(/\s+/g, '');
+  const main = roadMatch[3];
+  const sub = roadMatch[4] || '0';
+  return `${sigungu.replace(/\s+/g,'')}|${roadNorm}|${main}-${sub}`;
+}
+
+function indexZipWorkbook(wb, sourceName) {
+  wb.SheetNames.forEach(sheetName => {
+    const ws = wb.Sheets[sheetName];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+    let count = 0;
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row || row.length < 2) continue;
+      const zip = String(row[0] || '').trim();
+      const addr = String(row[1] || '').trim();
+      if (!zip || !addr) continue;
+      const key = normAddrKey(addr);
+      if (!key) continue;
+      if (!zipIndex.has(key)) zipIndex.set(key, zip);
+      count++;
+    }
+    zipDbSheets.push({ name: `${sourceName} - ${sheetName}`, count });
+  });
+}
+
+// ---------- 우편번호 DB GitHub 자동 불러오기 ----------
+const GITHUB_ZIPDB_BASE = 'https://raw.githubusercontent.com/a90894048-creator/KR-ZIPCODE-DB/main/';
+const SIDO_TO_REGION = {
+  '서울': '서울', '서울특별시': '서울', '서울시': '서울',
+  '부산': '부산', '부산광역시': '부산', '부산시': '부산',
+  '대구': '대구', '대구광역시': '대구', '대구시': '대구',
+  '인천': '인천', '인천광역시': '인천', '인천시': '인천',
+  '광주': '광주전남', '광주광역시': '광주전남', '광주시': '광주전남',
+  '전남': '광주전남', '전라남도': '광주전남',
+  '대전': '대전', '대전광역시': '대전', '대전시': '대전',
+  '울산': '울산', '울산광역시': '울산', '울산시': '울산',
+  '세종': '세종', '세종특별자치시': '세종', '세종시': '세종',
+  '경기': '경기', '경기도': '경기',
+  '강원': '강원', '강원도': '강원', '강원특별자치도': '강원',
+  '충북': '충북', '충청북도': '충북',
+  '충남': '충남', '충청남도': '충남',
+  '전북': '전북', '전라북도': '전북', '전북특별자치도': '전북',
+  '경북': '경북', '경상북도': '경북',
+  '경남': '경남', '경상남도': '경남',
+  '제주': '제주', '제주도': '제주', '제주특별자치도': '제주',
+};
+
+function detectRegionFromAddr(addrStr) {
+  const first = String(addrStr || '').trim().split(/\s+/)[0] || '';
+  for (const key of Object.keys(SIDO_TO_REGION)) {
+    if (first.startsWith(key)) return SIDO_TO_REGION[key];
+  }
+  return null;
+}
+
+let loadedRegions = new Set(); // GitHub에서 이미 불러온 지역 이름
+
+async function ensureRegionLoaded(regionName) {
+  if (loadedRegions.has(regionName)) return;
+  try {
+    const url = `${GITHUB_ZIPDB_BASE}${encodeURIComponent('주소_우편번호_' + regionName + '.xlsx')}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const buf = await resp.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    indexZipWorkbook(wb, `GitHub - ${regionName}`);
+    loadedRegions.add(regionName);
+    renderDbStatus();
+    saveZipDbToIdb();
+  } catch (err) {
+    console.error(`우편번호 DB(${regionName}) 자동 불러오기 실패`, err);
+  }
+}
+
+// ---------- 표 렌더링 ----------
+function renderTable() {
+  if (items.length === 0) {
+    tableArea.innerHTML = '<div class="empty-msg">업로드 후 「OCR 인식 시작」을 누르면 결과가 여기에 표시됩니다.</div>';
+    return;
+  }
+  let html = '<div class="table-wrap"><table><thead><tr>';
+  html += '<th>미리보기</th><th>파일명</th>';
+  FIELD_DEFS.forEach(fd => html += `<th>${fd.label}</th>`);
+  html += '<th>원문</th><th></th></tr></thead><tbody>';
+
+  items.forEach(it => {
+    html += '<tr data-id="' + it.id + '">';
+    html += '<td>' + (it.thumbDataUrl ? `<img class="thumb" src="${it.thumbDataUrl}" data-view="${it.id}" />` : '<span class="no-img">-</span>') + '</td>';
+    html += `<td>${escapeHtml(it.name)}</td>`;
+    FIELD_DEFS.forEach(fd => {
+      let cls = fd.key === 'bizAddr' || fd.key === 'hqAddr' ? 'editable addr' : 'editable';
+      const val = it.fields && it.fields[fd.key] ? it.fields[fd.key] : '';
+      if (fd.key === 'zip') cls += val ? ' zip-ok' : ' zip-miss';
+      html += `<td class="${cls}" contenteditable="true" data-field="${fd.key}">${escapeHtml(val)}</td>`;
+    });
+    html += `<td><button class="raw-btn" data-raw="${it.id}">보기</button></td>`;
+    html += `<td><button class="row-del" data-del="${it.id}">✕</button></td>`;
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  tableArea.innerHTML = html;
+
+  tableArea.querySelectorAll('td.editable').forEach(td => {
+    td.addEventListener('input', () => {
+      const tr = td.closest('tr');
+      const id = Number(tr.dataset.id);
+      const it = items.find(x => x.id === id);
+      if (it) it.fields[td.dataset.field] = td.textContent.trim();
+    });
+  });
+  tableArea.querySelectorAll('[data-raw]').forEach(btn => {
+    btn.addEventListener('click', () => openRawModal(Number(btn.dataset.raw)));
+  });
+  tableArea.querySelectorAll('[data-view]').forEach(img => {
+    img.addEventListener('click', () => openRawModal(Number(img.dataset.view), true));
+  });
+  tableArea.querySelectorAll('[data-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.del);
+      items = items.filter(x => x.id !== id);
+      renderFileList(); renderTable(); updateStats(); updateButtons();
+    });
+  });
+}
+
+function openRawModal(id, focusImage) {
+  const it = items.find(x => x.id === id);
+  if (!it) return;
+  document.getElementById('rawModalTitle').textContent = it.name;
+  const body = document.getElementById('rawModalBody');
+  body.innerHTML = '';
+  if (it.thumbDataUrl) {
+    const label = document.createElement('div');
+    label.style.cssText = 'font-size:11px;color:#aaa;margin-bottom:4px;';
+    label.textContent = '원본';
+    body.appendChild(label);
+    const img = document.createElement('img');
+    img.src = it.thumbDataUrl;
+    body.appendChild(img);
+  }
+  if (it.ocrInputDataUrl) {
+    const label2 = document.createElement('div');
+    label2.style.cssText = 'font-size:11px;color:#aaa;margin:8px 0 4px;';
+    label2.textContent = 'OCR 전처리본 (Tesseract가 실제로 읽은 이미지)';
+    body.appendChild(label2);
+    const img2 = document.createElement('img');
+    img2.src = it.ocrInputDataUrl;
+    body.appendChild(img2);
+  }
+  const pre = document.createElement('pre');
+  pre.textContent = it.rawText || '(인식된 텍스트 없음)';
+  body.appendChild(pre);
+  document.getElementById('rawModal').classList.add('show');
+}
+document.getElementById('rawModalClose').addEventListener('click', () => {
+  document.getElementById('rawModal').classList.remove('show');
+});
+document.getElementById('rawModal').addEventListener('click', e => {
+  if (e.target.id === 'rawModal') e.target.classList.remove('show');
+});
+
+function updateStats() {
+  document.getElementById('stTotal').textContent = items.length;
+  document.getElementById('stOk').textContent = items.filter(i => i.status === '완료').length;
+  document.getElementById('stRun').textContent = items.filter(i => i.status === '처리중').length;
+  document.getElementById('stErr').textContent = items.filter(i => i.status === '오류').length;
+}
+
+// ---------- 엑셀 내보내기 (거래처작성 엑셀샘플 서식) ----------
+exportBtn.addEventListener('click', () => {
+  const items2 = items.filter(it => it.status === '완료' || it.status === '오류');
+  if (items2.length === 0) return;
+
+  const header = ['사업자번호','우편번호','주소','전화번호','팩스번호','email','업태','종목','사후정산대상','신고전반출담보','상호(법인명)','대표자','파일명'];
+  const rows = items2.map(it => {
+    const f = it.fields || {};
+    return [
+      (f.bizNo || '').replace(/\D/g, ''),
+      f.zip || '',
+      f.bizAddr || '',
+      f.phone || '',
+      f.fax || '',
+      f.email || '',
+      f.bizType || '',
+      f.bizItem || '',
+      f.postSettle || 'N',
+      f.preRelease || 'N',
+      f.companyName || '',
+      f.owner || '',
+      it.name,
+    ];
+  });
+  const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
+  ws['!cols'] = [{ wch: 14 }, { wch: 8 }, { wch: 32 }, { wch: 14 }, { wch: 14 }, { wch: 22 }, { wch: 14 }, { wch: 16 }, { wch: 12 }, { wch: 14 }, { wch: 20 }, { wch: 12 }, { wch: 20 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const stamp = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
+  XLSX.writeFile(wb, `거래처작성_${stamp}.xlsx`);
+});
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+loadZipDbFromIdb();
+</script>
+</body>
+</html>

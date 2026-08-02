@@ -536,6 +536,7 @@ function renderDbStatus() {
 
 clearDbBtn.addEventListener('click', () => {
   zipIndex = new Map();
+  zipIndexLoose = new Map();
   zipDbSheets = [];
   loadedRegions = new Set();
   renderDbStatus();
@@ -561,8 +562,7 @@ fillZipBtn.addEventListener('click', async () => {
     let hit = 0, miss = 0;
     items.forEach(it => {
       if (!it.fields || !it.fields.bizAddr) return;
-      const key = normAddrKey(it.fields.bizAddr);
-      const zip = key ? zipIndex.get(key) : null;
+      const zip = lookupZip(it.fields.bizAddr);
       if (zip) { it.fields.zip = zip; hit++; }
       else miss++;
     });
@@ -914,7 +914,8 @@ function parseBizCert(rawText) {
 }
 
 // ---------- 우편번호 DB (지역별 주소+우편번호 엑셀 업로드) ----------
-let zipIndex = new Map(); // key -> 우편번호
+let zipIndex = new Map(); // key(시군구|도로명|건물번호) -> 우편번호
+let zipIndexLoose = new Map(); // key(시도|도로명|건물번호) -> 우편번호 (시군구 분구·명칭변경 대비 보조 인덱스)
 let zipDbSheets = []; // {name, count}
 
 // IndexedDB에 저장해두면 새로고침해도 다시 업로드할 필요 없음 (localStorage는 용량이 작아 큰 지역 파일엔 부족)
@@ -936,6 +937,7 @@ async function saveZipDbToIdb() {
     await new Promise((resolve, reject) => {
       const tx = db.transaction(ZIPDB_IDB_STORE, 'readwrite');
       tx.objectStore(ZIPDB_IDB_STORE).put(Array.from(zipIndex.entries()), 'entries');
+      tx.objectStore(ZIPDB_IDB_STORE).put(Array.from(zipIndexLoose.entries()), 'entriesLoose');
       tx.objectStore(ZIPDB_IDB_STORE).put(zipDbSheets, 'sheets');
       tx.objectStore(ZIPDB_IDB_STORE).put(Array.from(loadedRegions), 'regions');
       tx.oncomplete = resolve;
@@ -950,17 +952,19 @@ async function saveZipDbToIdb() {
 async function loadZipDbFromIdb() {
   try {
     const db = await openZipDbIdb();
-    const [entries, sheets, regions] = await new Promise((resolve, reject) => {
+    const [entries, entriesLoose, sheets, regions] = await new Promise((resolve, reject) => {
       const tx = db.transaction(ZIPDB_IDB_STORE, 'readonly');
       const eReq = tx.objectStore(ZIPDB_IDB_STORE).get('entries');
+      const elReq = tx.objectStore(ZIPDB_IDB_STORE).get('entriesLoose');
       const sReq = tx.objectStore(ZIPDB_IDB_STORE).get('sheets');
       const rReq = tx.objectStore(ZIPDB_IDB_STORE).get('regions');
-      tx.oncomplete = () => resolve([eReq.result, sReq.result, rReq.result]);
+      tx.oncomplete = () => resolve([eReq.result, elReq.result, sReq.result, rReq.result]);
       tx.onerror = () => reject(tx.error);
     });
     db.close();
     if (entries && entries.length) {
       zipIndex = new Map(entries);
+      zipIndexLoose = new Map(entriesLoose || []);
       zipDbSheets = sheets || [];
       loadedRegions = new Set(regions || []);
       renderDbStatus();
@@ -1001,6 +1005,29 @@ function normAddrKey(addrStr) {
   return `${sigungu.replace(/\s+/g,'')}|${roadNorm}|${main}-${sub}`;
 }
 
+// 정확 매칭(시군구 일치) 우선, 실패하면 시도+도로명+건물번호만으로 재시도 (구 이름이 옛 표기일 때 대비)
+function lookupZip(addrStr) {
+  const key = normAddrKey(addrStr);
+  if (key && zipIndex.has(key)) return zipIndex.get(key);
+  const looseKey = normAddrKeyLoose(addrStr);
+  if (looseKey && zipIndexLoose.has(looseKey)) return zipIndexLoose.get(looseKey);
+  return null;
+}
+
+// 행정구역 분구/명칭 변경 등으로 시군구명이 옛 이름과 다를 때를 대비한 보조 키 (시도+도로명+건물번호만 사용)
+function normAddrKeyLoose(addrStr) {
+  if (!addrStr) return null;
+  const s = String(addrStr).trim();
+  const tokens = s.split(/\s+/).filter(Boolean);
+  const sido = tokens[0];
+  const roadMatch = s.match(/([가-힣0-9]+(?:로|길))\s*(지하)?\s*(\d+)(?:[-.](\d+))?/);
+  if (!sido || !roadMatch) return null;
+  const roadNorm = roadMatch[1].replace(/\s+/g, '');
+  const main = roadMatch[3];
+  const sub = roadMatch[4] || '0';
+  return `${sido}|${roadNorm}|${main}-${sub}`;
+}
+
 function indexZipWorkbook(wb, sourceName) {
   wb.SheetNames.forEach(sheetName => {
     const ws = wb.Sheets[sheetName];
@@ -1015,6 +1042,8 @@ function indexZipWorkbook(wb, sourceName) {
       const key = normAddrKey(addr);
       if (!key) continue;
       if (!zipIndex.has(key)) zipIndex.set(key, zip);
+      const looseKey = normAddrKeyLoose(addr);
+      if (looseKey && !zipIndexLoose.has(looseKey)) zipIndexLoose.set(looseKey, zip);
       count++;
     }
     zipDbSheets.push({ name: `${sourceName} - ${sheetName}`, count });
@@ -1079,8 +1108,7 @@ async function autoFillZipForItem(it) {
     progressText.textContent = `"${it.name}" 우편번호 DB 불러오는 중… (${region})`;
     await ensureRegionLoaded(region);
   }
-  const key = normAddrKey(addr);
-  const zip = key ? zipIndex.get(key) : null;
+  const zip = lookupZip(addr);
   if (zip) it.fields.zip = zip;
 }
 

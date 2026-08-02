@@ -921,6 +921,8 @@ let zipDbSheets = []; // {name, count}
 // IndexedDB에 저장해두면 새로고침해도 다시 업로드할 필요 없음 (localStorage는 용량이 작아 큰 지역 파일엔 부족)
 const ZIPDB_IDB_NAME = 'bizcert_zipdb';
 const ZIPDB_IDB_STORE = 'kv';
+// 인덱스 구조가 바뀌면(예: 보조 매칭 인덱스 추가) 이 번호를 올려서 옛 캐시를 자동 무효화
+const ZIPDB_SCHEMA_VERSION = 2;
 
 function openZipDbIdb() {
   return new Promise((resolve, reject) => {
@@ -940,6 +942,7 @@ async function saveZipDbToIdb() {
       tx.objectStore(ZIPDB_IDB_STORE).put(Array.from(zipIndexLoose.entries()), 'entriesLoose');
       tx.objectStore(ZIPDB_IDB_STORE).put(zipDbSheets, 'sheets');
       tx.objectStore(ZIPDB_IDB_STORE).put(Array.from(loadedRegions), 'regions');
+      tx.objectStore(ZIPDB_IDB_STORE).put(ZIPDB_SCHEMA_VERSION, 'schemaVersion');
       tx.oncomplete = resolve;
       tx.onerror = () => reject(tx.error);
     });
@@ -952,16 +955,22 @@ async function saveZipDbToIdb() {
 async function loadZipDbFromIdb() {
   try {
     const db = await openZipDbIdb();
-    const [entries, entriesLoose, sheets, regions] = await new Promise((resolve, reject) => {
+    const [entries, entriesLoose, sheets, regions, schemaVersion] = await new Promise((resolve, reject) => {
       const tx = db.transaction(ZIPDB_IDB_STORE, 'readonly');
       const eReq = tx.objectStore(ZIPDB_IDB_STORE).get('entries');
       const elReq = tx.objectStore(ZIPDB_IDB_STORE).get('entriesLoose');
       const sReq = tx.objectStore(ZIPDB_IDB_STORE).get('sheets');
       const rReq = tx.objectStore(ZIPDB_IDB_STORE).get('regions');
-      tx.oncomplete = () => resolve([eReq.result, elReq.result, sReq.result, rReq.result]);
+      const vReq = tx.objectStore(ZIPDB_IDB_STORE).get('schemaVersion');
+      tx.oncomplete = () => resolve([eReq.result, elReq.result, sReq.result, rReq.result, vReq.result]);
       tx.onerror = () => reject(tx.error);
     });
     db.close();
+    if (schemaVersion !== ZIPDB_SCHEMA_VERSION) {
+      // 인덱스 구조가 바뀐 이전 버전 캐시 — 무시하고 새로 받아오게 함 (다음 매칭 시 자동 재다운로드)
+      if (entries && entries.length) clearZipDbIdb();
+      return;
+    }
     if (entries && entries.length) {
       zipIndex = new Map(entries);
       zipIndexLoose = new Map(entriesLoose || []);

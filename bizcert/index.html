@@ -246,7 +246,7 @@
       <input type="file" id="fileInput" accept="image/*,.pdf" multiple />
       <div class="dz-icon">📎</div>
       <div class="dz-text">클릭하거나 파일을 끌어다 놓으세요</div>
-      <div class="dz-hint">JPG · PNG · PDF (여러 장 동시 업로드 가능)</div>
+      <div class="dz-hint">JPG · PNG · PDF (여러 장 동시 업로드 가능) · 엑셀 등에서 이미지 복사 후 Ctrl+V로도 추가 가능</div>
     </div>
 
     <div class="file-list" id="fileList"></div>
@@ -418,6 +418,26 @@ dropzone.addEventListener('drop', e => {
 fileInput.addEventListener('change', e => {
   addFiles(e.target.files);
   fileInput.value = '';
+});
+
+// 엑셀·화면캡처 등에서 이미지를 복사해 Ctrl+V로 바로 붙여넣기 (파일로 저장 안 해도 됨)
+document.addEventListener('paste', e => {
+  const items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  const pastedFiles = [];
+  let n = 1;
+  for (const item of items) {
+    if (item.kind !== 'file' || !item.type.startsWith('image/')) continue;
+    const blob = item.getAsFile();
+    if (!blob) continue;
+    const ext = (item.type.split('/')[1] || 'png').replace('jpeg', 'jpg');
+    const name = `붙여넣기-${new Date().toISOString().replace(/[:.]/g, '-')}-${n++}.${ext}`;
+    pastedFiles.push(new File([blob], name, { type: item.type }));
+  }
+  if (pastedFiles.length) {
+    e.preventDefault();
+    addFiles(pastedFiles);
+  }
 });
 
 function addFiles(fileArr) {

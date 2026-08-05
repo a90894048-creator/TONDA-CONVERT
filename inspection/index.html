@@ -676,6 +676,12 @@
       return mo + '/' + da;
     }
 
+    function isoIssueDate(raw){
+      // '20260804...' → '2026-08-04' (신고일자 조회 필터링에 쓰는 실제 날짜값)
+      if (!/^\d{8,}/.test(raw)) return '';
+      return raw.slice(0, 4) + '-' + raw.slice(4, 6) + '-' + raw.slice(6, 8);
+    }
+
     // TypeCode에 따라 5EM(검사계획통보) 또는 929(수입신고서)로 분기 파싱
     function parseXmlText(xmlText){
       var clean = stripNs(xmlText);
@@ -701,10 +707,12 @@
       }
 
       if (typeCode === 'GOVCBR929'){
+        var issueRaw = txt(root, 'IssueDateTime');
         return {
           type: '929',
           declNo: txt(root, 'ID'),
-          reportDate: fmtIssueDate(txt(root, 'IssueDateTime')),
+          date: isoIssueDate(issueRaw),
+          reportDate: fmtIssueDate(issueRaw),
           plan: txt(root, 'GovernmentProcedure/CurrentCode'),
           agency: txt(root, 'GoodsShipment/Agent/Name'),
           packages: txt(root, 'TotalPackageQuantity'),
@@ -761,7 +769,7 @@
         '<td contenteditable="true" data-field="arrival" data-placeholder="–"></td>' +
         '<td contenteditable="true" data-field="remark">' + escapeHtml(row.remark) + '</td>';
 
-      tr.dataset.date = todayIso;
+      tr.dataset.date = row.date || todayIso;
       tr.querySelector('.row-del').addEventListener('click', function(){
         tr.remove();
         renumberImportRows();
@@ -813,6 +821,7 @@
         if (!extra) return row;
         merged929++;
         return Object.assign({}, row, {
+          date: extra.date || row.date,
           reportDate: extra.reportDate,
           plan: extra.plan,
           agency: extra.agency,

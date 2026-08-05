@@ -198,13 +198,6 @@
   .channel-chip.kyodong{ background:#fff4e0; color:#b06b00; }
   .channel-chip.tonda{ background:var(--manual-soft); color:var(--manual); }
 
-  .plan-wrap{ display:flex; align-items:center; gap:6px; }
-  .plan-code{
-    display:inline-flex; align-items:center; justify-content:center; flex:none;
-    width:20px; height:20px; border-radius:5px; font-size:11px; font-weight:800;
-    background: var(--auto-soft); color: var(--auto);
-  }
-  .plan-label{ font-size:11.5px; color:var(--ink-soft); white-space:nowrap; }
 
   tr.note-row td{ color:var(--ink-soft); padding:14px; font-size:12.5px; }
   tr.note-row{ background: color-mix(in srgb, var(--manual) 4%, transparent); }
@@ -454,9 +447,7 @@
 
     function planCellHtml(plan){
       if (!plan) return '<td class="dash">&ndash;</td>';
-      var label = PLAN_LABELS[plan] || '';
-      return '<td><span class="plan-wrap"><span class="plan-code">' + escapeHtml(plan) + '</span>'
-        + (label ? '<span class="plan-label">' + escapeHtml(label) + '</span>' : '') + '</span></td>';
+      return '<td>' + escapeHtml(PLAN_LABELS[plan] || plan) + '</td>';
     }
 
     var CHANNEL_CLASS = { '쿠팡': 'coupang', '교동': 'kyodong', '통다': 'tonda' };

@@ -191,8 +191,8 @@
   .dash{ color:var(--line-strong); }
 
   .channel-chip{
-    display:inline-flex; align-items:center; font-size:10px; font-weight:700;
-    padding:2px 6px; border-radius:5px; margin-left:6px; white-space:nowrap;
+    display:inline-flex; align-items:center; font-size:11px; font-weight:700;
+    padding:3px 8px; border-radius:5px; white-space:nowrap;
   }
   .channel-chip.coupang{ background:#fdecea; color:#b03524; }
   .channel-chip.kyodong{ background:#fff4e0; color:#b06b00; }
@@ -457,13 +457,15 @@
       var planCell   = planCellHtml(r.plan);
       var arrivalCell= r.arrival ? '<td class="' + (r.arrival === '미정' ? 'dash' : '') + '">' + escapeHtml(r.arrival) + '</td>' : '<td class="dash">&ndash;</td>';
       var warehouseCell = r.warehouse ? '<td class="mono">' + escapeHtml(r.warehouse) + '</td>' : '<td class="dash">&ndash;</td>';
-      var channelChip = r.channel ? '<span class="channel-chip ' + (CHANNEL_CLASS[r.channel] || '') + '">' + escapeHtml(r.channel) + '</span>' : '';
+      var agencyCell = r.channel
+        ? '<td><span class="channel-chip ' + (CHANNEL_CLASS[r.channel] || '') + '">' + escapeHtml(r.channel) + '</span></td>'
+        : '<td>' + escapeHtml(r.agency) + '</td>';
       return '<tr data-date="' + escapeHtml(r.date) + '" class="data-row' + (r.verified ? ' verified' : '') + '">'
         + '<td class="seq">' + r.no + '</td>'
         + '<td class="dash">&ndash;</td>'
         + '<td>' + escapeHtml(r.reportDate) + '</td>'
         + planCell
-        + '<td>' + escapeHtml(r.agency) + channelChip + '</td>'
+        + agencyCell
         + warehouseCell
         + declCell
         + '<td class="mono">' + escapeHtml(r.hbl) + '</td>'

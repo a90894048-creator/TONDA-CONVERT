@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>검사건 리스트 — 통다글로벌</title>
+<style>
+  :root{
+    --ink:#16202e;
+    --ink-soft:#48556a;
+    --paper:#f3f5f8;
+    --surface:#ffffff;
+    --line:#dde2e8;
+    --line-strong:#c7ced8;
+    --accent:#9c7a2e;
+    --accent-ink:#5f4a1c;
+    --accent-soft:#f2e8d2;
+    --auto:#2f6f52;
+    --auto-soft:#e3efe8;
+    --manual:#5b6b82;
+    --manual-soft:#e9edf2;
+    --shadow: 0 1px 2px rgba(22,32,46,0.04), 0 8px 24px -12px rgba(22,32,46,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#e8ebf0; --ink-soft:#a7b1c0; --paper:#10161f; --surface:#171f2a;
+      --line:#2a3342; --line-strong:#39445a; --accent:#d3ac5c; --accent-ink:#f1dfb3; --accent-soft:#3a3120;
+      --auto:#5cb98a; --auto-soft:#1e3329; --manual:#8fa0b8; --manual-soft:#242e3c;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background: var(--paper); }
+
+  .ledger{
+    --font-ui: -apple-system, "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+    --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", Consolas, "Noto Sans Mono", monospace;
+    font-family: var(--font-ui);
+    color: var(--ink);
+    background: var(--paper);
+    padding: 28px clamp(16px, 4vw, 40px) 40px;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    min-height:100vh;
+  }
+
+  a, button{ font-family: inherit; }
+  :focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  .backlink{ font-size:12.5px; color:var(--ink-soft); text-decoration:none; display:inline-flex; align-items:center; gap:5px; }
+  .backlink:hover{ color:var(--ink); }
+  .backlink svg{ width:14px; height:14px; }
+
+  /* ── Demo notice ──────────────────────────────────────── */
+  .demo-banner{
+    display:flex; align-items:flex-start; gap:10px;
+    background: var(--manual-soft); border:1px solid color-mix(in srgb, var(--manual) 30%, transparent);
+    color: var(--ink-soft); border-radius:10px; padding:11px 14px; font-size:12.5px; line-height:1.55;
+  }
+  .demo-banner svg{ width:16px; height:16px; flex:none; margin-top:1px; color:var(--manual); }
+  .demo-banner b{ color:var(--ink); }
+
+  /* ── Top bar ───────────────────────────────────────── */
+  .topbar{
+    display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap;
+    gap:16px 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line);
+  }
+  .topbar .titles{ display:flex; flex-direction:column; gap:6px; }
+  .eyebrow{
+    font-size:11px; font-weight:700; letter-spacing:0.11em; text-transform:uppercase;
+    color: var(--accent-ink); opacity:0.85;
+  }
+  .topbar h1{
+    margin:0; font-size: clamp(20px, 2.6vw, 26px); font-weight:800; letter-spacing:-0.01em;
+    text-wrap: balance; line-height:1.2;
+  }
+  .topbar .meta{ font-size:13px; color:var(--ink-soft); }
+  .topbar .meta b{ color:var(--ink); font-weight:600; }
+  .topbar .actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+  .sample-pill{
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:12.5px; font-weight:600; color:var(--manual);
+    background:var(--manual-soft); border:1px solid color-mix(in srgb, var(--manual) 35%, transparent);
+    padding:6px 12px 6px 10px; border-radius:999px; white-space:nowrap;
+  }
+  .sample-dot{ width:7px; height:7px; border-radius:50%; background:var(--manual); flex:none; }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:13.5px; font-weight:600; line-height:1;
+    padding:10px 16px; border-radius:8px; border:1px solid var(--line-strong);
+    background:var(--surface); color:var(--ink); cursor:pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .btn:hover{ border-color: var(--ink-soft); }
+  .btn:active{ transform: translateY(1px); }
+  .btn-primary{ background: var(--accent); border-color: var(--accent); color:#fff; }
+  .btn-primary:hover{ background: color-mix(in srgb, var(--accent) 88%, black); border-color: color-mix(in srgb, var(--accent) 88%, black); }
+  @media (prefers-color-scheme: dark){ .btn-primary{ color:#1a1405; } }
+  .btn svg{ width:15px; height:15px; flex:none; }
+
+  /* ── Stat strip ───────────────────────────────────────── */
+  .stats{
+    display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:1px;
+    background: var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden;
+  }
+  .stat{ background:var(--surface); padding:14px 18px; display:flex; flex-direction:column; gap:4px; }
+  .stat .label{ font-size:11.5px; color:var(--ink-soft); font-weight:600; letter-spacing:0.02em; }
+  .stat .value{ font-size:22px; font-weight:800; font-variant-numeric: tabular-nums; letter-spacing:-0.01em; }
+  .stat .value small{ font-size:13px; font-weight:600; color:var(--ink-soft); margin-left:2px; }
+  .stat.auto .value{ color: var(--auto); }
+  .stat.manual .value{ color: var(--manual); }
+
+  /* ── Date search bar ───────────────────────────────────── */
+  .datebar{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px 20px;
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:12px 16px; box-shadow: var(--shadow);
+  }
+  .datebar .field{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .datebar label{ font-size:12.5px; font-weight:700; color:var(--ink-soft); white-space:nowrap; }
+  .step-btn{
+    display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px;
+    border-radius:7px; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink);
+    cursor:pointer; transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .step-btn:hover{ border-color:var(--ink-soft); }
+  .step-btn svg{ width:14px; height:14px; }
+  .date-input{
+    font: inherit; font-size:13.5px; font-variant-numeric: tabular-nums; color:var(--ink);
+    background:var(--surface); border:1px solid var(--line-strong); border-radius:7px;
+    padding:7px 10px; min-width:150px;
+  }
+  .today-btn{
+    font-size:12.5px; font-weight:600; color:var(--accent-ink); background:var(--accent-soft);
+    border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    padding:7px 12px; border-radius:7px; cursor:pointer;
+  }
+  .today-btn:hover{ background: color-mix(in srgb, var(--accent-soft) 70%, var(--accent) 30%); }
+  .datebar .result-count{ font-size:12.5px; color:var(--ink-soft); white-space:nowrap; }
+  .datebar .result-count b{ color:var(--ink); font-weight:700; }
+
+  /* ── Table card ───────────────────────────────────────── */
+  .table-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    box-shadow: var(--shadow); overflow:hidden;
+  }
+  .table-toolbar{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px 20px;
+    padding:14px 18px; border-bottom:1px solid var(--line);
+  }
+  .table-toolbar h2{ margin:0; font-size:14.5px; font-weight:700; }
+  .legend{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--ink-soft); }
+  .legend-item{ display:inline-flex; align-items:center; gap:6px; }
+  .legend-tick{ width:14px; height:3px; border-radius:2px; flex:none; }
+  .legend-tick.auto{ background:var(--auto); }
+  .legend-tick.hybrid{ background: repeating-linear-gradient(90deg, var(--accent) 0 3px, transparent 3px 6px); }
+  .legend-tick.manual{ background: repeating-linear-gradient(90deg, var(--manual) 0 3px, transparent 3px 6px); }
+
+  .table-scroll{ overflow-x:auto; }
+  table{ width:100%; border-collapse:collapse; min-width:1180px; }
+
+  thead th{
+    position:sticky; top:0; background:var(--surface); z-index:1;
+    text-align:left; font-size:11.5px; font-weight:700; color:var(--ink-soft);
+    letter-spacing:0.02em; white-space:nowrap; padding:10px 12px 8px; border-bottom:1px solid var(--line);
+  }
+  thead th .tick{ display:block; height:3px; border-radius:2px; margin-top:8px; }
+  thead th .tick.auto{ background:var(--auto); }
+  thead th .tick.hybrid{ background: repeating-linear-gradient(90deg, var(--accent) 0 3px, transparent 3px 6px); }
+  thead th .tick.manual{ background: repeating-linear-gradient(90deg, var(--manual) 0 3px, transparent 3px 6px); }
+  thead th .tick.none{ background:transparent; }
+
+  th.num, td.num{ text-align:right; font-variant-numeric: tabular-nums; }
+  td.mono, th.mono{ font-family: var(--font-mono); font-size:12px; }
+
+  tbody td{ padding:12px; font-size:13px; border-bottom:1px solid var(--line); vertical-align:top; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover td{ background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  tbody tr.verified td{ background: color-mix(in srgb, var(--auto) 6%, transparent); }
+  tbody tr.verified:hover td{ background: color-mix(in srgb, var(--auto) 10%, transparent); }
+
+  td.seq{ color:var(--ink-soft); font-variant-numeric: tabular-nums; }
+  td.remark{ color:var(--ink-soft); line-height:1.45; min-width:220px; }
+  td.remark .src{ color:var(--ink); }
+  .dash{ color:var(--line-strong); }
+
+  .src-badge{
+    display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700;
+    padding:2px 7px; border-radius:5px; letter-spacing:0.01em; margin-bottom:5px; white-space:nowrap;
+  }
+  .src-badge.auto{ color:var(--auto); background:var(--auto-soft); }
+
+  .plan-code{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:20px; height:20px; border-radius:5px; font-size:11px; font-weight:800;
+    background: var(--manual-soft); color: var(--manual);
+  }
+
+  tr.note-row td{ color:var(--ink-soft); padding:14px; font-size:12.5px; }
+  tr.note-row{ background: color-mix(in srgb, var(--manual) 4%, transparent); }
+
+  .table-footnote{ padding:12px 18px 16px; font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line); }
+  .footer-note{ font-size:12.5px; color:var(--ink-soft); line-height:1.6; max-width: 72ch; }
+  .footer-note b{ color:var(--ink); }
+
+  tr.no-match td{ padding:26px 14px; text-align:center; color:var(--ink-soft); font-size:13px; }
+
+  @media (max-width: 680px){ .stats{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+</style>
+</head>
+<body>
+
+<div class="ledger">
+
+  <a class="backlink" href="../">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    TONDA 통관 변환기 런처로
+  </a>
+
+  <div class="demo-banner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+    <span><b>웹 데모입니다.</b> 이 페이지는 사내망(세관 EDI 수신 서버)에 접근할 수 없어 데이터가 자동으로 갱신되지 않습니다. 아래 표는 실제 검사계획통보(5EM) XML로 검증된 값을 담은 고정 샘플입니다 — 매일 갱신되는 실시간 버전은 사내 PC에서 실행되는 세관알리미 연동판에서 지원 예정입니다.</span>
+  </div>
+
+  <div class="topbar">
+    <div class="titles">
+      <span class="eyebrow">통다글로벌 · TONDA GLOBAL</span>
+      <h1>검사건 리스트</h1>
+      <span class="meta">샘플 데이터 기준 <b>2026-08-05 14:35</b> · Sheet1 (2) 양식 컬럼 구조</span>
+    </div>
+    <div class="actions">
+      <span class="sample-pill"><span class="sample-dot"></span>샘플 데이터 · 실시간 미연동</span>
+      <button class="btn btn-primary" id="downloadBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        엑셀 다운로드
+      </button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <span class="label">오늘 검사예정건</span>
+      <span class="value">10<small>건 · 4건 표시</small></span>
+    </div>
+    <div class="stat auto">
+      <span class="label">자동 매핑 가능 컬럼</span>
+      <span class="value">4<small>개 + 보완1</small></span>
+    </div>
+    <div class="stat manual">
+      <span class="label">수동 입력 컬럼</span>
+      <span class="value">6<small>개</small></span>
+    </div>
+    <div class="stat">
+      <span class="label">샘플 검증 사례</span>
+      <span class="value">no.2<small>· 14:35</small></span>
+    </div>
+  </div>
+
+  <div class="datebar">
+    <div class="field">
+      <label for="dateInput">신고일자 조회</label>
+      <button class="step-btn" id="prevDay" type="button" aria-label="전날">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <input class="date-input" id="dateInput" type="date" value="2026-08-05" min="2026-01-01" max="2026-12-31">
+      <button class="step-btn" id="nextDay" type="button" aria-label="다음날">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+      <button class="today-btn" id="todayBtn" type="button">오늘</button>
+    </div>
+    <span class="result-count" id="resultCount"><b>4</b>건 표시 중</span>
+  </div>
+
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h2>검사건 목록 — Sheet1 (2) 양식</h2>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-tick auto"></span>세관알리미 XML로 자동 매핑 가능</span>
+        <span class="legend-item"><span class="legend-tick hybrid"></span>자동 · 보완 가능</span>
+        <span class="legend-item"><span class="legend-tick manual"></span>직접 입력</span>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table id="ledgerTable">
+        <thead>
+          <tr>
+            <th style="width:40px">no.<span class="tick none"></span></th>
+            <th>조회일자<span class="tick manual"></span></th>
+            <th>신고일자<span class="tick manual"></span></th>
+            <th>통관<br>계획<span class="tick manual"></span></th>
+            <th>대행사<span class="tick manual"></span></th>
+            <th class="mono">수입신고번호<span class="tick auto"></span></th>
+            <th class="mono">H B/L<span class="tick auto"></span></th>
+            <th class="num">포장<br>갯수<span class="tick manual"></span></th>
+            <th>수입화주<span class="tick auto"></span></th>
+            <th>세관담당자<span class="tick auto"></span></th>
+            <th>반입일<span class="tick manual"></span></th>
+            <th style="min-width:280px">검사란번호 · 검사항목 · 검사방법 · 미결사유<span class="tick hybrid"></span></th>
+          </tr>
+        </thead>
+        <tbody id="ledgerBody">
+          <tr data-date="2026-08-05" class="data-row">
+            <td class="seq">1</td>
+            <td class="dash">&ndash;</td>
+            <td>8/5</td>
+            <td><span class="plan-code">C</span></td>
+            <td>통다</td>
+            <td class="mono">4363226202412M</td>
+            <td class="mono">519779985546</td>
+            <td class="num">1</td>
+            <td>월간리빙</td>
+            <td>배수빈</td>
+            <td>8월 3일</td>
+            <td class="remark">특송 검사 건 / 목요일 검사 예정</td>
+          </tr>
+          <tr data-date="2026-08-05" class="data-row verified">
+            <td class="seq">2</td>
+            <td class="dash">&ndash;</td>
+            <td>8/5</td>
+            <td><span class="plan-code">C</span></td>
+            <td>통다</td>
+            <td class="mono">4363226011564M</td>
+            <td class="mono">TDCP20260803ZHLC</td>
+            <td class="num">23</td>
+            <td>유한회사 황곤트레이딩</td>
+            <td>박진선</td>
+            <td class="dash">미정</td>
+            <td class="remark"><span class="src-badge auto">5EM 14:35 실제 XML 검증</span><br><span class="src">2란 NON-WOVEN DECORATIVE PAINTING 물품 검사</span></td>
+          </tr>
+          <tr data-date="2026-08-05" class="data-row">
+            <td class="seq">3</td>
+            <td class="dash">&ndash;</td>
+            <td>8/5</td>
+            <td class="dash">&ndash;</td>
+            <td>통다</td>
+            <td class="dash">확인필요</td>
+            <td class="mono">TDCP20260803SUN</td>
+            <td class="num">29</td>
+            <td>루엔코리아</td>
+            <td>김태은</td>
+            <td class="dash">&ndash;</td>
+            <td class="remark">LCL 일반 검사건 / 검사 물품 다량</td>
+          </tr>
+          <tr data-date="2026-08-05" class="data-row">
+            <td class="seq">4</td>
+            <td class="dash">&ndash;</td>
+            <td>8/5</td>
+            <td class="dash">&ndash;</td>
+            <td>통다</td>
+            <td class="dash">확인필요</td>
+            <td class="mono">TDCP20260803JWKJ</td>
+            <td class="num">10</td>
+            <td>클라우드쇼핑이지딜리버리 유한회사</td>
+            <td>김태은</td>
+            <td class="dash">&ndash;</td>
+            <td class="remark">LCL 일반 검사건 / 1란 STEEL WIRE ROPE 물품 검사</td>
+          </tr>
+          <tr class="no-match" hidden>
+            <td colspan="12">선택한 날짜(<span class="nm-date"></span>)에 해당하는 검사건이 없습니다 — 샘플 데이터는 2026-08-05 하루치만 있습니다</td>
+          </tr>
+          <tr class="note-row data-row" data-date="2026-08-05">
+            <td colspan="12">실시간 신규 통보 자동 반영은 사내 PC 전용 세관알리미 연동판에서 지원됩니다 (이 웹 데모에는 미포함)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footnote">
+      no.2 행은 2026-08-05 14:35 실제 수신된 5EM 검사계획통보 XML에서 수입신고번호 · H B/L · 수입화주 · 세관담당자 · 검사내용까지 자동으로 채워진 실제 사례입니다. no.1·3·4의 수입신고번호는 아직 XML 매칭 전이라 "확인필요"로 표시했습니다. 조회일자 · 신고일자 · 통관계획 · 대행사 · 포장갯수 · 반입일은 세관 XML에 없는 부킹/매니페스트 정보라 수동 입력 칸으로 남겼습니다.
+    </div>
+  </div>
+
+  <p class="footer-note">
+    "엑셀 다운로드"는 지금 화면에 보이는(날짜 조회로 필터링된) 표를 그대로 .xls로 내려받는 실제 동작입니다. 실시간 자동 연동판이 준비되면 이 페이지도 함께 갱신할 예정입니다.
+  </p>
+</div>
+
+<script>
+  (function(){
+    var table = document.getElementById('ledgerTable');
+    var btn = document.getElementById('downloadBtn');
+
+    btn.addEventListener('click', function(){
+      var clone = table.cloneNode(true);
+      clone.querySelectorAll('tr.note-row, tr.no-match, tr[hidden]').forEach(function(r){ r.remove(); });
+
+      var html = '﻿<html xmlns:o="urn:schemas-microsoft-com:office:office" '
+        + 'xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
+        + '<head><meta charset="UTF-8"><style>'
+        + 'td,th{font-family:맑은 고딕,sans-serif;font-size:12px;border:1px solid #ccc;padding:4px 8px;} '
+        + 'th{background:#eef1f4;font-weight:bold;}'
+        + '</style></head><body>' + clone.outerHTML + '</body></html>';
+
+      var blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = '검사건리스트_샘플_2026-08-05.xls';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    });
+
+    // ── 날짜 조회 (샘플 데이터는 2026-08-05 하루치뿐) ─────────
+    var dateInput   = document.getElementById('dateInput');
+    var prevDayBtn  = document.getElementById('prevDay');
+    var nextDayBtn  = document.getElementById('nextDay');
+    var todayBtn    = document.getElementById('todayBtn');
+    var resultCount = document.getElementById('resultCount');
+    var noMatchRow  = document.querySelector('#ledgerBody tr.no-match');
+    var TODAY = '2026-08-05';
+
+    function fmtKo(iso){
+      var p = iso.split('-');
+      return p[0] + '년 ' + parseInt(p[1],10) + '월 ' + parseInt(p[2],10) + '일';
+    }
+
+    function applyFilter(){
+      var target = dateInput.value || TODAY;
+      var rows = document.querySelectorAll('#ledgerBody tr.data-row:not(.note-row)');
+      var noteRow = document.querySelector('#ledgerBody tr.note-row');
+      var visible = 0;
+      rows.forEach(function(row){
+        var match = row.getAttribute('data-date') === target;
+        row.hidden = !match;
+        if (match) visible++;
+      });
+      if (noteRow) noteRow.hidden = (target !== TODAY);
+
+      noMatchRow.hidden = visible !== 0;
+      noMatchRow.querySelector('.nm-date').textContent = fmtKo(target);
+
+      resultCount.innerHTML = '<b>' + visible + '</b>건 표시 중';
+    }
+
+    function shiftDay(delta){
+      var d = new Date(dateInput.value + 'T00:00:00');
+      d.setDate(d.getDate() + delta);
+      dateInput.value = d.toISOString().slice(0, 10);
+      applyFilter();
+    }
+
+    dateInput.addEventListener('change', applyFilter);
+    prevDayBtn.addEventListener('click', function(){ shiftDay(-1); });
+    nextDayBtn.addEventListener('click', function(){ shiftDay(1); });
+    todayBtn.addEventListener('click', function(){ dateInput.value = TODAY; applyFilter(); });
+
+    applyFilter();
+  })();
+</script>
+</body>
+</html>

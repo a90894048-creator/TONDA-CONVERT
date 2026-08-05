@@ -187,15 +187,8 @@
   tbody tr.verified:hover td{ background: color-mix(in srgb, var(--auto) 10%, transparent); }
 
   td.seq{ color:var(--ink-soft); font-variant-numeric: tabular-nums; }
-  td.remark{ color:var(--ink-soft); line-height:1.45; min-width:220px; }
-  td.remark .src{ color:var(--ink); }
+  td.remark{ color:var(--ink); line-height:1.45; min-width:220px; }
   .dash{ color:var(--line-strong); }
-
-  .src-badge{
-    display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:700;
-    padding:2px 7px; border-radius:5px; letter-spacing:0.01em; margin-bottom:5px; white-space:nowrap;
-  }
-  .src-badge.auto{ color:var(--auto); background:var(--auto-soft); }
 
   .plan-code{
     display:inline-flex; align-items:center; justify-content:center;
@@ -266,7 +259,7 @@
 
   <div class="demo-banner">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-    <span><b>웹 데모입니다.</b> 이 페이지는 사내망(세관 EDI 수신 서버)에 직접 접근할 수 없어 실시간으로 갱신되지 않습니다. 아래 표의 데이터는 recv_xml의 5EM 파일을 실제로 읽어 만든 것이지만, 자동 스케줄은 붙어있지 않아 <b>사람이 "XML에서 새로 만들기"로 갱신</b>해야 최신 상태가 됩니다 — 페이지 하단에서 recv_xml 파일을 선택하면 브라우저에서 바로 처리·게시할 수 있습니다.</span>
+    <span><b>웹 데모입니다.</b> 이 페이지는 사내망(세관 EDI 수신 서버)에 직접 접근할 수 없어 실시간으로 갱신되지 않습니다. 아래 표의 데이터는 recv_xml의 5EM과 send_xml의 929(수입신고서) 파일을 실제로 읽어 만든 것이지만, 자동 스케줄은 붙어있지 않아 <b>사람이 "XML에서 새로 만들기"로 갱신</b>해야 최신 상태가 됩니다 — 페이지 하단에서 두 폴더의 XML을 함께 선택하면 브라우저에서 바로 처리·게시할 수 있습니다.</span>
   </div>
 
   <div class="topbar">
@@ -295,11 +288,11 @@
     </div>
     <div class="stat auto">
       <span class="label">자동 매핑 가능 컬럼</span>
-      <span class="value">4<small>개 + 보완1</small></span>
+      <span class="value">9<small>개 + 보완1</small></span>
     </div>
     <div class="stat manual">
       <span class="label">수동 입력 컬럼</span>
-      <span class="value">6<small>개</small></span>
+      <span class="value">2<small>개</small></span>
     </div>
     <div class="stat auto">
       <span class="label">5EM XML 자동수집 건수</span>
@@ -326,7 +319,7 @@
     <div class="table-toolbar">
       <h2>검사건 목록 — Sheet1 (2) 양식</h2>
       <div class="legend">
-        <span class="legend-item"><span class="legend-tick auto"></span>세관알리미 XML로 자동 매핑 가능</span>
+        <span class="legend-item"><span class="legend-tick auto"></span>5EM/929 XML로 자동 매핑 가능</span>
         <span class="legend-item"><span class="legend-tick hybrid"></span>자동 · 보완 가능</span>
         <span class="legend-item"><span class="legend-tick manual"></span>직접 입력</span>
       </div>
@@ -338,12 +331,13 @@
           <tr>
             <th style="width:40px">no.<span class="tick none"></span></th>
             <th>조회일자<span class="tick manual"></span></th>
-            <th>신고일자<span class="tick manual"></span></th>
-            <th>통관계획<span class="tick manual"></span></th>
-            <th>대행사<span class="tick manual"></span></th>
+            <th>신고일자<span class="tick auto"></span></th>
+            <th>통관계획<span class="tick auto"></span></th>
+            <th>대행사<span class="tick auto"></span></th>
+            <th>장치장소<span class="tick auto"></span></th>
             <th class="mono">수입신고번호<span class="tick auto"></span></th>
             <th class="mono">H B/L<span class="tick auto"></span></th>
-            <th class="num">포장갯수<span class="tick manual"></span></th>
+            <th class="num">포장갯수<span class="tick auto"></span></th>
             <th>수입화주<span class="tick auto"></span></th>
             <th>세관담당자<span class="tick auto"></span></th>
             <th>반입일<span class="tick manual"></span></th>
@@ -351,12 +345,12 @@
           </tr>
         </thead>
         <tbody id="ledgerBody">
-          <tr class="note-row"><td colspan="12">데이터를 불러오는 중…</td></tr>
+          <tr class="note-row"><td colspan="13">데이터를 불러오는 중…</td></tr>
         </tbody>
       </table>
     </div>
     <div class="table-footnote">
-      모든 행이 오늘 실제 수신된 5EM 검사계획통보 XML에서 수입신고번호 · H B/L · 세관담당자 · 검사내용까지 자동으로 채워졌습니다. 수입화주는 송신폴더에서 신고번호로 역추적해 찾은 경우에만 표시되고, 못 찾으면 "(확인필요)"로 남습니다. 조회일자 · 신고일자 · 통관계획 · 대행사 · 포장갯수 · 반입일은 세관 XML에 없는 부킹/매니페스트 정보라 수동 입력 칸으로 남겼습니다.
+      수입신고번호 · H B/L · 세관담당자 · 장치장소 · 검사내용은 5EM 검사계획통보 XML에서, 신고일자 · 통관계획 · 대행사 · 포장갯수 · 수입화주는 송신폴더의 수입신고서(929) XML에서 자동으로 채워졌습니다(929를 함께 넣지 않으면 이 5개는 빈 칸으로 남습니다). 조회일자 · 반입일은 아직 자동화할 소스를 못 찾아 수동 입력 칸으로 남겼습니다.
     </div>
   </div>
 
@@ -368,7 +362,7 @@
 
     <div id="importPanel" hidden>
       <div class="import-drop" id="importDrop">
-        <b>recv_xml</b>의 오늘자 검사계획통보(5EM) XML 파일들을 여기로 끌어놓거나 클릭해서 선택하세요 (여러 개 한번에 가능)
+        <b>recv_xml</b>의 오늘자 검사계획통보(5EM) XML과 <b>send_xml</b>의 수입신고서(929) XML을 함께 끌어놓거나 클릭해서 선택하세요 (여러 개 한번에 가능 · 929를 같이 넣으면 신고일자·통관계획·대행사·포장갯수·수입화주까지 자동으로 채워집니다)
         <input type="file" id="importFileInput" accept=".xml" multiple hidden>
       </div>
       <div class="import-status" id="importStatus"></div>
@@ -383,6 +377,7 @@
               <th>신고일자</th>
               <th>통관계획</th>
               <th>대행사</th>
+              <th>장치장소</th>
               <th class="mono">수입신고번호</th>
               <th class="mono">H B/L</th>
               <th class="num">포장갯수</th>
@@ -435,9 +430,9 @@
     var TODAY = '2026-08-05';
     var initialized = false;
 
-    var NOTE_ROW = '<tr class="note-row"><td colspan="12">실시간 신규 통보 자동 반영은 사내 PC 전용 세관알리미 연동판에서 지원됩니다 (이 웹 데모에는 미포함)</td></tr>';
+    var NOTE_ROW = '<tr class="note-row"><td colspan="13">실시간 신규 통보 자동 반영은 사내 PC 전용 세관알리미 연동판에서 지원됩니다 (이 웹 데모에는 미포함)</td></tr>';
     var NO_MATCH_ROW =
-      '<tr class="no-match" hidden><td colspan="12">선택한 날짜(<span class="nm-date"></span>)에 해당하는 검사건이 없습니다</td></tr>';
+      '<tr class="no-match" hidden><td colspan="13">선택한 날짜(<span class="nm-date"></span>)에 해당하는 검사건이 없습니다</td></tr>';
 
     function escapeHtml(s){
       return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
@@ -449,21 +444,21 @@
       var declCell   = r.declKnown ? '<td class="mono">' + escapeHtml(r.declNo) + '</td>' : '<td class="dash">확인필요</td>';
       var planCell   = r.plan ? '<td><span class="plan-code">' + escapeHtml(r.plan) + '</span></td>' : '<td class="dash">&ndash;</td>';
       var arrivalCell= r.arrival ? '<td class="' + (r.arrival === '미정' ? 'dash' : '') + '">' + escapeHtml(r.arrival) + '</td>' : '<td class="dash">&ndash;</td>';
-      var remarkInner= (r.badge ? '<span class="src-badge auto">' + escapeHtml(r.badge) + '</span><br>' : '')
-                      + '<span class="src">' + escapeHtml(r.remark) + '</span>';
+      var warehouseCell = r.warehouse ? '<td class="mono">' + escapeHtml(r.warehouse) + '</td>' : '<td class="dash">&ndash;</td>';
       return '<tr data-date="' + escapeHtml(r.date) + '" class="data-row' + (r.verified ? ' verified' : '') + '">'
         + '<td class="seq">' + r.no + '</td>'
         + '<td class="dash">&ndash;</td>'
         + '<td>' + escapeHtml(r.reportDate) + '</td>'
         + planCell
         + '<td>' + escapeHtml(r.agency) + '</td>'
+        + warehouseCell
         + declCell
         + '<td class="mono">' + escapeHtml(r.hbl) + '</td>'
         + '<td class="num">' + r.packages + '</td>'
         + '<td>' + escapeHtml(r.importer) + '</td>'
         + '<td>' + escapeHtml(r.officer) + '</td>'
         + arrivalCell
-        + '<td class="remark">' + remarkInner + '</td>'
+        + '<td class="remark">' + escapeHtml(r.remark) + '</td>'
         + '</tr>';
     }
 
@@ -516,7 +511,7 @@
         })
         .catch(function(err){
           updatedAt.textContent = '불러오기 실패';
-          ledgerBody.innerHTML = '<tr class="note-row"><td colspan="12">데이터를 불러오지 못했습니다 (' + escapeHtml(err.message) + ') — 새로고침을 눌러 다시 시도하세요</td></tr>';
+          ledgerBody.innerHTML = '<tr class="note-row"><td colspan="13">데이터를 불러오지 못했습니다 (' + escapeHtml(err.message) + ') — 새로고침을 눌러 다시 시도하세요</td></tr>';
           console.error('data.json 로드 실패', err);
         });
     }
@@ -639,9 +634,8 @@
       return node && node.textContent ? node.textContent.trim() : '';
     }
 
-    function itemSummary(root){
-      var decl = findChild(root, 'Declaration');
-      var consign = findChild(decl, 'Consignment');
+    function itemSummary(declRoot){
+      var consign = findChild(declRoot, 'Consignment');
       var items = findAllChildren(consign, 'ConsignmentItem');
       var parts = [];
       items.forEach(function(item){
@@ -652,30 +646,52 @@
       return parts.join(', ');
     }
 
-    function parse5emText(xmlText){
+    function fmtIssueDate(raw){
+      // '20260804' 또는 '202608041501' 형태 → '8/4'
+      if (!/^\d{8,}/.test(raw)) return '';
+      var mo = parseInt(raw.slice(4, 6), 10);
+      var da = parseInt(raw.slice(6, 8), 10);
+      return mo + '/' + da;
+    }
+
+    // TypeCode에 따라 5EM(검사계획통보) 또는 929(수입신고서)로 분기 파싱
+    function parseXmlText(xmlText){
       var clean = stripNs(xmlText);
-      if (!/GOVCBR5EM/.test(clean)) return null;
       var doc = new DOMParser().parseFromString(clean, 'application/xml');
       if (doc.querySelector('parsererror')) return null;
       var root = doc.documentElement;
+      var typeCode = txt(root, 'TypeCode');
 
-      var declNo   = findChild(root, 'ID') ? txt(root, 'ID') : txt(root, 'Declaration/ID');
-      var officer  = txt(root, 'Authenticator/Name');
-      var content  = txt(root, 'AdditionalInformation/Content');
-      var hbl      = txt(root, 'Declaration/AdditionalDocument/ID');
-      var summary  = itemSummary(root);
-      var inspRaw  = txt(root, 'Control/InspectionStartDateTime');
-      var badgeTime = inspRaw.length >= 12 ? (inspRaw.slice(8,10) + ':' + inspRaw.slice(10,12)) : '';
+      if (typeCode === 'GOVCBR5EM'){
+        var decl = findChild(root, 'Declaration');
+        var declNo = findChild(root, 'ID') ? txt(root, 'ID') : txt(root, 'Declaration/ID');
+        var content = txt(root, 'AdditionalInformation/Content');
+        var summary = decl ? itemSummary(decl) : '';
+        var remark = summary && content ? (summary + ' — ' + content) : (summary || content || 'LCL 검사건');
+        return {
+          type: '5em',
+          declNo: declNo || '',
+          hbl: txt(root, 'Declaration/AdditionalDocument/ID'),
+          officer: txt(root, 'Authenticator/Name') || '미상',
+          warehouse: txt(root, 'Declaration/Consignment/Warehouse/ID'),
+          remark: remark,
+        };
+      }
 
-      var remark = summary && content ? (summary + ' — ' + content) : (summary || content || 'LCL 검사건');
+      if (typeCode === 'GOVCBR929'){
+        return {
+          type: '929',
+          declNo: txt(root, 'ID'),
+          reportDate: fmtIssueDate(txt(root, 'IssueDateTime')),
+          plan: txt(root, 'GovernmentProcedure/CurrentCode'),
+          agency: txt(root, 'GoodsShipment/Agent/Name'),
+          packages: txt(root, 'TotalPackageQuantity'),
+          importer: txt(root, 'Importer/Name'),
+          warehouse: txt(root, 'GoodsShipment/Warehouse/ID'),
+        };
+      }
 
-      return {
-        declNo: declNo || '',
-        hbl: hbl || '',
-        officer: officer || '미상',
-        remark: remark,
-        badge: badgeTime ? ('5EM ' + badgeTime + ' 자동수집') : '5EM 자동수집',
-      };
+      return null;
     }
 
     function escapeHtml(s){
@@ -711,18 +727,18 @@
         '<td><button type="button" class="row-del" title="삭제">✕</button></td>' +
         '<td class="seq">' + (index + 1) + '</td>' +
         '<td contenteditable="true" data-field="inquiryDate" data-placeholder="–"></td>' +
-        '<td contenteditable="true" data-field="reportDate">' + escapeHtml(todayShort) + '</td>' +
-        '<td contenteditable="true" data-field="plan" data-placeholder="–"></td>' +
-        '<td contenteditable="true" data-field="agency" data-placeholder="–"></td>' +
+        '<td contenteditable="true" data-field="reportDate">' + escapeHtml(row.reportDate || todayShort) + '</td>' +
+        '<td contenteditable="true" data-field="plan"' + (row.plan ? '' : ' data-placeholder="–"') + '>' + escapeHtml(row.plan || '') + '</td>' +
+        '<td contenteditable="true" data-field="agency"' + (row.agency ? '' : ' data-placeholder="–"') + '>' + escapeHtml(row.agency || '') + '</td>' +
+        '<td class="mono" contenteditable="true" data-field="warehouse"' + (row.warehouse ? '' : ' data-placeholder="–"') + '>' + escapeHtml(row.warehouse || '') + '</td>' +
         '<td class="mono" contenteditable="true" data-field="declNo">' + escapeHtml(row.declNo) + '</td>' +
         '<td class="mono" contenteditable="true" data-field="hbl">' + escapeHtml(row.hbl) + '</td>' +
-        '<td class="num" contenteditable="true" data-field="packages" data-placeholder="–"></td>' +
-        '<td contenteditable="true" data-field="importer" data-placeholder="(확인필요)"></td>' +
+        '<td class="num" contenteditable="true" data-field="packages"' + (row.packages ? '' : ' data-placeholder="–"') + '>' + escapeHtml(row.packages || '') + '</td>' +
+        '<td contenteditable="true" data-field="importer" data-placeholder="(확인필요)">' + escapeHtml(row.importer || '') + '</td>' +
         '<td contenteditable="true" data-field="officer">' + escapeHtml(row.officer) + '</td>' +
         '<td contenteditable="true" data-field="arrival" data-placeholder="–"></td>' +
         '<td contenteditable="true" data-field="remark">' + escapeHtml(row.remark) + '</td>';
 
-      tr.dataset.badge = row.badge;
       tr.dataset.date = todayIso;
       tr.querySelector('.row-del').addEventListener('click', function(){
         tr.remove();
@@ -748,27 +764,48 @@
       statusEl.className = 'import-status';
       statusEl.textContent = files.length + '개 파일 분석 중…';
 
-      var seen = {};
-      var newRows = [];
+      var seen5em = {};
+      var rows5em = [];
+      var rows929 = {}; // declNo -> 929 필드
       var skipped = 0;
+
       for (var i = 0; i < files.length; i++){
         try {
           var text = await readFileAsText(files[i]);
-          var row = parse5emText(text);
-          if (!row){ skipped++; continue; }
-          if (row.declNo && seen[row.declNo]){ continue; }
-          if (row.declNo) seen[row.declNo] = true;
-          newRows.push(row);
+          var parsed = parseXmlText(text);
+          if (!parsed){ skipped++; continue; }
+          if (parsed.type === '5em'){
+            if (parsed.declNo && seen5em[parsed.declNo]) continue;
+            if (parsed.declNo) seen5em[parsed.declNo] = true;
+            rows5em.push(parsed);
+          } else if (parsed.type === '929' && parsed.declNo){
+            rows929[parsed.declNo] = parsed;
+          }
         } catch (e){ skipped++; }
       }
+
+      var merged929 = 0;
+      var newRows = rows5em.map(function(row){
+        var extra = rows929[row.declNo];
+        if (!extra) return row;
+        merged929++;
+        return Object.assign({}, row, {
+          reportDate: extra.reportDate,
+          plan: extra.plan,
+          agency: extra.agency,
+          packages: extra.packages,
+          importer: extra.importer,
+          warehouse: row.warehouse || extra.warehouse,
+        });
+      });
 
       importBody.innerHTML = '';
       newRows.forEach(function(row, i){ importBody.appendChild(renderImportRow(row, i)); });
       previewWrap.hidden = newRows.length === 0;
       publishBtn.disabled = newRows.length === 0;
 
-      statusEl.textContent = newRows.length + '건 인식됨' +
-        (skipped ? ' · ' + skipped + '개 파일은 5EM이 아니거나 읽기 실패하여 제외' : '') +
+      statusEl.textContent = newRows.length + '건 인식됨 (929 매칭 ' + merged929 + '건)' +
+        (skipped ? ' · ' + skipped + '개 파일은 5EM/929가 아니거나 읽기 실패하여 제외' : '') +
         ' — 칸을 눌러 직접 수정할 수 있습니다.';
     }
 
@@ -819,6 +856,7 @@
           reportDate: get('reportDate'),
           plan: get('plan'),
           agency: get('agency'),
+          warehouse: get('warehouse'),
           declNo: declNo,
           declKnown: !!declNo,
           hbl: get('hbl'),
@@ -826,7 +864,6 @@
           importer: get('importer') || '(확인필요)',
           officer: get('officer'),
           arrival: get('arrival'),
-          badge: tr.dataset.badge || '',
           remark: get('remark'),
           verified: true,
         };

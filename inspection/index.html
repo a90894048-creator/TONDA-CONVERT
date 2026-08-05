@@ -393,7 +393,8 @@
         + 'xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
         + '<head><meta charset="UTF-8"><style>'
         + 'td,th{font-family:맑은 고딕,sans-serif;font-size:11pt;border:1px solid #ccc;padding:4px 8px;} '
-        + 'th{background:#eef1f4;font-weight:bold;}'
+        + 'th{background:#eef1f4;font-weight:bold;} '
+        + ".mono{mso-number-format:'\\@';}"
         + '</style></head><body>' + clone.outerHTML + '</body></html>';
 
       var blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });

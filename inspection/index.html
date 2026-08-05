@@ -62,6 +62,7 @@
   }
   .demo-banner svg{ width:16px; height:16px; flex:none; margin-top:1px; color:var(--manual); }
   .demo-banner b{ color:var(--ink); }
+  .demo-banner code{ font-family:var(--font-mono, ui-monospace, Consolas, monospace); background:var(--line); padding:1px 5px; border-radius:4px; font-size:11.5px; }
 
   /* ── Top bar ───────────────────────────────────────── */
   .topbar{
@@ -208,6 +209,7 @@
   .table-footnote{ padding:12px 18px 16px; font-size:12px; color:var(--ink-soft); border-top:1px solid var(--line); }
   .footer-note{ font-size:12.5px; color:var(--ink-soft); line-height:1.6; max-width: 72ch; }
   .footer-note b{ color:var(--ink); }
+  .footer-note code{ font-family:var(--font-mono); background:var(--line); padding:1px 5px; border-radius:4px; font-size:11.5px; }
 
   tr.no-match td{ padding:26px 14px; text-align:center; color:var(--ink-soft); font-size:13px; }
 
@@ -225,17 +227,17 @@
 
   <div class="demo-banner">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-    <span><b>웹 데모입니다.</b> 이 페이지는 사내망(세관 EDI 수신 서버)에 접근할 수 없어 데이터가 자동으로 갱신되지 않습니다. 아래 표는 실제 검사계획통보(5EM) XML로 검증된 값을 담은 고정 샘플입니다 — 매일 갱신되는 실시간 버전은 사내 PC에서 실행되는 세관알리미 연동판에서 지원 예정입니다.</span>
+    <span><b>웹 데모입니다.</b> 이 페이지는 사내망(세관 EDI 수신 서버)에 직접 접근할 수 없어 실시간으로 갱신되지 않습니다. 아래 표는 사내 PC에서 <code>export_inspection_data.py</code> 스크립트로 오늘자 검사계획통보(5EM) XML을 실제로 읽어 생성한 데이터이지만, 아직 자동 스케줄은 붙어있지 않아 <b>사람이 스크립트를 실행하고 결과를 올려야</b> 최신 상태가 됩니다.</span>
   </div>
 
   <div class="topbar">
     <div class="titles">
       <span class="eyebrow">통다글로벌 · TONDA GLOBAL</span>
       <h1>검사건 리스트</h1>
-      <span class="meta">샘플 데이터 기준 <b id="updatedAt">불러오는 중…</b> · Sheet1 (2) 양식 컬럼 구조</span>
+      <span class="meta">데이터 생성 <b id="updatedAt">불러오는 중…</b> · Sheet1 (2) 양식 컬럼 구조</span>
     </div>
     <div class="actions">
-      <span class="sample-pill"><span class="sample-dot"></span>샘플 데이터 · 실시간 미연동</span>
+      <span class="sample-pill"><span class="sample-dot"></span>스크립트 수동 실행 · 자동 스케줄 없음</span>
       <button class="btn" id="refreshBtn" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16M3 21v-5h5"/></svg>
         새로고침
@@ -260,8 +262,8 @@
       <span class="label">수동 입력 컬럼</span>
       <span class="value">6<small>개</small></span>
     </div>
-    <div class="stat">
-      <span class="label">샘플 검증 사례</span>
+    <div class="stat auto">
+      <span class="label">5EM XML 자동수집 건수</span>
       <span class="value" id="statVerified">&ndash;</span>
     </div>
   </div>
@@ -315,12 +317,12 @@
       </table>
     </div>
     <div class="table-footnote">
-      no.2 행은 2026-08-05 14:35 실제 수신된 5EM 검사계획통보 XML에서 수입신고번호 · H B/L · 수입화주 · 세관담당자 · 검사내용까지 자동으로 채워진 실제 사례입니다. no.1·3·4의 수입신고번호는 아직 XML 매칭 전이라 "확인필요"로 표시했습니다. 조회일자 · 신고일자 · 통관계획 · 대행사 · 포장갯수 · 반입일은 세관 XML에 없는 부킹/매니페스트 정보라 수동 입력 칸으로 남겼습니다.
+      모든 행이 오늘 실제 수신된 5EM 검사계획통보 XML에서 수입신고번호 · H B/L · 세관담당자 · 검사내용까지 자동으로 채워졌습니다. 수입화주는 송신폴더에서 신고번호로 역추적해 찾은 경우에만 표시되고, 못 찾으면 "(확인필요)"로 남습니다. 조회일자 · 신고일자 · 통관계획 · 대행사 · 포장갯수 · 반입일은 세관 XML에 없는 부킹/매니페스트 정보라 수동 입력 칸으로 남겼습니다.
     </div>
   </div>
 
   <p class="footer-note">
-    "엑셀 다운로드"는 지금 화면에 보이는(날짜 조회로 필터링된) 표를 그대로 .xls로 내려받는 실제 동작입니다. 실시간 자동 연동판이 준비되면 이 페이지도 함께 갱신할 예정입니다.
+    "엑셀 다운로드"는 지금 화면에 보이는(날짜 조회로 필터링된) 표를 그대로 .xls로 내려받는 실제 동작입니다. "새로고침"은 <code>data.json</code>을 다시 불러옵니다 — 사내 PC에서 <code>export_inspection_data.py</code>를 실행하고 그 결과를 이 레포에 올리면, 여기서 새로고침만으로 반영됩니다. 자동 스케줄링이 붙으면 사람이 실행할 필요 없이 항상 최신 상태가 됩니다.
   </p>
 </div>
 
@@ -378,7 +380,7 @@
       TODAY = json.today;
       updatedAt.textContent = json.updated;
       statTotal.innerHTML = json.totalCount + '<small>건 · ' + json.rows.length + '건 표시</small>';
-      statVerified.textContent = 'no.' + json.verifiedNo + ' · ' + json.verifiedTime;
+      statVerified.textContent = (json.autoCount != null ? json.autoCount : json.rows.length) + '건';
       ledgerBody.innerHTML = json.rows.map(rowHtml).join('') + NO_MATCH_ROW + NOTE_ROW;
     }
 

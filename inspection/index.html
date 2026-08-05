@@ -190,11 +190,13 @@
   td.remark{ color:var(--ink); line-height:1.45; min-width:220px; }
   .dash{ color:var(--line-strong); }
 
+  .plan-wrap{ display:flex; align-items:center; gap:6px; }
   .plan-code{
-    display:inline-flex; align-items:center; justify-content:center;
+    display:inline-flex; align-items:center; justify-content:center; flex:none;
     width:20px; height:20px; border-radius:5px; font-size:11px; font-weight:800;
-    background: var(--manual-soft); color: var(--manual);
+    background: var(--auto-soft); color: var(--auto);
   }
+  .plan-label{ font-size:11.5px; color:var(--ink-soft); white-space:nowrap; }
 
   tr.note-row td{ color:var(--ink-soft); padding:14px; font-size:12.5px; }
   tr.note-row{ background: color-mix(in srgb, var(--manual) 4%, transparent); }
@@ -440,9 +442,18 @@
       });
     }
 
+    var PLAN_LABELS = { B: '입항전', C: '반입전', D: '반입후' };
+
+    function planCellHtml(plan){
+      if (!plan) return '<td class="dash">&ndash;</td>';
+      var label = PLAN_LABELS[plan] || '';
+      return '<td><span class="plan-wrap"><span class="plan-code">' + escapeHtml(plan) + '</span>'
+        + (label ? '<span class="plan-label">' + escapeHtml(label) + '</span>' : '') + '</span></td>';
+    }
+
     function rowHtml(r){
       var declCell   = r.declKnown ? '<td class="mono">' + escapeHtml(r.declNo) + '</td>' : '<td class="dash">확인필요</td>';
-      var planCell   = r.plan ? '<td><span class="plan-code">' + escapeHtml(r.plan) + '</span></td>' : '<td class="dash">&ndash;</td>';
+      var planCell   = planCellHtml(r.plan);
       var arrivalCell= r.arrival ? '<td class="' + (r.arrival === '미정' ? 'dash' : '') + '">' + escapeHtml(r.arrival) + '</td>' : '<td class="dash">&ndash;</td>';
       var warehouseCell = r.warehouse ? '<td class="mono">' + escapeHtml(r.warehouse) + '</td>' : '<td class="dash">&ndash;</td>';
       return '<tr data-date="' + escapeHtml(r.date) + '" class="data-row' + (r.verified ? ' verified' : '') + '">'

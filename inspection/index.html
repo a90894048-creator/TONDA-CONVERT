@@ -213,6 +213,45 @@
 
   tr.no-match td{ padding:26px 14px; text-align:center; color:var(--ink-soft); font-size:13px; }
 
+  /* ── XML 가져오기 / 게시 패널 ─────────────────────────────── */
+  .import-drop{
+    margin:14px 18px; border:2px dashed var(--line-strong); border-radius:10px;
+    padding:22px; text-align:center; color:var(--ink-soft); font-size:13px; cursor:pointer;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .import-drop:hover, .import-drop.drag-over{ border-color: var(--accent); background: var(--accent-soft); }
+  .import-drop b{ color:var(--ink); }
+
+  .import-status{ margin:0 18px 14px; font-size:12.5px; color:var(--ink-soft); }
+  .import-status.err{ color:#b3432f; }
+
+  #importPreviewWrap{ margin:0 18px 14px; border:1px solid var(--line); border-radius:10px; }
+  #importTable td[contenteditable="true"]{ outline:none; border-radius:4px; }
+  #importTable td[contenteditable="true"]:focus{ background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+  #importTable td[contenteditable="true"]:empty::before{ content: attr(data-placeholder); color: var(--line-strong); }
+  .row-del{
+    display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
+    border-radius:6px; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft);
+    cursor:pointer; font-size:12px; line-height:1;
+  }
+  .row-del:hover{ color:#b3432f; border-color:#b3432f; }
+
+  .token-row{
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:0 18px 14px; font-size:12.5px;
+  }
+  .token-row input[type="password"]{
+    font: inherit; font-size:13px; flex:1; min-width:220px; padding:8px 10px;
+    border:1px solid var(--line-strong); border-radius:7px; background:var(--surface); color:var(--ink);
+  }
+  .token-saved{ display:inline-flex; align-items:center; gap:8px; color:var(--auto); font-weight:600; }
+  .token-hint{ font-size:11.5px; color:var(--ink-soft); }
+  .token-hint a{ color:var(--accent-ink); }
+
+  .publish-row{ display:flex; align-items:center; gap:10px; margin:0 18px 18px; flex-wrap:wrap; }
+  .publish-msg{ font-size:12.5px; color:var(--ink-soft); }
+  .publish-msg.ok{ color:var(--auto); }
+  .publish-msg.err{ color:#b3432f; }
+
   @media (max-width: 680px){ .stats{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
 </style>
 </head>
@@ -227,7 +266,7 @@
 
   <div class="demo-banner">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-    <span><b>웹 데모입니다.</b> 이 페이지는 사내망(세관 EDI 수신 서버)에 직접 접근할 수 없어 실시간으로 갱신되지 않습니다. 아래 표는 사내 PC에서 <code>export_inspection_data.py</code> 스크립트로 오늘자 검사계획통보(5EM) XML을 실제로 읽어 생성한 데이터이지만, 아직 자동 스케줄은 붙어있지 않아 <b>사람이 스크립트를 실행하고 결과를 올려야</b> 최신 상태가 됩니다.</span>
+    <span><b>웹 데모입니다.</b> 이 페이지는 사내망(세관 EDI 수신 서버)에 직접 접근할 수 없어 실시간으로 갱신되지 않습니다. 아래 표의 데이터는 recv_xml의 5EM 파일을 실제로 읽어 만든 것이지만, 자동 스케줄은 붙어있지 않아 <b>사람이 "XML에서 새로 만들기"로 갱신</b>해야 최신 상태가 됩니다 — 페이지 하단에서 recv_xml 파일을 선택하면 브라우저에서 바로 처리·게시할 수 있습니다.</span>
   </div>
 
   <div class="topbar">
@@ -321,8 +360,60 @@
     </div>
   </div>
 
+  <div class="table-card">
+    <div class="table-toolbar">
+      <h2>XML에서 새로 만들기</h2>
+      <button class="btn" id="toggleImport" type="button">펼치기 ▾</button>
+    </div>
+
+    <div id="importPanel" hidden>
+      <div class="import-drop" id="importDrop">
+        <b>recv_xml</b>의 오늘자 검사계획통보(5EM) XML 파일들을 여기로 끌어놓거나 클릭해서 선택하세요 (여러 개 한번에 가능)
+        <input type="file" id="importFileInput" accept=".xml" multiple hidden>
+      </div>
+      <div class="import-status" id="importStatus"></div>
+
+      <div class="table-scroll" id="importPreviewWrap" hidden>
+        <table id="importTable">
+          <thead>
+            <tr>
+              <th style="width:30px"></th>
+              <th style="width:36px">no.</th>
+              <th>조회일자</th>
+              <th>신고일자</th>
+              <th>통관계획</th>
+              <th>대행사</th>
+              <th class="mono">수입신고번호</th>
+              <th class="mono">H B/L</th>
+              <th class="num">포장갯수</th>
+              <th>수입화주</th>
+              <th>세관담당자</th>
+              <th>반입일</th>
+              <th style="min-width:260px">검사란번호 · 검사항목 · 검사방법 · 미결사유</th>
+            </tr>
+          </thead>
+          <tbody id="importBody"></tbody>
+        </table>
+      </div>
+
+      <div class="token-row">
+        <input type="password" id="ghTokenInput" placeholder="GitHub 토큰 (repo 권한 필요)">
+        <button class="btn" id="ghTokenSave" type="button">토큰 저장</button>
+        <span class="token-saved" id="ghTokenSaved" hidden>✔ 토큰 저장됨 <button class="btn" id="ghTokenClear" type="button" style="padding:4px 10px;">삭제</button></span>
+      </div>
+      <div class="token-hint" id="tokenHint" style="margin:0 18px 14px;">
+        <a href="https://github.com/settings/tokens/new?scopes=repo&description=TONDA-CONVERT" target="_blank" rel="noopener">여기서 repo 권한 토큰 발급 →</a> (한 번만 저장하면 이 브라우저에서 계속 사용됩니다)
+      </div>
+
+      <div class="publish-row">
+        <button class="btn btn-primary" id="publishBtn" type="button" disabled>GitHub에 게시</button>
+        <span class="publish-msg" id="publishMsg"></span>
+      </div>
+    </div>
+  </div>
+
   <p class="footer-note">
-    "엑셀 다운로드"는 지금 화면에 보이는(날짜 조회로 필터링된) 표를 그대로 .xls로 내려받는 실제 동작입니다. "새로고침"은 <code>data.json</code>을 다시 불러옵니다 — 사내 PC에서 <code>export_inspection_data.py</code>를 실행하고 그 결과를 이 레포에 올리면, 여기서 새로고침만으로 반영됩니다. 자동 스케줄링이 붙으면 사람이 실행할 필요 없이 항상 최신 상태가 됩니다.
+    "엑셀 다운로드"는 지금 화면에 보이는(날짜 조회로 필터링된) 표를 그대로 .xls로 내려받는 실제 동작입니다. "새로고침"은 <code>data.json</code>을 다시 불러옵니다. 위 "XML에서 새로 만들기"에서 recv_xml 파일을 선택하면 브라우저에서 바로 파싱 → 미리보기(칸마다 직접 수정 가능) → "GitHub에 게시"까지 할 수 있어 Python 스크립트 없이도 데이터를 갱신할 수 있습니다.
   </p>
 </div>
 
@@ -387,6 +478,12 @@
     function fmtKo(iso){
       var p = iso.split('-');
       return p[0] + '년 ' + parseInt(p[1], 10) + '월 ' + parseInt(p[2], 10) + '일';
+    }
+
+    function localIso(d){
+      var m = ('0' + (d.getMonth() + 1)).slice(-2);
+      var day = ('0' + d.getDate()).slice(-2);
+      return d.getFullYear() + '-' + m + '-' + day;
     }
 
     function applyFilter(){
@@ -464,18 +561,340 @@
     prevDayBtn.addEventListener('click', function(){
       var d = new Date(dateInput.value + 'T00:00:00');
       d.setDate(d.getDate() - 1);
-      dateInput.value = d.toISOString().slice(0, 10);
+      dateInput.value = localIso(d);
       applyFilter();
     });
     nextDayBtn.addEventListener('click', function(){
       var d = new Date(dateInput.value + 'T00:00:00');
       d.setDate(d.getDate() + 1);
-      dateInput.value = d.toISOString().slice(0, 10);
+      dateInput.value = localIso(d);
       applyFilter();
     });
     todayBtn.addEventListener('click', function(){ dateInput.value = TODAY; applyFilter(); });
 
     loadData(false);
+  })();
+</script>
+
+<script>
+  // ── XML 가져오기 / GitHub 게시 ────────────────────────────────
+  (function(){
+    var REPO_OWNER = 'a90894048-creator';
+    var REPO_NAME  = 'TONDA-CONVERT';
+    var FILE_PATH  = 'inspection/data.json';
+    var TOKEN_KEY  = 'tonda_gh_token';
+    var API_URL    = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH;
+
+    var toggleBtn   = document.getElementById('toggleImport');
+    var panel       = document.getElementById('importPanel');
+    var drop        = document.getElementById('importDrop');
+    var fileInput   = document.getElementById('importFileInput');
+    var statusEl    = document.getElementById('importStatus');
+    var previewWrap = document.getElementById('importPreviewWrap');
+    var importBody  = document.getElementById('importBody');
+    var tokenInput  = document.getElementById('ghTokenInput');
+    var tokenSaveBtn= document.getElementById('ghTokenSave');
+    var tokenSaved  = document.getElementById('ghTokenSaved');
+    var tokenClearBtn = document.getElementById('ghTokenClear');
+    var tokenHint   = document.getElementById('tokenHint');
+    var publishBtn  = document.getElementById('publishBtn');
+    var publishMsg  = document.getElementById('publishMsg');
+
+    toggleBtn.addEventListener('click', function(){
+      var willShow = panel.hidden;
+      panel.hidden = !willShow;
+      toggleBtn.textContent = willShow ? '접기 ▴' : '펼치기 ▾';
+    });
+
+    // ── 네임스페이스 제거 후 파싱 (watcher.py / relay_server.py 와 동일 규칙) ──
+    function stripNs(xmlText){
+      var clean = xmlText.replace(/\s+xmlns(:[a-zA-Z0-9_]+)?="[^"]*"/g, '');
+      clean = clean.replace(/\s+xsi:schemaLocation="[^"]*"/g, '');
+      clean = clean.replace(/<(\/?)[a-zA-Z0-9_]+:([a-zA-Z0-9_])/g, '<$1$2');
+      return clean;
+    }
+
+    function findChild(node, tag){
+      if (!node) return null;
+      for (var i = 0; i < node.children.length; i++){
+        if (node.children[i].tagName === tag) return node.children[i];
+      }
+      return null;
+    }
+    function findAllChildren(node, tag){
+      var out = [];
+      if (!node) return out;
+      for (var i = 0; i < node.children.length; i++){
+        if (node.children[i].tagName === tag) out.push(node.children[i]);
+      }
+      return out;
+    }
+    function findPath(root, path){
+      var node = root;
+      path.split('/').forEach(function(tag){ node = findChild(node, tag); });
+      return node;
+    }
+    function txt(root, path){
+      var node = findPath(root, path);
+      return node && node.textContent ? node.textContent.trim() : '';
+    }
+
+    function itemSummary(root){
+      var decl = findChild(root, 'Declaration');
+      var consign = findChild(decl, 'Consignment');
+      var items = findAllChildren(consign, 'ConsignmentItem');
+      var parts = [];
+      items.forEach(function(item){
+        var seq = txt(item, 'SequenceNumeric').replace(/^0+/, '');
+        var desc = txt(item, 'Commodity/CargoDescription');
+        if (desc) parts.push((seq || '') + '란 ' + desc + ' 물품 검사');
+      });
+      return parts.join(', ');
+    }
+
+    function parse5emText(xmlText){
+      var clean = stripNs(xmlText);
+      if (!/GOVCBR5EM/.test(clean)) return null;
+      var doc = new DOMParser().parseFromString(clean, 'application/xml');
+      if (doc.querySelector('parsererror')) return null;
+      var root = doc.documentElement;
+
+      var declNo   = findChild(root, 'ID') ? txt(root, 'ID') : txt(root, 'Declaration/ID');
+      var officer  = txt(root, 'Authenticator/Name');
+      var content  = txt(root, 'AdditionalInformation/Content');
+      var hbl      = txt(root, 'Declaration/AdditionalDocument/ID');
+      var summary  = itemSummary(root);
+      var inspRaw  = txt(root, 'Control/InspectionStartDateTime');
+      var badgeTime = inspRaw.length >= 12 ? (inspRaw.slice(8,10) + ':' + inspRaw.slice(10,12)) : '';
+
+      var remark = summary && content ? (summary + ' — ' + content) : (summary || content || 'LCL 검사건');
+
+      return {
+        declNo: declNo || '',
+        hbl: hbl || '',
+        officer: officer || '미상',
+        remark: remark,
+        badge: badgeTime ? ('5EM ' + badgeTime + ' 자동수집') : '5EM 자동수집',
+      };
+    }
+
+    function escapeHtml(s){
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+        return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+      });
+    }
+
+    async function readFileAsText(file){
+      var buf = await file.arrayBuffer();
+      try {
+        return new TextDecoder('utf-8', { fatal: true }).decode(buf);
+      } catch (e) {
+        try { return new TextDecoder('euc-kr').decode(buf); }
+        catch (e2) { return new TextDecoder('utf-8').decode(buf); }
+      }
+    }
+
+    function localIso(d){
+      var m = ('0' + (d.getMonth() + 1)).slice(-2);
+      var day = ('0' + d.getDate()).slice(-2);
+      return d.getFullYear() + '-' + m + '-' + day;
+    }
+
+    function renderImportRow(row, index){
+      var tr = document.createElement('tr');
+      tr.dataset.index = index;
+      var now = new Date();
+      var todayIso = localIso(now);
+      var todayShort = (now.getMonth() + 1) + '/' + now.getDate();
+
+      tr.innerHTML =
+        '<td><button type="button" class="row-del" title="삭제">✕</button></td>' +
+        '<td class="seq">' + (index + 1) + '</td>' +
+        '<td contenteditable="true" data-field="inquiryDate" data-placeholder="–"></td>' +
+        '<td contenteditable="true" data-field="reportDate">' + escapeHtml(todayShort) + '</td>' +
+        '<td contenteditable="true" data-field="plan" data-placeholder="–"></td>' +
+        '<td contenteditable="true" data-field="agency" data-placeholder="–"></td>' +
+        '<td class="mono" contenteditable="true" data-field="declNo">' + escapeHtml(row.declNo) + '</td>' +
+        '<td class="mono" contenteditable="true" data-field="hbl">' + escapeHtml(row.hbl) + '</td>' +
+        '<td class="num" contenteditable="true" data-field="packages" data-placeholder="–"></td>' +
+        '<td contenteditable="true" data-field="importer" data-placeholder="(확인필요)"></td>' +
+        '<td contenteditable="true" data-field="officer">' + escapeHtml(row.officer) + '</td>' +
+        '<td contenteditable="true" data-field="arrival" data-placeholder="–"></td>' +
+        '<td contenteditable="true" data-field="remark">' + escapeHtml(row.remark) + '</td>';
+
+      tr.dataset.badge = row.badge;
+      tr.dataset.date = todayIso;
+      tr.querySelector('.row-del').addEventListener('click', function(){
+        tr.remove();
+        renumberImportRows();
+      });
+      return tr;
+    }
+
+    function renumberImportRows(){
+      Array.from(importBody.querySelectorAll('tr')).forEach(function(tr, i){
+        tr.querySelector('.seq').textContent = i + 1;
+      });
+      publishBtn.disabled = importBody.querySelectorAll('tr').length === 0;
+    }
+
+    async function handleFiles(fileList){
+      var files = Array.from(fileList).filter(function(f){ return /\.xml$/i.test(f.name); });
+      if (!files.length){
+        statusEl.className = 'import-status err';
+        statusEl.textContent = 'XML 파일이 없습니다.';
+        return;
+      }
+      statusEl.className = 'import-status';
+      statusEl.textContent = files.length + '개 파일 분석 중…';
+
+      var seen = {};
+      var newRows = [];
+      var skipped = 0;
+      for (var i = 0; i < files.length; i++){
+        try {
+          var text = await readFileAsText(files[i]);
+          var row = parse5emText(text);
+          if (!row){ skipped++; continue; }
+          if (row.declNo && seen[row.declNo]){ continue; }
+          if (row.declNo) seen[row.declNo] = true;
+          newRows.push(row);
+        } catch (e){ skipped++; }
+      }
+
+      importBody.innerHTML = '';
+      newRows.forEach(function(row, i){ importBody.appendChild(renderImportRow(row, i)); });
+      previewWrap.hidden = newRows.length === 0;
+      publishBtn.disabled = newRows.length === 0;
+
+      statusEl.textContent = newRows.length + '건 인식됨' +
+        (skipped ? ' · ' + skipped + '개 파일은 5EM이 아니거나 읽기 실패하여 제외' : '') +
+        ' — 칸을 눌러 직접 수정할 수 있습니다.';
+    }
+
+    drop.addEventListener('click', function(){ fileInput.click(); });
+    drop.addEventListener('dragover', function(e){ e.preventDefault(); drop.classList.add('drag-over'); });
+    drop.addEventListener('dragleave', function(){ drop.classList.remove('drag-over'); });
+    drop.addEventListener('drop', function(e){
+      e.preventDefault();
+      drop.classList.remove('drag-over');
+      if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+    });
+    fileInput.addEventListener('change', function(e){
+      if (e.target.files.length) handleFiles(e.target.files);
+      e.target.value = '';
+    });
+
+    // ── 토큰 저장 UI ──────────────────────────────────────────
+    function refreshTokenUI(){
+      var has = !!localStorage.getItem(TOKEN_KEY);
+      tokenInput.style.display = has ? 'none' : '';
+      tokenSaveBtn.style.display = has ? 'none' : '';
+      tokenHint.style.display = has ? 'none' : '';
+      tokenSaved.hidden = !has;
+    }
+    tokenSaveBtn.addEventListener('click', function(){
+      var v = tokenInput.value.trim();
+      if (!v){ alert('토큰을 입력해주세요.'); return; }
+      localStorage.setItem(TOKEN_KEY, v);
+      tokenInput.value = '';
+      refreshTokenUI();
+    });
+    tokenClearBtn.addEventListener('click', function(){
+      if (confirm('저장된 토큰을 삭제할까요?')){ localStorage.removeItem(TOKEN_KEY); refreshTokenUI(); }
+    });
+    refreshTokenUI();
+
+    // ── 표 → data.json 조립 ──────────────────────────────────
+    function collectRowsFromTable(){
+      return Array.from(importBody.querySelectorAll('tr')).map(function(tr, i){
+        var get = function(field){
+          var cell = tr.querySelector('[data-field="' + field + '"]');
+          return cell ? cell.textContent.trim() : '';
+        };
+        var declNo = get('declNo');
+        return {
+          no: i + 1,
+          date: tr.dataset.date,
+          reportDate: get('reportDate'),
+          plan: get('plan'),
+          agency: get('agency'),
+          declNo: declNo,
+          declKnown: !!declNo,
+          hbl: get('hbl'),
+          packages: get('packages'),
+          importer: get('importer') || '(확인필요)',
+          officer: get('officer'),
+          arrival: get('arrival'),
+          badge: tr.dataset.badge || '',
+          remark: get('remark'),
+          verified: true,
+        };
+      });
+    }
+
+    async function publish(){
+      var token = localStorage.getItem(TOKEN_KEY);
+      if (!token){
+        publishMsg.className = 'publish-msg err';
+        publishMsg.textContent = 'GitHub 토큰을 먼저 저장해주세요.';
+        return;
+      }
+      var rows = collectRowsFromTable();
+      if (!rows.length) return;
+
+      publishBtn.disabled = true;
+      publishMsg.className = 'publish-msg';
+      publishMsg.textContent = '게시하는 중…';
+
+      var now = new Date();
+      var hh = ('0' + now.getHours()).slice(-2);
+      var mi = ('0' + now.getMinutes()).slice(-2);
+      var payload = {
+        updated: localIso(now) + ' ' + hh + ':' + mi,
+        today: rows[0].date,
+        totalCount: rows.length,
+        autoCount: rows.length,
+        rows: rows,
+      };
+
+      try {
+        var sha = null;
+        try {
+          var getRes = await fetch(API_URL, { headers: { Authorization: 'token ' + token } });
+          if (getRes.ok) sha = (await getRes.json()).sha;
+        } catch (e) {}
+
+        var jsonText = JSON.stringify(payload, null, 2);
+        var b64 = btoa(unescape(encodeURIComponent(jsonText)));
+        var body = { message: '검사건 리스트 데이터 갱신 (' + payload.today + ', ' + rows.length + '건)', content: b64 };
+        if (sha) body.sha = sha;
+
+        var putRes = await fetch(API_URL, {
+          method: 'PUT',
+          headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        if (!putRes.ok){
+          var errBody = await putRes.json().catch(function(){ return {}; });
+          throw new Error(errBody.message || ('HTTP ' + putRes.status));
+        }
+
+        publishMsg.className = 'publish-msg ok';
+        publishMsg.textContent = '✔ 게시 완료 (' + rows.length + '건) — 아래 표를 새로고침합니다.';
+        panel.hidden = true;
+        toggleBtn.textContent = '펼치기 ▾';
+        var refreshBtnEl = document.getElementById('refreshBtn');
+        if (refreshBtnEl) refreshBtnEl.click();
+      } catch (e){
+        publishMsg.className = 'publish-msg err';
+        publishMsg.textContent = '게시 실패: ' + e.message + ' (토큰 권한을 확인하세요)';
+      } finally {
+        publishBtn.disabled = false;
+      }
+    }
+
+    publishBtn.addEventListener('click', publish);
   })();
 </script>
 </body>

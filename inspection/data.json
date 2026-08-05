@@ -19,7 +19,8 @@
       "officer": "김하영",
       "arrival": "",
       "remark": "1란 TENT 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 2,
@@ -36,7 +37,8 @@
       "officer": "김하영",
       "arrival": "",
       "remark": "1란 T-SHIRT 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 3,
@@ -53,7 +55,8 @@
       "officer": "김하영",
       "arrival": "",
       "remark": "19란 SLIPPER 물품 검사, 22란 HAT 물품 검사, 46란 SWING PRACTICE DEVICE 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 4,
@@ -70,7 +73,8 @@
       "officer": "김하영",
       "arrival": "",
       "remark": "2란 NON-WOVEN DECORATIVE PAINTING 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 5,
@@ -87,7 +91,8 @@
       "officer": "김하영",
       "arrival": "",
       "remark": "1란 PATELLAR BELT 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 6,
@@ -104,7 +109,8 @@
       "officer": "이현정",
       "arrival": "",
       "remark": "1란 FOOT PADS 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 7,
@@ -121,7 +127,8 @@
       "officer": "이현정",
       "arrival": "",
       "remark": "5란 FZCSPEED GOLF SWING TRAINER 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 8,
@@ -138,7 +145,8 @@
       "officer": "이현정",
       "arrival": "",
       "remark": "7란 LARGE MESH BEACH BAG 물품 검사, 10란 GARDENING GLOVES 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 9,
@@ -155,7 +163,8 @@
       "officer": "전기성",
       "arrival": "",
       "remark": "2란 FACIAL MASK STORAGE BOX 물품 검사, 3란 WHITE APRON 물품 검사, 4란 FILTER SCREEN 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 10,
@@ -172,7 +181,8 @@
       "officer": "전기성",
       "arrival": "",
       "remark": "3란 PET BED 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 11,
@@ -189,7 +199,8 @@
       "officer": "전기성",
       "arrival": "",
       "remark": "1란 CASE 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 12,
@@ -206,7 +217,8 @@
       "officer": "전기성",
       "arrival": "",
       "remark": "3란 STAND HOLDER 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 13,
@@ -223,7 +235,8 @@
       "officer": "전기성",
       "arrival": "",
       "remark": "1란 SUS304 STAINLESS STEEL WIRE RO 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 14,
@@ -240,7 +253,8 @@
       "officer": "이현정",
       "arrival": "",
       "remark": "1란 NAIL POLISH BOTTLE RACK 물품 검사, 2란 CAT SIZED COTTON SWAB 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     },
     {
       "no": 15,
@@ -257,7 +271,8 @@
       "officer": "이현정",
       "arrival": "",
       "remark": "1란 PET STAIRCASE 물품 검사 — 물품검사 준비 및 검사후 재포장요망",
-      "verified": true
+      "verified": true,
+      "channel": "통다"
     }
   ]
 }

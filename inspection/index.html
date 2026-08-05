@@ -190,6 +190,14 @@
   td.remark{ color:var(--ink); line-height:1.45; min-width:220px; }
   .dash{ color:var(--line-strong); }
 
+  .channel-chip{
+    display:inline-flex; align-items:center; font-size:10px; font-weight:700;
+    padding:2px 6px; border-radius:5px; margin-left:6px; white-space:nowrap;
+  }
+  .channel-chip.coupang{ background:#fdecea; color:#b03524; }
+  .channel-chip.kyodong{ background:#fff4e0; color:#b06b00; }
+  .channel-chip.tonda{ background:var(--manual-soft); color:var(--manual); }
+
   .plan-wrap{ display:flex; align-items:center; gap:6px; }
   .plan-code{
     display:inline-flex; align-items:center; justify-content:center; flex:none;
@@ -352,7 +360,7 @@
       </table>
     </div>
     <div class="table-footnote">
-      대행사가 <b>주식회사 통다글로벌로지스틱스</b>인 건만 표시합니다 (같은 통관지 세관을 거치는 다른 포워더 건은 제외). 수입신고번호 · H B/L · 세관담당자 · 장치장소 · 검사내용은 5EM 검사계획통보 XML에서, 신고일자 · 통관계획 · 대행사 · 포장갯수 · 수입화주는 송신폴더의 수입신고서(929) XML에서 자동으로 채워졌습니다. 조회일자 · 반입일은 아직 자동화할 소스를 못 찾아 수동 입력 칸으로 남겼습니다.
+대행사가 통다 계열 3개 표기(<b>통다글로벌로지스틱</b>=쿠팡, <b>통다그로벌로지스틱</b>=교동, <b>주식회사 통다글로벌로지스틱스</b>=통다) 중 하나인 건만 표시합니다 (같은 통관지 세관을 거치는 다른 포워더 건은 제외). 대행사 옆 색상 칩으로 어느 채널 건인지 구분됩니다. 수입신고번호 · H B/L · 세관담당자 · 장치장소 · 검사내용은 5EM 검사계획통보 XML에서, 신고일자 · 통관계획 · 대행사 · 포장갯수 · 수입화주는 송신폴더의 수입신고서(929) XML에서 자동으로 채워졌습니다. 조회일자 · 반입일은 아직 자동화할 소스를 못 찾아 수동 입력 칸으로 남겼습니다.
     </div>
   </div>
 
@@ -364,7 +372,7 @@
 
     <div id="importPanel" hidden>
       <div class="import-drop" id="importDrop">
-        <b>recv_xml</b>의 오늘자 검사계획통보(5EM) XML과 <b>send_xml</b>의 수입신고서(929) XML을 함께 끌어놓거나 클릭해서 선택하세요 (여러 개 한번에 가능 · 929를 같이 넣으면 신고일자·통관계획·대행사·포장갯수·수입화주까지 자동으로 채워지고, <b>대행사가 통다글로벌로지스틱스가 아닌 건은 자동으로 제외</b>됩니다)
+        <b>recv_xml</b>의 오늘자 검사계획통보(5EM) XML과 <b>send_xml</b>의 수입신고서(929) XML을 함께 끌어놓거나 클릭해서 선택하세요 (여러 개 한번에 가능 · 929를 같이 넣으면 신고일자·통관계획·대행사·포장갯수·수입화주까지 자동으로 채워지고, <b>대행사가 통다 계열(쿠팡·교동·통다) 3개 표기가 아닌 건은 자동으로 제외</b>됩니다)
         <input type="file" id="importFileInput" accept=".xml" multiple hidden>
       </div>
       <div class="import-status" id="importStatus"></div>
@@ -451,17 +459,20 @@
         + (label ? '<span class="plan-label">' + escapeHtml(label) + '</span>' : '') + '</span></td>';
     }
 
+    var CHANNEL_CLASS = { '쿠팡': 'coupang', '교동': 'kyodong', '통다': 'tonda' };
+
     function rowHtml(r){
       var declCell   = r.declKnown ? '<td class="mono">' + escapeHtml(r.declNo) + '</td>' : '<td class="dash">확인필요</td>';
       var planCell   = planCellHtml(r.plan);
       var arrivalCell= r.arrival ? '<td class="' + (r.arrival === '미정' ? 'dash' : '') + '">' + escapeHtml(r.arrival) + '</td>' : '<td class="dash">&ndash;</td>';
       var warehouseCell = r.warehouse ? '<td class="mono">' + escapeHtml(r.warehouse) + '</td>' : '<td class="dash">&ndash;</td>';
+      var channelChip = r.channel ? '<span class="channel-chip ' + (CHANNEL_CLASS[r.channel] || '') + '">' + escapeHtml(r.channel) + '</span>' : '';
       return '<tr data-date="' + escapeHtml(r.date) + '" class="data-row' + (r.verified ? ' verified' : '') + '">'
         + '<td class="seq">' + r.no + '</td>'
         + '<td class="dash">&ndash;</td>'
         + '<td>' + escapeHtml(r.reportDate) + '</td>'
         + planCell
-        + '<td>' + escapeHtml(r.agency) + '</td>'
+        + '<td>' + escapeHtml(r.agency) + channelChip + '</td>'
         + warehouseCell
         + declCell
         + '<td class="mono">' + escapeHtml(r.hbl) + '</td>'
@@ -537,7 +548,9 @@
         + '<head><meta charset="UTF-8"><style>'
         + 'td,th{font-family:맑은 고딕,sans-serif;font-size:11pt;border:1px solid #ccc;padding:4px 8px;} '
         + 'th{background:#eef1f4;font-weight:bold;} '
-        + ".mono{mso-number-format:'\\@';}"
+        + ".mono{mso-number-format:'\\@';} "
+        // 신고일자(3) · 통관계획(4) · 포장갯수(9) 열은 가운데 정렬
+        + 'td:nth-child(3), th:nth-child(3), td:nth-child(4), th:nth-child(4), td:nth-child(9), th:nth-child(9){text-align:center;}'
         + '</style></head><body>' + clone.outerHTML + '</body></html>';
 
       var blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
@@ -590,6 +603,13 @@
     var FILE_PATH  = 'inspection/data.json';
     var TOKEN_KEY  = 'tonda_gh_token';
     var API_URL    = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH;
+
+    // 929에 찍히는 대행사 표기가 채널별로 다름 — 정확히 일치하는 것만 통다로 인정
+    var CHANNEL_MAP = {
+      '통다글로벌로지스틱': '쿠팡',
+      '통다그로벌로지스틱': '교동',
+      '주식회사 통다글로벌로지스틱스': '통다',
+    };
 
     var toggleBtn   = document.getElementById('toggleImport');
     var panel       = document.getElementById('importPanel');
@@ -795,7 +815,6 @@
         } catch (e){ skipped++; }
       }
 
-      var AGENCY_FILTER = '통다';
       var merged929 = 0;
       var excludedOther = 0;
       var mergedRows = rows5em.map(function(row){
@@ -806,15 +825,16 @@
           reportDate: extra.reportDate,
           plan: extra.plan,
           agency: extra.agency,
+          channel: CHANNEL_MAP[extra.agency] || '',
           packages: extra.packages,
           importer: extra.importer,
           warehouse: row.warehouse || extra.warehouse,
         });
       });
 
-      // 929로 대행사가 확인됐는데 통다(글로벌로지스틱스)가 아니면 목록에서 제외
+      // 929로 대행사가 확인됐는데 통다 계열 3개 표기(쿠팡/교동/통다) 중 하나가 아니면 제외
       var newRows = mergedRows.filter(function(row){
-        if (row.agency && row.agency.indexOf(AGENCY_FILTER) === -1){ excludedOther++; return false; }
+        if (row.agency && !CHANNEL_MAP.hasOwnProperty(row.agency)){ excludedOther++; return false; }
         return true;
       });
 
@@ -870,12 +890,14 @@
           return cell ? cell.textContent.trim() : '';
         };
         var declNo = get('declNo');
+        var agency = get('agency');
         return {
           no: i + 1,
           date: tr.dataset.date,
           reportDate: get('reportDate'),
           plan: get('plan'),
-          agency: get('agency'),
+          agency: agency,
+          channel: CHANNEL_MAP[agency] || '',
           warehouse: get('warehouse'),
           declNo: declNo,
           declKnown: !!declNo,

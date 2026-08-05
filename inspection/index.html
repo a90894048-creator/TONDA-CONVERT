@@ -98,6 +98,7 @@
   }
   .btn:hover{ border-color: var(--ink-soft); }
   .btn:active{ transform: translateY(1px); }
+  .btn:disabled{ opacity:0.6; cursor:default; }
   .btn-primary{ background: var(--accent); border-color: var(--accent); color:#fff; }
   .btn-primary:hover{ background: color-mix(in srgb, var(--accent) 88%, black); border-color: color-mix(in srgb, var(--accent) 88%, black); }
   @media (prefers-color-scheme: dark){ .btn-primary{ color:#1a1405; } }
@@ -231,10 +232,14 @@
     <div class="titles">
       <span class="eyebrow">통다글로벌 · TONDA GLOBAL</span>
       <h1>검사건 리스트</h1>
-      <span class="meta">샘플 데이터 기준 <b>2026-08-05 14:35</b> · Sheet1 (2) 양식 컬럼 구조</span>
+      <span class="meta">샘플 데이터 기준 <b id="updatedAt">불러오는 중…</b> · Sheet1 (2) 양식 컬럼 구조</span>
     </div>
     <div class="actions">
       <span class="sample-pill"><span class="sample-dot"></span>샘플 데이터 · 실시간 미연동</span>
+      <button class="btn" id="refreshBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16M3 21v-5h5"/></svg>
+        새로고침
+      </button>
       <button class="btn btn-primary" id="downloadBtn" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
         엑셀 다운로드
@@ -245,7 +250,7 @@
   <div class="stats">
     <div class="stat">
       <span class="label">오늘 검사예정건</span>
-      <span class="value">10<small>건 · 4건 표시</small></span>
+      <span class="value" id="statTotal">&ndash;<small id="statTotalSmall"></small></span>
     </div>
     <div class="stat auto">
       <span class="label">자동 매핑 가능 컬럼</span>
@@ -257,7 +262,7 @@
     </div>
     <div class="stat">
       <span class="label">샘플 검증 사례</span>
-      <span class="value">no.2<small>· 14:35</small></span>
+      <span class="value" id="statVerified">&ndash;</span>
     </div>
   </div>
 
@@ -305,68 +310,7 @@
           </tr>
         </thead>
         <tbody id="ledgerBody">
-          <tr data-date="2026-08-05" class="data-row">
-            <td class="seq">1</td>
-            <td class="dash">&ndash;</td>
-            <td>8/5</td>
-            <td><span class="plan-code">C</span></td>
-            <td>통다</td>
-            <td class="mono">4363226202412M</td>
-            <td class="mono">519779985546</td>
-            <td class="num">1</td>
-            <td>월간리빙</td>
-            <td>배수빈</td>
-            <td>8월 3일</td>
-            <td class="remark">특송 검사 건 / 목요일 검사 예정</td>
-          </tr>
-          <tr data-date="2026-08-05" class="data-row verified">
-            <td class="seq">2</td>
-            <td class="dash">&ndash;</td>
-            <td>8/5</td>
-            <td><span class="plan-code">C</span></td>
-            <td>통다</td>
-            <td class="mono">4363226011564M</td>
-            <td class="mono">TDCP20260803ZHLC</td>
-            <td class="num">23</td>
-            <td>유한회사 황곤트레이딩</td>
-            <td>박진선</td>
-            <td class="dash">미정</td>
-            <td class="remark"><span class="src-badge auto">5EM 14:35 실제 XML 검증</span><br><span class="src">2란 NON-WOVEN DECORATIVE PAINTING 물품 검사</span></td>
-          </tr>
-          <tr data-date="2026-08-05" class="data-row">
-            <td class="seq">3</td>
-            <td class="dash">&ndash;</td>
-            <td>8/5</td>
-            <td class="dash">&ndash;</td>
-            <td>통다</td>
-            <td class="dash">확인필요</td>
-            <td class="mono">TDCP20260803SUN</td>
-            <td class="num">29</td>
-            <td>루엔코리아</td>
-            <td>김태은</td>
-            <td class="dash">&ndash;</td>
-            <td class="remark">LCL 일반 검사건 / 검사 물품 다량</td>
-          </tr>
-          <tr data-date="2026-08-05" class="data-row">
-            <td class="seq">4</td>
-            <td class="dash">&ndash;</td>
-            <td>8/5</td>
-            <td class="dash">&ndash;</td>
-            <td>통다</td>
-            <td class="dash">확인필요</td>
-            <td class="mono">TDCP20260803JWKJ</td>
-            <td class="num">10</td>
-            <td>클라우드쇼핑이지딜리버리 유한회사</td>
-            <td>김태은</td>
-            <td class="dash">&ndash;</td>
-            <td class="remark">LCL 일반 검사건 / 1란 STEEL WIRE ROPE 물품 검사</td>
-          </tr>
-          <tr class="no-match" hidden>
-            <td colspan="12">선택한 날짜(<span class="nm-date"></span>)에 해당하는 검사건이 없습니다 — 샘플 데이터는 2026-08-05 하루치만 있습니다</td>
-          </tr>
-          <tr class="note-row data-row" data-date="2026-08-05">
-            <td colspan="12">실시간 신규 통보 자동 반영은 사내 PC 전용 세관알리미 연동판에서 지원됩니다 (이 웹 데모에는 미포함)</td>
-          </tr>
+          <tr class="note-row"><td colspan="12">데이터를 불러오는 중…</td></tr>
         </tbody>
       </table>
     </div>
@@ -382,10 +326,104 @@
 
 <script>
   (function(){
-    var table = document.getElementById('ledgerTable');
-    var btn = document.getElementById('downloadBtn');
+    var table       = document.getElementById('ledgerTable');
+    var ledgerBody  = document.getElementById('ledgerBody');
+    var downloadBtn = document.getElementById('downloadBtn');
+    var refreshBtn  = document.getElementById('refreshBtn');
+    var dateInput   = document.getElementById('dateInput');
+    var prevDayBtn  = document.getElementById('prevDay');
+    var nextDayBtn  = document.getElementById('nextDay');
+    var todayBtn    = document.getElementById('todayBtn');
+    var resultCount = document.getElementById('resultCount');
+    var updatedAt   = document.getElementById('updatedAt');
+    var statTotal   = document.getElementById('statTotal');
+    var statVerified= document.getElementById('statVerified');
 
-    btn.addEventListener('click', function(){
+    var TODAY = '2026-08-05';
+    var initialized = false;
+
+    var NOTE_ROW = '<tr class="note-row"><td colspan="12">실시간 신규 통보 자동 반영은 사내 PC 전용 세관알리미 연동판에서 지원됩니다 (이 웹 데모에는 미포함)</td></tr>';
+    var NO_MATCH_ROW =
+      '<tr class="no-match" hidden><td colspan="12">선택한 날짜(<span class="nm-date"></span>)에 해당하는 검사건이 없습니다</td></tr>';
+
+    function escapeHtml(s){
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+        return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+      });
+    }
+
+    function rowHtml(r){
+      var declCell   = r.declKnown ? '<td class="mono">' + escapeHtml(r.declNo) + '</td>' : '<td class="dash">확인필요</td>';
+      var planCell   = r.plan ? '<td><span class="plan-code">' + escapeHtml(r.plan) + '</span></td>' : '<td class="dash">&ndash;</td>';
+      var arrivalCell= r.arrival ? '<td class="' + (r.arrival === '미정' ? 'dash' : '') + '">' + escapeHtml(r.arrival) + '</td>' : '<td class="dash">&ndash;</td>';
+      var remarkInner= (r.badge ? '<span class="src-badge auto">' + escapeHtml(r.badge) + '</span><br>' : '')
+                      + '<span class="src">' + escapeHtml(r.remark) + '</span>';
+      return '<tr data-date="' + escapeHtml(r.date) + '" class="data-row' + (r.verified ? ' verified' : '') + '">'
+        + '<td class="seq">' + r.no + '</td>'
+        + '<td class="dash">&ndash;</td>'
+        + '<td>' + escapeHtml(r.reportDate) + '</td>'
+        + planCell
+        + '<td>' + escapeHtml(r.agency) + '</td>'
+        + declCell
+        + '<td class="mono">' + escapeHtml(r.hbl) + '</td>'
+        + '<td class="num">' + r.packages + '</td>'
+        + '<td>' + escapeHtml(r.importer) + '</td>'
+        + '<td>' + escapeHtml(r.officer) + '</td>'
+        + arrivalCell
+        + '<td class="remark">' + remarkInner + '</td>'
+        + '</tr>';
+    }
+
+    function render(json){
+      TODAY = json.today;
+      updatedAt.textContent = json.updated;
+      statTotal.innerHTML = json.totalCount + '<small>건 · ' + json.rows.length + '건 표시</small>';
+      statVerified.textContent = 'no.' + json.verifiedNo + ' · ' + json.verifiedTime;
+      ledgerBody.innerHTML = json.rows.map(rowHtml).join('') + NO_MATCH_ROW + NOTE_ROW;
+    }
+
+    function fmtKo(iso){
+      var p = iso.split('-');
+      return p[0] + '년 ' + parseInt(p[1], 10) + '월 ' + parseInt(p[2], 10) + '일';
+    }
+
+    function applyFilter(){
+      var target   = dateInput.value || TODAY;
+      var rows     = document.querySelectorAll('#ledgerBody tr.data-row');
+      var noteRow  = document.querySelector('#ledgerBody tr.note-row');
+      var noMatchRow = document.querySelector('#ledgerBody tr.no-match');
+      var visible  = 0;
+      rows.forEach(function(row){
+        var match = row.getAttribute('data-date') === target;
+        row.hidden = !match;
+        if (match) visible++;
+      });
+      if (noteRow) noteRow.hidden = (target !== TODAY);
+      if (noMatchRow){
+        noMatchRow.hidden = visible !== 0;
+        noMatchRow.querySelector('.nm-date').textContent = fmtKo(target);
+      }
+      resultCount.innerHTML = '<b>' + visible + '</b>건 표시 중';
+    }
+
+    function loadData(isRefresh){
+      var url = 'data.json' + (isRefresh ? ('?t=' + Date.now()) : '');
+      return fetch(url)
+        .then(function(res){ if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+        .then(function(json){
+          render(json);
+          if (!initialized){ dateInput.value = TODAY; initialized = true; }
+          applyFilter();
+        })
+        .catch(function(err){
+          updatedAt.textContent = '불러오기 실패';
+          ledgerBody.innerHTML = '<tr class="note-row"><td colspan="12">데이터를 불러오지 못했습니다 (' + escapeHtml(err.message) + ') — 새로고침을 눌러 다시 시도하세요</td></tr>';
+          console.error('data.json 로드 실패', err);
+        });
+    }
+
+    // ── 엑셀 다운로드 ─────────────────────────────────────────
+    downloadBtn.addEventListener('click', function(){
       var clone = table.cloneNode(true);
       clone.querySelectorAll('tr.note-row, tr.no-match, tr[hidden]').forEach(function(r){ r.remove(); });
 
@@ -401,58 +439,41 @@
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;
-      a.download = '검사건리스트_샘플_2026-08-05.xls';
+      a.download = '검사건리스트_' + TODAY + '.xls';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
     });
 
-    // ── 날짜 조회 (샘플 데이터는 2026-08-05 하루치뿐) ─────────
-    var dateInput   = document.getElementById('dateInput');
-    var prevDayBtn  = document.getElementById('prevDay');
-    var nextDayBtn  = document.getElementById('nextDay');
-    var todayBtn    = document.getElementById('todayBtn');
-    var resultCount = document.getElementById('resultCount');
-    var noMatchRow  = document.querySelector('#ledgerBody tr.no-match');
-    var TODAY = '2026-08-05';
-
-    function fmtKo(iso){
-      var p = iso.split('-');
-      return p[0] + '년 ' + parseInt(p[1],10) + '월 ' + parseInt(p[2],10) + '일';
-    }
-
-    function applyFilter(){
-      var target = dateInput.value || TODAY;
-      var rows = document.querySelectorAll('#ledgerBody tr.data-row:not(.note-row)');
-      var noteRow = document.querySelector('#ledgerBody tr.note-row');
-      var visible = 0;
-      rows.forEach(function(row){
-        var match = row.getAttribute('data-date') === target;
-        row.hidden = !match;
-        if (match) visible++;
+    // ── 새로고침 ─────────────────────────────────────────────
+    refreshBtn.addEventListener('click', function(){
+      var svg = refreshBtn.querySelector('svg');
+      refreshBtn.disabled = true;
+      svg.style.transition = 'transform 0.6s ease';
+      svg.style.transform = 'rotate(360deg)';
+      loadData(true).finally(function(){
+        setTimeout(function(){ svg.style.transform = ''; refreshBtn.disabled = false; }, 300);
       });
-      if (noteRow) noteRow.hidden = (target !== TODAY);
+    });
 
-      noMatchRow.hidden = visible !== 0;
-      noMatchRow.querySelector('.nm-date').textContent = fmtKo(target);
-
-      resultCount.innerHTML = '<b>' + visible + '</b>건 표시 중';
-    }
-
-    function shiftDay(delta){
+    // ── 날짜 조회 ─────────────────────────────────────────────
+    dateInput.addEventListener('change', applyFilter);
+    prevDayBtn.addEventListener('click', function(){
       var d = new Date(dateInput.value + 'T00:00:00');
-      d.setDate(d.getDate() + delta);
+      d.setDate(d.getDate() - 1);
       dateInput.value = d.toISOString().slice(0, 10);
       applyFilter();
-    }
-
-    dateInput.addEventListener('change', applyFilter);
-    prevDayBtn.addEventListener('click', function(){ shiftDay(-1); });
-    nextDayBtn.addEventListener('click', function(){ shiftDay(1); });
+    });
+    nextDayBtn.addEventListener('click', function(){
+      var d = new Date(dateInput.value + 'T00:00:00');
+      d.setDate(d.getDate() + 1);
+      dateInput.value = d.toISOString().slice(0, 10);
+      applyFilter();
+    });
     todayBtn.addEventListener('click', function(){ dateInput.value = TODAY; applyFilter(); });
 
-    applyFilter();
+    loadData(false);
   })();
 </script>
 </body>

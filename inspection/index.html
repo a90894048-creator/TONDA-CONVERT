@@ -225,6 +225,8 @@
   #importTable td[contenteditable="true"]{ outline:none; border-radius:4px; }
   #importTable td[contenteditable="true"]:focus{ background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
   #importTable td[contenteditable="true"]:empty::before{ content: attr(data-placeholder); color: var(--line-strong); }
+  #importTable tr.pending-row-import{ background: color-mix(in srgb, var(--manual) 6%, transparent); }
+  #importTable tr.pending-row-import td:first-child{ box-shadow: inset 3px 0 0 var(--manual); }
   .row-del{
     display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
     border-radius:6px; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft);
@@ -297,8 +299,8 @@
       <span class="label">수동 입력 컬럼</span>
       <span class="value">2<small>개</small></span>
     </div>
-    <div class="stat auto">
-      <span class="label">5EM XML 자동수집 건수</span>
+    <div class="stat manual">
+      <span class="label">5EM 대기중 (023만 확인)</span>
       <span class="value" id="statVerified">&ndash;</span>
     </div>
   </div>
@@ -481,7 +483,7 @@
       TODAY = json.today;
       updatedAt.textContent = json.updated;
       statTotal.innerHTML = json.totalCount + '<small>건 · ' + json.rows.length + '건 표시</small>';
-      statVerified.textContent = (json.autoCount != null ? json.autoCount : json.rows.length) + '건';
+      statVerified.textContent = (json.pendingCount != null ? json.pendingCount : 0) + '건';
       ledgerBody.innerHTML = json.rows.map(rowHtml).join('') + NO_MATCH_ROW + NOTE_ROW;
     }
 
@@ -799,6 +801,8 @@
         '<td contenteditable="true" data-field="remark">' + escapeHtml(row.remark) + '</td>';
 
       tr.dataset.date = row.date || todayIso;
+      tr.dataset.verified = row.verified ? '1' : '0';
+      if (!row.verified) tr.classList.add('pending-row-import');
       tr.querySelector('.row-del').addEventListener('click', function(){
         tr.remove();
         renumberImportRows();
@@ -966,7 +970,7 @@
           officer: get('officer'),
           arrival: get('arrival'),
           remark: get('remark'),
-          verified: true,
+          verified: tr.dataset.verified === '1',
         };
       });
     }
@@ -988,11 +992,13 @@
       var now = new Date();
       var hh = ('0' + now.getHours()).slice(-2);
       var mi = ('0' + now.getMinutes()).slice(-2);
+      var confirmedCount = rows.filter(function(r){ return r.verified; }).length;
       var payload = {
         updated: localIso(now) + ' ' + hh + ':' + mi,
         today: rows[0].date,
         totalCount: rows.length,
-        autoCount: rows.length,
+        autoCount: confirmedCount,
+        pendingCount: rows.length - confirmedCount,
         rows: rows,
       };
 

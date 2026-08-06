@@ -550,7 +550,9 @@
         + 'th{background:#eef1f4;font-weight:bold;} '
         + ".mono{mso-number-format:'\\@';} "
         // 신고일자(2) · 통관계획(3) · 포장갯수(8) 열은 가운데 정렬
-        + 'td:nth-child(2), th:nth-child(2), td:nth-child(3), th:nth-child(3), td:nth-child(8), th:nth-child(8){text-align:center;}'
+        + 'td:nth-child(2), th:nth-child(2), td:nth-child(3), th:nth-child(3), td:nth-child(8), th:nth-child(8){text-align:center;} '
+        // 검사내용(12) 칸은 <br>이 있어도 새 행/셀로 쪼개지 말고 한 셀 안에서 줄바꿈되도록 지시
+        + 'td:nth-child(12){mso-data-placement:same-cell;}'
         + '</style></head><body>' + clone.outerHTML + '</body></html>';
 
       var blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });

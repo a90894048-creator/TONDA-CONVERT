@@ -307,7 +307,6 @@
         <thead>
           <tr>
             <th style="width:40px">no.<span class="tick none"></span></th>
-            <th>조회일자<span class="tick manual"></span></th>
             <th>신고일자<span class="tick auto"></span></th>
             <th>통관계획<span class="tick auto"></span></th>
             <th>대행사<span class="tick auto"></span></th>
@@ -322,12 +321,12 @@
           </tr>
         </thead>
         <tbody id="ledgerBody">
-          <tr class="note-row"><td colspan="13">데이터를 불러오는 중…</td></tr>
+          <tr class="note-row"><td colspan="12">데이터를 불러오는 중…</td></tr>
         </tbody>
       </table>
     </div>
     <div class="table-footnote">
-대행사가 통다 계열 3개 표기(<b>통다글로벌로지스틱</b>=쿠팡, <b>통다그로벌로지스틱</b>=교동, <b>주식회사 통다글로벌로지스틱스</b>=통다) 중 하나인 건만 표시합니다 (같은 통관지 세관을 거치는 다른 포워더 건은 제외). 대행사 옆 색상 칩으로 어느 채널 건인지 구분됩니다. <b>검사대상 판정과 신고일자는 수입신고처리결과통보서(023)의 최초 접수 통보에서 C/S검사 결과가 "Y"인 건을 기준</b>으로 하며, 5EM(검사계획통보)은 검사시각·항목·방법 등 상세를 나중에 채워주는 보완 통보입니다 — 5EM이 아직 없어도 023만으로 행이 먼저 표시됩니다. 통관계획 · 대행사 · 포장갯수 · 수입화주는 송신폴더의 수입신고서(929) XML에서 채워졌습니다. 조회일자 · 반입일은 아직 자동화할 소스를 못 찾아 수동 입력 칸으로 남겼습니다.
+대행사가 통다 계열 3개 표기(<b>통다글로벌로지스틱</b>=쿠팡, <b>통다그로벌로지스틱</b>=교동, <b>주식회사 통다글로벌로지스틱스</b>=통다) 중 하나인 건만 표시합니다 (같은 통관지 세관을 거치는 다른 포워더 건은 제외). 대행사 옆 색상 칩으로 어느 채널 건인지 구분됩니다. <b>검사대상 판정과 신고일자는 수입신고처리결과통보서(023)의 최초 접수 통보에서 C/S검사 결과가 "Y"인 건을 기준</b>으로 하며, 5EM(검사계획통보)은 검사시각·항목·방법 등 상세를 나중에 채워주는 보완 통보입니다 — 5EM이 아직 없어도 023만으로 행이 먼저 표시됩니다. 통관계획 · 대행사 · 포장갯수 · 수입화주는 송신폴더의 수입신고서(929) XML에서 채워졌습니다. 반입일은 아직 자동화할 소스를 못 찾아 수동 입력 칸으로 남겼습니다.
     </div>
   </div>
 
@@ -350,7 +349,6 @@
             <tr>
               <th style="width:30px"></th>
               <th style="width:36px">no.</th>
-              <th>조회일자</th>
               <th>신고일자</th>
               <th>통관계획</th>
               <th>대행사</th>
@@ -406,9 +404,9 @@
     var TODAY = '2026-08-05';
     var initialized = false;
 
-    var NOTE_ROW = '<tr class="note-row"><td colspan="13">실시간 신규 통보 자동 반영은 사내 PC 전용 세관알리미 연동판에서 지원됩니다 (이 웹 데모에는 미포함)</td></tr>';
+    var NOTE_ROW = '<tr class="note-row"><td colspan="12">실시간 신규 통보 자동 반영은 사내 PC 전용 세관알리미 연동판에서 지원됩니다 (이 웹 데모에는 미포함)</td></tr>';
     var NO_MATCH_ROW =
-      '<tr class="no-match" hidden><td colspan="13">선택한 날짜(<span class="nm-date"></span>)에 해당하는 검사건이 없습니다</td></tr>';
+      '<tr class="no-match" hidden><td colspan="12">선택한 날짜(<span class="nm-date"></span>)에 해당하는 검사건이 없습니다</td></tr>';
 
     function escapeHtml(s){
       return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
@@ -435,7 +433,6 @@
         : '<td>' + escapeHtml(r.agency) + '</td>';
       return '<tr data-date="' + escapeHtml(r.date) + '" class="data-row' + (r.verified ? ' verified' : '') + '">'
         + '<td class="seq">' + r.no + '</td>'
-        + '<td class="dash">&ndash;</td>'
         + '<td>' + escapeHtml(r.reportDate) + '</td>'
         + planCell
         + agencyCell
@@ -506,7 +503,7 @@
         })
         .catch(function(err){
           updatedAt.textContent = '불러오기 실패';
-          ledgerBody.innerHTML = '<tr class="note-row"><td colspan="13">데이터를 불러오지 못했습니다 (' + escapeHtml(err.message) + ') — 새로고침을 눌러 다시 시도하세요</td></tr>';
+          ledgerBody.innerHTML = '<tr class="note-row"><td colspan="12">데이터를 불러오지 못했습니다 (' + escapeHtml(err.message) + ') — 새로고침을 눌러 다시 시도하세요</td></tr>';
           console.error('data.json 로드 실패', err);
         });
     }
@@ -516,15 +513,22 @@
       var clone = table.cloneNode(true);
       clone.querySelectorAll('tr.note-row, tr.no-match, tr[hidden]').forEach(function(r){ r.remove(); });
 
+      // 검사내용 칸의 줄바꿈(\n)을 <br>로 바꿔서 화면과 동일하게 한 셀 안에서 줄바꿈되도록 처리
+      // (엑셀 HTML import는 셀 안의 순수 개행문자를 새 행/새 셀로 쪼개버릴 수 있어 <br>이 안전함)
+      clone.querySelectorAll('td:nth-child(12)').forEach(function(td){
+        td.innerHTML = td.textContent
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/\n/g, '<br>');
+      });
+
       var html = '﻿<html xmlns:o="urn:schemas-microsoft-com:office:office" '
         + 'xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
         + '<head><meta charset="UTF-8"><style>'
-        + 'td,th{font-family:맑은 고딕,sans-serif;font-size:11pt;border:1px solid #ccc;padding:4px 8px;} '
+        + 'td,th{font-family:맑은 고딕,sans-serif;font-size:11pt;border:1px solid #ccc;padding:4px 8px;mso-line-height-rule:exactly;} '
         + 'th{background:#eef1f4;font-weight:bold;} '
         + ".mono{mso-number-format:'\\@';} "
-        // 신고일자(3) · 통관계획(4) · 포장갯수(9) 열은 가운데 정렬
-        + 'td:nth-child(3), th:nth-child(3), td:nth-child(4), th:nth-child(4), td:nth-child(9), th:nth-child(9){text-align:center;} '
-        + 'td:nth-child(13){white-space:pre-line;}'
+        // 신고일자(2) · 통관계획(3) · 포장갯수(8) 열은 가운데 정렬
+        + 'td:nth-child(2), th:nth-child(2), td:nth-child(3), th:nth-child(3), td:nth-child(8), th:nth-child(8){text-align:center;}'
         + '</style></head><body>' + clone.outerHTML + '</body></html>';
 
       var blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
@@ -787,7 +791,6 @@
       tr.innerHTML =
         '<td><button type="button" class="row-del" title="삭제">✕</button></td>' +
         '<td class="seq">' + (index + 1) + '</td>' +
-        '<td contenteditable="true" data-field="inquiryDate" data-placeholder="–"></td>' +
         '<td contenteditable="true" data-field="reportDate">' + escapeHtml(row.reportDate || todayShort) + '</td>' +
         '<td contenteditable="true" data-field="plan"' + (row.plan ? '' : ' data-placeholder="–"') + '>' + escapeHtml(row.plan || '') + '</td>' +
         '<td contenteditable="true" data-field="agency"' + (row.agency ? '' : ' data-placeholder="–"') + '>' + escapeHtml(row.agency || '') + '</td>' +

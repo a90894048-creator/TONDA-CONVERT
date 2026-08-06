@@ -137,7 +137,9 @@ def parse_5em(root) -> dict:
 def parse_929(root) -> dict:
     issue = txt(root, 'IssueDateTime')
     items = {}
-    for item in root.findall('GovernmentAgencyGoodsItem'):
+    # GovernmentAgencyGoodsItem은 root의 직속 자식이 아니라 GoodsShipment 아래에 있음 —
+    # './/'로 깊이 상관없이 전부 찾는다
+    for item in root.findall('.//GovernmentAgencyGoodsItem'):
         seq = txt(item, 'SequenceNumeric').lstrip('0')
         desc = txt(item, 'Commodity/CargoDescription')
         if seq:

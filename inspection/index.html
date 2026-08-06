@@ -171,7 +171,6 @@
 
   th.num, td.num{ text-align:right; font-variant-numeric: tabular-nums; }
   td.mono, th.mono{ font-family: var(--font-mono); font-size:12px; }
-  .wh-name{ display:block; font-family:var(--font-ui); font-size:11.5px; color:var(--ink-soft); margin-top:2px; white-space:normal; }
 
   tbody td{ padding:12px; font-size:13px; border-bottom:1px solid var(--line); vertical-align:top; }
   tbody tr:last-child td{ border-bottom:none; }
@@ -438,8 +437,9 @@
       var warehouseCell;
       if (r.warehouse){
         var whName = WAREHOUSE_NAMES[r.warehouse] || '';
-        warehouseCell = '<td class="mono">' + escapeHtml(r.warehouse)
-          + (whName ? '<br><span class="wh-name">' + escapeHtml(whName) + '</span>' : '') + '</td>';
+        warehouseCell = whName
+          ? '<td>' + escapeHtml(whName) + '</td>'
+          : '<td class="mono">' + escapeHtml(r.warehouse) + '</td>';
       } else {
         warehouseCell = '<td class="dash">&ndash;</td>';
       }
@@ -731,7 +731,9 @@
       if (typeCode === 'GOVCBR929'){
         var issueRaw = txt(root, 'IssueDateTime');
         var itemDescByeq = {};
-        findAllChildren(root, 'GovernmentAgencyGoodsItem').forEach(function(item){
+        // GovernmentAgencyGoodsItem은 root의 직속 자식이 아니라 GoodsShipment 아래에 있음 —
+        // querySelectorAll로 깊이 상관없이 전부 찾는다
+        Array.prototype.forEach.call(root.querySelectorAll('GovernmentAgencyGoodsItem'), function(item){
           var seq = txt(item, 'SequenceNumeric').replace(/^0+/, '');
           var desc = txt(item, 'Commodity/CargoDescription');
           if (seq) itemDescByeq[seq] = desc;

@@ -168,6 +168,7 @@
 
   th.num, td.num{ text-align:right; font-variant-numeric: tabular-nums; }
   td.mono, th.mono{ font-family: var(--font-mono); font-size:12px; }
+  .wh-name{ display:block; font-family:var(--font-ui); font-size:11.5px; color:var(--ink-soft); margin-top:2px; white-space:normal; }
 
   tbody td{ padding:12px; font-size:13px; border-bottom:1px solid var(--line); vertical-align:top; }
   tbody tr:last-child td{ border-bottom:none; }
@@ -403,6 +404,10 @@
 
     var TODAY = '2026-08-05';
     var initialized = false;
+    var WAREHOUSE_NAMES = {};
+    fetch('warehouse-names.json').then(function(r){ return r.ok ? r.json() : {}; })
+      .then(function(map){ WAREHOUSE_NAMES = map; renderCurrent(); })
+      .catch(function(){});
 
     var NOTE_ROW = '<tr class="note-row"><td colspan="12">실시간 신규 통보 자동 반영은 사내 PC 전용 세관알리미 연동판에서 지원됩니다 (이 웹 데모에는 미포함)</td></tr>';
     var NO_MATCH_ROW =
@@ -427,7 +432,14 @@
       var declCell   = r.declKnown ? '<td class="mono">' + escapeHtml(r.declNo) + '</td>' : '<td class="dash">확인필요</td>';
       var planCell   = planCellHtml(r.plan);
       var arrivalCell= r.arrival ? '<td class="' + (r.arrival === '미정' ? 'dash' : '') + '">' + escapeHtml(r.arrival) + '</td>' : '<td class="dash">&ndash;</td>';
-      var warehouseCell = r.warehouse ? '<td class="mono">' + escapeHtml(r.warehouse) + '</td>' : '<td class="dash">&ndash;</td>';
+      var warehouseCell;
+      if (r.warehouse){
+        var whName = WAREHOUSE_NAMES[r.warehouse] || '';
+        warehouseCell = '<td class="mono">' + escapeHtml(r.warehouse)
+          + (whName ? '<br><span class="wh-name">' + escapeHtml(whName) + '</span>' : '') + '</td>';
+      } else {
+        warehouseCell = '<td class="dash">&ndash;</td>';
+      }
       var agencyCell = r.channel
         ? '<td><span class="channel-chip ' + (CHANNEL_CLASS[r.channel] || '') + '">' + escapeHtml(r.channel) + '</span></td>'
         : '<td>' + escapeHtml(r.agency) + '</td>';
@@ -447,10 +459,17 @@
         + '</tr>';
     }
 
+    var lastJson = null;
+
     function render(json){
+      lastJson = json;
       TODAY = json.today;
       updatedAt.textContent = json.updated;
       ledgerBody.innerHTML = json.rows.map(rowHtml).join('') + NO_MATCH_ROW + NOTE_ROW;
+    }
+
+    function renderCurrent(){
+      if (lastJson){ render(lastJson); applyFilter(); }
     }
 
     function fmtKo(iso){

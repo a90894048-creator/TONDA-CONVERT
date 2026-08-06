@@ -536,14 +536,10 @@
       clone.querySelectorAll('tr.note-row, tr.no-match, tr[hidden]').forEach(function(r){ r.remove(); });
 
       // 검사내용 칸의 줄바꿈(\n)을 <br>로 바꿔서 화면과 동일하게 한 셀 안에서 줄바꿈되도록 처리
-      // (엑셀 HTML import는 셀 안의 순수 개행문자를 새 행/새 셀로 쪼개버릴 수 있어 <br>이 안전함)
-      // mso-data-placement는 <style> 블록의 선택자 규칙으로는 엑셀이 무시하는 경우가 있어
-      // 반드시 해당 td의 인라인 style 속성에 직접 넣어야 확실히 적용됨
       clone.querySelectorAll('td:nth-child(12)').forEach(function(td){
         td.innerHTML = td.textContent
           .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
           .replace(/\r\n|\r|\n/g, '<br>');
-        td.setAttribute('style', (td.getAttribute('style') || '') + ';mso-data-placement:same-cell;');
       });
 
       var html = '﻿<html xmlns:o="urn:schemas-microsoft-com:office:office" '
@@ -554,8 +550,9 @@
         + ".mono{mso-number-format:'\\@';} "
         // 신고일자(2) · 통관계획(3) · 포장갯수(8) 열은 가운데 정렬
         + 'td:nth-child(2), th:nth-child(2), td:nth-child(3), th:nth-child(3), td:nth-child(8), th:nth-child(8){text-align:center;} '
-        // 검사내용(12) 칸은 <br>이 있어도 새 행/셀로 쪼개지 말고 한 셀 안에서 줄바꿈되도록 지시
-        + 'td:nth-child(12){mso-data-placement:same-cell;}'
+        // mso-data-placement는 td가 아니라 br 자체에 걸어야 "같은 셀 안 줄바꿈"으로 처리되고,
+        // td에 걸면 엑셀이 아예 셀을 병합해버림
+        + 'br{mso-data-placement:same-cell;}'
         + '</style></head><body>' + clone.outerHTML + '</body></html>';
 
       var blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });

@@ -658,7 +658,7 @@
       items.forEach(function(item){
         var seq = txt(item, 'SequenceNumeric').replace(/^0+/, '');
         var desc = txt(item, 'Commodity/CargoDescription');
-        if (desc) entries.push({ seq: parseInt(seq, 10) || 0, text: (seq || '') + '란 ' + desc + ' 물품 검사' });
+        if (desc) entries.push({ seq: parseInt(seq, 10) || 0, text: (seq || '') + '란 ' + desc });
       });
       entries.sort(function(a, b){ return a.seq - b.seq; });
       return entries.map(function(e){ return e.text; }).join(',\n');
@@ -869,7 +869,7 @@
         } else {
           var itemParts = (r023.flaggedSeqs || []).map(function(seq){
             var desc = r929 && r929.items && r929.items[seq];
-            return seq + '란' + (desc ? (' ' + desc + ' 물품 검사') : '');
+            return seq + '란' + (desc ? (' ' + desc) : '');
           });
           remark = (itemParts.length ? itemParts.join(',\n') + '\n— ' : '') + '검사계획통보 대기중';
         }

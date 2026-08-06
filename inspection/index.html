@@ -176,7 +176,7 @@
   tbody tr.verified:hover td{ background: color-mix(in srgb, var(--auto) 10%, transparent); }
 
   td.seq{ color:var(--ink-soft); font-variant-numeric: tabular-nums; }
-  td.remark{ color:var(--ink); line-height:1.45; min-width:220px; }
+  td.remark{ color:var(--ink); line-height:1.5; min-width:220px; white-space:pre-line; }
   .dash{ color:var(--line-strong); }
 
   .channel-chip{
@@ -523,7 +523,8 @@
         + 'th{background:#eef1f4;font-weight:bold;} '
         + ".mono{mso-number-format:'\\@';} "
         // 신고일자(3) · 통관계획(4) · 포장갯수(9) 열은 가운데 정렬
-        + 'td:nth-child(3), th:nth-child(3), td:nth-child(4), th:nth-child(4), td:nth-child(9), th:nth-child(9){text-align:center;}'
+        + 'td:nth-child(3), th:nth-child(3), td:nth-child(4), th:nth-child(4), td:nth-child(9), th:nth-child(9){text-align:center;} '
+        + 'td:nth-child(13){white-space:pre-line;}'
         + '</style></head><body>' + clone.outerHTML + '</body></html>';
 
       var blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
@@ -653,13 +654,14 @@
     function itemSummary(declRoot){
       var consign = findChild(declRoot, 'Consignment');
       var items = findAllChildren(consign, 'ConsignmentItem');
-      var parts = [];
+      var entries = [];
       items.forEach(function(item){
         var seq = txt(item, 'SequenceNumeric').replace(/^0+/, '');
         var desc = txt(item, 'Commodity/CargoDescription');
-        if (desc) parts.push((seq || '') + '란 ' + desc + ' 물품 검사');
+        if (desc) entries.push({ seq: parseInt(seq, 10) || 0, text: (seq || '') + '란 ' + desc + ' 물품 검사' });
       });
-      return parts.join(', ');
+      entries.sort(function(a, b){ return a.seq - b.seq; });
+      return entries.map(function(e){ return e.text; }).join(',\n');
     }
 
     function fmtIssueDate(raw){
@@ -736,6 +738,7 @@
             flaggedSeqs.push(txt(gs, 'SequenceNumeric').replace(/^0+/, ''));
           }
         });
+        flaggedSeqs.sort(function(a, b){ return (parseInt(a, 10) || 0) - (parseInt(b, 10) || 0); });
         return {
           type: '023',
           declNo: declNo023,
@@ -868,7 +871,7 @@
             var desc = r929 && r929.items && r929.items[seq];
             return seq + '란' + (desc ? (' ' + desc + ' 물품 검사') : '');
           });
-          remark = (itemParts.length ? itemParts.join(', ') + ' — ' : '') + '검사계획통보 대기중';
+          remark = (itemParts.length ? itemParts.join(',\n') + '\n— ' : '') + '검사계획통보 대기중';
         }
 
         var row = {

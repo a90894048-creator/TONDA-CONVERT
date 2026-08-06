@@ -137,6 +137,7 @@
     background:var(--surface); border:1px solid var(--line-strong); border-radius:7px;
     padding:7px 10px; min-width:150px;
   }
+  .date-tilde{ color:var(--ink-soft); font-size:13px; }
   .today-btn{
     font-size:12.5px; font-weight:600; color:var(--accent-ink); background:var(--accent-soft);
     border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
@@ -308,11 +309,13 @@
   <div class="datebar">
     <div class="field">
       <label for="dateInput">신고일자 조회</label>
-      <button class="step-btn" id="prevDay" type="button" aria-label="전날">
+      <button class="step-btn" id="prevDay" type="button" aria-label="이전">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
       </button>
       <input class="date-input" id="dateInput" type="date" value="2026-08-05" min="2026-01-01" max="2026-12-31">
-      <button class="step-btn" id="nextDay" type="button" aria-label="다음날">
+      <span class="date-tilde">~</span>
+      <input class="date-input" id="dateInputEnd" type="date" value="2026-08-05" min="2026-01-01" max="2026-12-31">
+      <button class="step-btn" id="nextDay" type="button" aria-label="다음">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </button>
       <button class="today-btn" id="todayBtn" type="button">오늘</button>
@@ -424,6 +427,7 @@
     var downloadBtn = document.getElementById('downloadBtn');
     var refreshBtn  = document.getElementById('refreshBtn');
     var dateInput   = document.getElementById('dateInput');
+    var dateInputEnd= document.getElementById('dateInputEnd');
     var prevDayBtn  = document.getElementById('prevDay');
     var nextDayBtn  = document.getElementById('nextDay');
     var todayBtn    = document.getElementById('todayBtn');
@@ -499,20 +503,25 @@
     }
 
     function applyFilter(){
-      var target   = dateInput.value || TODAY;
+      var start = dateInput.value || TODAY;
+      var end   = dateInputEnd.value || start;
+      if (end < start){ var tmp = start; start = end; end = tmp; } // 거꾸로 입력해도 자동 보정
+
       var rows     = document.querySelectorAll('#ledgerBody tr.data-row');
       var noteRow  = document.querySelector('#ledgerBody tr.note-row');
       var noMatchRow = document.querySelector('#ledgerBody tr.no-match');
       var visible  = 0;
       rows.forEach(function(row){
-        var match = row.getAttribute('data-date') === target;
+        var d = row.getAttribute('data-date');
+        var match = d >= start && d <= end;
         row.hidden = !match;
         if (match) visible++;
       });
-      if (noteRow) noteRow.hidden = (target !== TODAY);
+      if (noteRow) noteRow.hidden = !(TODAY >= start && TODAY <= end);
       if (noMatchRow){
         noMatchRow.hidden = visible !== 0;
-        noMatchRow.querySelector('.nm-date').textContent = fmtKo(target);
+        var label = start === end ? fmtKo(start) : (fmtKo(start) + ' ~ ' + fmtKo(end));
+        noMatchRow.querySelector('.nm-date').textContent = label;
       }
       resultCount.innerHTML = '<b>' + visible + '</b>건 표시 중';
     }
@@ -523,7 +532,7 @@
         .then(function(res){ if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
         .then(function(json){
           render(json);
-          if (!initialized){ dateInput.value = TODAY; initialized = true; }
+          if (!initialized){ dateInput.value = TODAY; dateInputEnd.value = TODAY; initialized = true; }
           applyFilter();
         })
         .catch(function(err){
@@ -570,21 +579,33 @@
       });
     });
 
-    // ── 날짜 조회 ─────────────────────────────────────────────
+    // ── 날짜 조회 (기간 지정 가능) ────────────────────────────
     dateInput.addEventListener('change', applyFilter);
+    dateInputEnd.addEventListener('change', applyFilter);
     prevDayBtn.addEventListener('click', function(){
-      var d = new Date(dateInput.value + 'T00:00:00');
-      d.setDate(d.getDate() - 1);
-      dateInput.value = localIso(d);
+      var s = new Date(dateInput.value + 'T00:00:00');
+      var e = new Date(dateInputEnd.value + 'T00:00:00');
+      s.setDate(s.getDate() - 1);
+      e.setDate(e.getDate() - 1);
+      dateInput.value = localIso(s);
+      dateInputEnd.value = localIso(e);
       applyFilter();
     });
     nextDayBtn.addEventListener('click', function(){
-      var d = new Date(dateInput.value + 'T00:00:00');
-      d.setDate(d.getDate() + 1);
-      dateInput.value = localIso(d);
+      var s = new Date(dateInput.value + 'T00:00:00');
+      var e = new Date(dateInputEnd.value + 'T00:00:00');
+      s.setDate(s.getDate() + 1);
+      e.setDate(e.getDate() + 1);
+      dateInput.value = localIso(s);
+      dateInputEnd.value = localIso(e);
       applyFilter();
     });
-    todayBtn.addEventListener('click', function(){ dateInput.value = localIso(new Date()); applyFilter(); });
+    todayBtn.addEventListener('click', function(){
+      var t = localIso(new Date());
+      dateInput.value = t;
+      dateInputEnd.value = t;
+      applyFilter();
+    });
 
     loadData(false);
   })();

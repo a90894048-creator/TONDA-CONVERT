@@ -262,7 +262,7 @@
 
   <div class="demo-banner">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-    <span><b>웹 데모입니다.</b> 이 페이지는 사내망(세관 EDI 수신 서버)에 직접 접근할 수 없어 실시간으로 갱신되지 않습니다. 아래 표의 데이터는 recv_xml의 5EM과 send_xml의 929(수입신고서) 파일을 실제로 읽어 만든 것이지만, 자동 스케줄은 붙어있지 않아 <b>사람이 "XML에서 새로 만들기"로 갱신</b>해야 최신 상태가 됩니다 — 페이지 하단에서 두 폴더의 XML을 함께 선택하면 브라우저에서 바로 처리·게시할 수 있습니다.</span>
+    <span><b>웹 데모입니다.</b> 이 페이지는 사내망(세관 EDI 수신 서버)에 직접 접근할 수 없어 실시간으로 갱신되지 않습니다. 아래 표의 데이터는 recv_xml의 수입신고처리결과통보서(023)·검사계획통보(5EM)와 send_xml의 수입신고서(929) 파일을 실제로 읽어 만든 것이지만, 자동 스케줄은 붙어있지 않아 <b>사람이 "XML에서 새로 만들기"로 갱신</b>해야 최신 상태가 됩니다 — 페이지 하단에서 폴더의 XML을 선택하면 브라우저에서 바로 처리·게시할 수 있습니다.</span>
   </div>
 
   <div class="topbar">
@@ -353,7 +353,7 @@
       </table>
     </div>
     <div class="table-footnote">
-대행사가 통다 계열 3개 표기(<b>통다글로벌로지스틱</b>=쿠팡, <b>통다그로벌로지스틱</b>=교동, <b>주식회사 통다글로벌로지스틱스</b>=통다) 중 하나인 건만 표시합니다 (같은 통관지 세관을 거치는 다른 포워더 건은 제외). 대행사 옆 색상 칩으로 어느 채널 건인지 구분됩니다. 수입신고번호 · H B/L · 세관담당자 · 장치장소 · 검사내용은 5EM 검사계획통보 XML에서, 통관계획 · 대행사 · 포장갯수 · 수입화주는 송신폴더의 수입신고서(929) XML에서 채워졌습니다. <b>신고일자는 수입신고처리결과통보서(023)의 최초 접수 통보</b>를 기준으로 하며, 없으면 929의 값으로 대신합니다. 조회일자 · 반입일은 아직 자동화할 소스를 못 찾아 수동 입력 칸으로 남겼습니다.
+대행사가 통다 계열 3개 표기(<b>통다글로벌로지스틱</b>=쿠팡, <b>통다그로벌로지스틱</b>=교동, <b>주식회사 통다글로벌로지스틱스</b>=통다) 중 하나인 건만 표시합니다 (같은 통관지 세관을 거치는 다른 포워더 건은 제외). 대행사 옆 색상 칩으로 어느 채널 건인지 구분됩니다. <b>검사대상 판정과 신고일자는 수입신고처리결과통보서(023)의 최초 접수 통보에서 C/S검사 결과가 "Y"인 건을 기준</b>으로 하며, 5EM(검사계획통보)은 검사시각·항목·방법 등 상세를 나중에 채워주는 보완 통보입니다 — 5EM이 아직 없어도 023만으로 행이 먼저 표시됩니다. 통관계획 · 대행사 · 포장갯수 · 수입화주는 송신폴더의 수입신고서(929) XML에서 채워졌습니다. 조회일자 · 반입일은 아직 자동화할 소스를 못 찾아 수동 입력 칸으로 남겼습니다.
     </div>
   </div>
 
@@ -365,7 +365,7 @@
 
     <div id="importPanel" hidden>
       <div class="import-drop" id="importDrop">
-        <b>recv_xml</b>의 검사계획통보(5EM)·수입신고처리결과통보서(023)와 <b>send_xml</b>의 수입신고서(929) XML을 함께 끌어놓거나 클릭해서 선택하세요 (여러 개 한번에 가능 · 929는 통관계획·대행사·포장갯수·수입화주를, 023은 신고일자(최초 접수 기준)를 채웁니다 · <b>대행사가 통다 계열(쿠팡·교동·통다) 3개 표기가 아닌 건은 자동으로 제외</b>됩니다)
+필수인 <b>recv_xml의 수입신고처리결과통보서(023)</b>는 반드시 넣어주세요 — <b>검사대상 여부는 023의 C/S검사 결과(Y)로 판정</b>합니다. 여기에 <b>recv_xml의 검사계획통보(5EM)</b>와 <b>send_xml의 수입신고서(929)</b>를 함께 넣으면 검사 상세(시각·항목·방법)와 통관계획·대행사·포장갯수·수입화주까지 채워집니다 — <b>5EM이 아직 없어도 023만으로 검사대상 행이 먼저 표시</b>되고, 나중에 5EM을 추가로 넣으면 상세가 채워집니다. (대행사가 통다 계열(쿠팡·교동·통다) 3개 표기가 아닌 건은 자동 제외)
         <input type="file" id="importFileInput" accept=".xml" multiple hidden>
       </div>
       <div class="import-status" id="importStatus"></div>
@@ -582,7 +582,7 @@
       dateInput.value = localIso(d);
       applyFilter();
     });
-    todayBtn.addEventListener('click', function(){ dateInput.value = TODAY; applyFilter(); });
+    todayBtn.addEventListener('click', function(){ dateInput.value = localIso(new Date()); applyFilter(); });
 
     loadData(false);
   })();
@@ -723,17 +723,30 @@
         };
       }
 
-      // 수입신고처리결과통보서 — 신고번호당 여러 건(상태 갱신) 올 수 있음. 가장 이른 통보의
-      // AcceptanceDateTime을 신고일자로 사용(최초 접수 시점). issueRaw는 그 비교용.
+      // 수입신고처리결과통보서 — 신고번호당 여러 건(상태 갱신) 올 수 있음. 가장 이른 통보(최초 접수,
+      // 보통 심사구분 19)에만 GoodsShipment별 C/S검사 결과(StatementCode)가 실려 있고, 이 중 하나라도
+      // "Y"면 그 신고번호는 검사대상이다 — 5EM(검사계획통보)이 오기 전에도 이 시점에 이미 확정된 사실.
       if (typeCode === 'GOVCBR023'){
+        var decl023 = findChild(root, 'Declaration');
         var declNo023 = txt(root, 'Declaration/FunctionalReferenceID') || txt(root, 'Declaration/ID');
         var acceptRaw = txt(root, 'Declaration/AcceptanceDateTime');
+        var items023 = decl023 ? findAllChildren(decl023, 'GoodsShipment') : [];
+        var flaggedSeqs = [];
+        items023.forEach(function(gs){
+          if (txt(gs, 'AdditionalInformation/StatementCode') === 'Y'){
+            flaggedSeqs.push(txt(gs, 'SequenceNumeric').replace(/^0+/, ''));
+          }
+        });
         return {
           type: '023',
           declNo: declNo023,
           issueRaw: txt(root, 'IssueDateTime'),
           date: isoIssueDate(acceptRaw),
           reportDate: fmtIssueDate(acceptRaw),
+          officer: txt(root, 'Authenticator/Name'),
+          content: txt(root, 'AdditionalInformation/Content'),
+          inspectFlag: flaggedSeqs.length > 0,
+          flaggedSeqs: flaggedSeqs,
         };
       }
 
@@ -810,10 +823,9 @@
       statusEl.className = 'import-status';
       statusEl.textContent = files.length + '개 파일 분석 중…';
 
-      var seen5em = {};
-      var rows5em = [];
-      var rows929 = {}; // declNo -> 929 필드
-      var rows023 = {}; // declNo -> 가장 이른(최초 접수) 023 필드
+      var rows5em = {}; // declNo -> 5em 필드 (검사 상세: 시각·항목·방법)
+      var rows929 = {}; // declNo -> 929 필드 (통관계획·대행사·포장갯수·수입화주)
+      var rows023 = {}; // declNo -> 가장 이른(최초 접수) 023 필드 — 검사대상 여부의 근거
       var skipped = 0;
 
       for (var i = 0; i < files.length; i++){
@@ -821,48 +833,62 @@
           var text = await readFileAsText(files[i]);
           var parsed = parseXmlText(text);
           if (!parsed){ skipped++; continue; }
-          if (parsed.type === '5em'){
-            if (parsed.declNo && seen5em[parsed.declNo]) continue;
-            if (parsed.declNo) seen5em[parsed.declNo] = true;
-            rows5em.push(parsed);
+          if (parsed.type === '5em' && parsed.declNo){
+            if (!rows5em[parsed.declNo]) rows5em[parsed.declNo] = parsed;
           } else if (parsed.type === '929' && parsed.declNo){
             rows929[parsed.declNo] = parsed;
           } else if (parsed.type === '023' && parsed.declNo){
-            // 같은 신고번호로 여러 통보(상태 갱신)가 올 수 있음 — 신고일자 용도로는
-            // 가장 이른(최초 접수) 통보만 채택하고, 이후 통보로 덮어쓰지 않음
+            // 같은 신고번호로 여러 통보(상태 갱신)가 올 수 있음 — C/S검사 결과(검사대상 여부)와
+            // 신고일자는 가장 이른(최초 접수, 보통 심사구분 19) 통보에만 실려있으므로 그것만 채택
             var prior = rows023[parsed.declNo];
             if (!prior || parsed.issueRaw < prior.issueRaw) rows023[parsed.declNo] = parsed;
           }
         } catch (e){ skipped++; }
       }
 
+      // ★ 검사대상 판정 기준: 023(수입신고처리결과통보서)에서 C/S검사=Y인 신고번호 전부.
+      // 5EM(검사계획통보)은 나중에 검사시각·방법·상세항목을 채워주는 보완 통보일 뿐,
+      // 5EM이 아직 안 왔다고 검사대상 표시를 빼지 않는다.
       var merged929 = 0;
+      var pendingDetail = 0;
       var excludedOther = 0;
-      var mergedRows = rows5em.map(function(row){
-        var extra929 = rows929[row.declNo];
-        var extra023 = rows023[row.declNo];
-        var merged = row;
-        if (extra929){
+      var mergedRows = Object.keys(rows023).filter(function(d){ return rows023[d].inspectFlag; }).map(function(declNo){
+        var r023 = rows023[declNo];
+        var r5em = rows5em[declNo];
+        var r929 = rows929[declNo];
+        var hasDetail = !!r5em;
+        if (!hasDetail) pendingDetail++;
+
+        var remark;
+        if (hasDetail){
+          remark = r5em.remark;
+        } else {
+          var seqLabel = r023.flaggedSeqs.length ? (r023.flaggedSeqs.join(',') + '란 ') : '';
+          remark = seqLabel + 'C/S검사 대상 — 5EM 검사계획통보 대기중' + (r023.content ? (' (' + r023.content + ')') : '');
+        }
+
+        var row = {
+          declNo: declNo,
+          declKnown: true,
+          date: r023.date,
+          reportDate: r023.reportDate,
+          officer: (r5em && r5em.officer) || r023.officer || '미상',
+          hbl: (r5em && r5em.hbl) || '',
+          warehouse: (r5em && r5em.warehouse) || '',
+          remark: remark,
+          plan: '', agency: '', channel: '', packages: '', importer: '', arrival: '',
+          verified: hasDetail,
+        };
+        if (r929){
           merged929++;
-          merged = Object.assign({}, merged, {
-            date: extra929.date || merged.date,
-            reportDate: extra929.reportDate || merged.reportDate,
-            plan: extra929.plan || merged.plan,
-            agency: extra929.agency || merged.agency,
-            channel: CHANNEL_MAP[extra929.agency] || merged.channel,
-            packages: extra929.packages || merged.packages,
-            importer: extra929.importer || merged.importer,
-            warehouse: merged.warehouse || extra929.warehouse,
-          });
+          row.plan = r929.plan;
+          row.agency = r929.agency;
+          row.channel = CHANNEL_MAP[r929.agency] || '';
+          row.packages = r929.packages;
+          row.importer = r929.importer;
+          row.warehouse = row.warehouse || r929.warehouse;
         }
-        // 신고일자는 수입신고처리결과통보서(023, 최초 접수)를 929보다 우선 신뢰
-        if (extra023){
-          merged = Object.assign({}, merged, {
-            date: extra023.date || merged.date,
-            reportDate: extra023.reportDate || merged.reportDate,
-          });
-        }
-        return merged;
+        return row;
       });
 
       // 929로 대행사가 확인됐는데 통다 계열 3개 표기(쿠팡/교동/통다) 중 하나가 아니면 제외
@@ -876,8 +902,7 @@
       previewWrap.hidden = newRows.length === 0;
       publishBtn.disabled = newRows.length === 0;
 
-      var matched023 = Object.keys(rows023).filter(function(d){ return newRows.some(function(r){ return r.declNo === d; }); }).length;
-      statusEl.textContent = newRows.length + '건 인식됨 (929 매칭 ' + merged929 + '건, 023 매칭 ' + matched023 + '건' +
+      statusEl.textContent = newRows.length + '건 검사대상 인식됨 (929 매칭 ' + merged929 + '건, 5EM 대기중 ' + pendingDetail + '건' +
         (excludedOther ? ', 통다 외 대행사 ' + excludedOther + '건 제외' : '') + ')' +
         (skipped ? ' · ' + skipped + '개 파일은 5EM/929/023이 아니거나 읽기 실패하여 제외' : '') +
         ' — 칸을 눌러 직접 수정할 수 있습니다.';

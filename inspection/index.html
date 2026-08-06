@@ -54,13 +54,13 @@
   .backlink:hover{ color:var(--ink); }
   .backlink svg{ width:14px; height:14px; }
 
-  /* ── Demo notice ──────────────────────────────────────── */
+  /* ── Auto-update notice ──────────────────────────────────── */
   .demo-banner{
     display:flex; align-items:flex-start; gap:10px;
-    background: var(--manual-soft); border:1px solid color-mix(in srgb, var(--manual) 30%, transparent);
+    background: var(--auto-soft); border:1px solid color-mix(in srgb, var(--auto) 30%, transparent);
     color: var(--ink-soft); border-radius:10px; padding:11px 14px; font-size:12.5px; line-height:1.55;
   }
-  .demo-banner svg{ width:16px; height:16px; flex:none; margin-top:1px; color:var(--manual); }
+  .demo-banner svg{ width:16px; height:16px; flex:none; margin-top:1px; color:var(--auto); }
   .demo-banner b{ color:var(--ink); }
   .demo-banner code{ font-family:var(--font-mono, ui-monospace, Consolas, monospace); background:var(--line); padding:1px 5px; border-radius:4px; font-size:11.5px; }
 
@@ -84,11 +84,14 @@
 
   .sample-pill{
     display:inline-flex; align-items:center; gap:7px;
-    font-size:12.5px; font-weight:600; color:var(--manual);
-    background:var(--manual-soft); border:1px solid color-mix(in srgb, var(--manual) 35%, transparent);
+    font-size:12.5px; font-weight:600; color:var(--auto);
+    background:var(--auto-soft); border:1px solid color-mix(in srgb, var(--auto) 35%, transparent);
     padding:6px 12px 6px 10px; border-radius:999px; white-space:nowrap;
   }
-  .sample-dot{ width:7px; height:7px; border-radius:50%; background:var(--manual); flex:none; }
+  .sample-dot{
+    width:7px; height:7px; border-radius:50%; background:var(--auto); flex:none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--auto) 22%, transparent);
+  }
 
   .btn{
     display:inline-flex; align-items:center; gap:8px;
@@ -253,18 +256,18 @@
   </a>
 
   <div class="demo-banner">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-    <span><b>웹 데모입니다.</b> 이 페이지는 사내망(세관 EDI 수신 서버)에 직접 접근할 수 없어 실시간으로 갱신되지 않습니다. 아래 표의 데이터는 recv_xml의 수입신고처리결과통보서(023)·검사계획통보(5EM)와 send_xml의 수입신고서(929) 파일을 실제로 읽어 만든 것이지만, 자동 스케줄은 붙어있지 않아 <b>사람이 "XML에서 새로 만들기"로 갱신</b>해야 최신 상태가 됩니다 — 페이지 하단에서 폴더의 XML을 선택하면 브라우저에서 바로 처리·게시할 수 있습니다.</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    <span><b>자동 갱신 중입니다.</b> 중계 PC에서 <code>inspection_autoupdate.py</code>가 30분마다 recv_xml의 수입신고처리결과통보서(023)·검사계획통보(5EM)와 send_xml의 수입신고서(929)를 스캔해 이 데이터를 자동으로 게시합니다. "새로고침"을 누르면 최신 상태를 바로 볼 수 있고, 필요하면 아래 "XML에서 새로 만들기"로 수동 갱신도 가능합니다.</span>
   </div>
 
   <div class="topbar">
     <div class="titles">
       <span class="eyebrow">통다글로벌 · TONDA GLOBAL</span>
       <h1>검사건 리스트</h1>
-      <span class="meta">데이터 생성 <b id="updatedAt">불러오는 중…</b> · Sheet1 (2) 양식 컬럼 구조</span>
+      <span class="meta">마지막 자동 갱신 <b id="updatedAt">불러오는 중…</b> · Sheet1 (2) 양식 컬럼 구조</span>
     </div>
     <div class="actions">
-      <span class="sample-pill"><span class="sample-dot"></span>스크립트 수동 실행 · 자동 스케줄 없음</span>
+      <span class="sample-pill"><span class="sample-dot"></span>자동 갱신 · 30분 주기</span>
       <button class="btn" id="refreshBtn" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16M3 21v-5h5"/></svg>
         새로고침
@@ -384,7 +387,7 @@
   </div>
 
   <p class="footer-note">
-    "엑셀 다운로드"는 지금 화면에 보이는(날짜 조회로 필터링된) 표를 그대로 .xls로 내려받는 실제 동작입니다. "새로고침"은 <code>data.json</code>을 다시 불러옵니다. 위 "XML에서 새로 만들기"에서 recv_xml 파일을 선택하면 브라우저에서 바로 파싱 → 미리보기(칸마다 직접 수정 가능) → "GitHub에 게시"까지 할 수 있어 Python 스크립트 없이도 데이터를 갱신할 수 있습니다.
+"엑셀 다운로드"는 지금 화면에 보이는(날짜 조회로 필터링된) 표를 그대로 .xls로 내려받는 실제 동작입니다. "새로고침"은 <code>data.json</code>을 다시 불러오는데, 중계 PC가 30분마다 자동으로 이 파일을 갱신하므로 평소엔 그냥 새로고침만 누르면 됩니다. 특정 XML을 직접 반영하고 싶으면 위 "XML에서 새로 만들기"에서 파일을 선택해 브라우저에서 바로 파싱 → 미리보기(칸마다 직접 수정 가능) → "GitHub에 게시"할 수도 있습니다.
   </p>
 </div>
 
@@ -409,7 +412,7 @@
       .then(function(map){ WAREHOUSE_NAMES = map; renderCurrent(); })
       .catch(function(){});
 
-    var NOTE_ROW = '<tr class="note-row"><td colspan="12">실시간 신규 통보 자동 반영은 사내 PC 전용 세관알리미 연동판에서 지원됩니다 (이 웹 데모에는 미포함)</td></tr>';
+    var NOTE_ROW = '<tr class="note-row"><td colspan="12">중계 PC가 30분마다 신규 통보를 자동 스캔합니다 — 방금 접수된 건은 다음 자동 갱신 때 반영됩니다 ("새로고침"으로 즉시 확인 가능)</td></tr>';
     var NO_MATCH_ROW =
       '<tr class="no-match" hidden><td colspan="12">선택한 날짜(<span class="nm-date"></span>)에 해당하는 검사건이 없습니다</td></tr>';
 

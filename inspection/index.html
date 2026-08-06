@@ -256,7 +256,7 @@
 
   <div class="demo-banner">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-    <span><b>자동 갱신 중입니다.</b> 중계 PC에서 <code>inspection_autoupdate.py</code>가 30분마다 recv_xml의 수입신고처리결과통보서(023)·검사계획통보(5EM)와 send_xml의 수입신고서(929)를 스캔해 이 데이터를 자동으로 게시합니다. "새로고침"을 누르면 최신 상태를 바로 볼 수 있고, 필요하면 아래 "XML에서 새로 만들기"로 수동 갱신도 가능합니다.</span>
+    <span><b>자동 갱신 중입니다.</b> 중계 PC에서 <code>inspection_autoupdate.py</code>가 10분마다 recv_xml의 수입신고처리결과통보서(023)·검사계획통보(5EM)와 send_xml의 수입신고서(929)를 스캔해 이 데이터를 자동으로 게시합니다. "새로고침"을 누르면 최신 상태를 바로 볼 수 있고, 필요하면 아래 "XML에서 새로 만들기"로 수동 갱신도 가능합니다.</span>
   </div>
 
   <div class="topbar">
@@ -266,7 +266,7 @@
       <span class="meta">마지막 자동 갱신 <b id="updatedAt">불러오는 중…</b> · Sheet1 (2) 양식 컬럼 구조</span>
     </div>
     <div class="actions">
-      <span class="sample-pill"><span class="sample-dot"></span>자동 갱신 · 30분 주기</span>
+      <span class="sample-pill"><span class="sample-dot"></span>자동 갱신 · 10분 주기</span>
       <button class="btn" id="refreshBtn" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16M3 21v-5h5"/></svg>
         새로고침
@@ -386,7 +386,7 @@
   </div>
 
   <p class="footer-note">
-"엑셀 다운로드"는 지금 화면에 보이는(날짜 조회로 필터링된) 표를 그대로 .xls로 내려받는 실제 동작입니다. "새로고침"은 <code>data.json</code>을 다시 불러오는데, 중계 PC가 30분마다 자동으로 이 파일을 갱신하므로 평소엔 그냥 새로고침만 누르면 됩니다. 특정 XML을 직접 반영하고 싶으면 위 "XML에서 새로 만들기"에서 파일을 선택해 브라우저에서 바로 파싱 → 미리보기(칸마다 직접 수정 가능) → "GitHub에 게시"할 수도 있습니다.
+"엑셀 다운로드"는 지금 화면에 보이는(날짜 조회로 필터링된) 표를 그대로 .xls로 내려받는 실제 동작입니다. "새로고침"은 <code>data.json</code>을 다시 불러오는데, 중계 PC가 10분마다 자동으로 이 파일을 갱신하므로 평소엔 그냥 새로고침만 누르면 됩니다. 특정 XML을 직접 반영하고 싶으면 위 "XML에서 새로 만들기"에서 파일을 선택해 브라우저에서 바로 파싱 → 미리보기(칸마다 직접 수정 가능) → "GitHub에 게시"할 수도 있습니다.
   </p>
 </div>
 
@@ -411,7 +411,7 @@
       .then(function(map){ WAREHOUSE_NAMES = map; renderCurrent(); })
       .catch(function(){});
 
-    var NOTE_ROW = '<tr class="note-row"><td colspan="12">중계 PC가 30분마다 신규 통보를 자동 스캔합니다 — 방금 접수된 건은 다음 자동 갱신 때 반영됩니다 ("새로고침"으로 즉시 확인 가능)</td></tr>';
+    var NOTE_ROW = '<tr class="note-row"><td colspan="12">중계 PC가 10분마다 신규 통보를 자동 스캔합니다 — 방금 접수된 건은 다음 자동 갱신 때 반영됩니다 ("새로고침"으로 즉시 확인 가능)</td></tr>';
     var NO_MATCH_ROW =
       '<tr class="no-match" hidden><td colspan="12">선택한 날짜(<span class="nm-date"></span>)에 해당하는 검사건이 없습니다</td></tr>';
 

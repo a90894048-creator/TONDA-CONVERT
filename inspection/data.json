@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-10 10:17",
+  "updated": "2026-08-10 10:27",
   "today": "2026-08-10",
-  "totalCount": 44,
+  "totalCount": 45,
   "autoCount": 31,
-  "pendingCount": 13,
+  "pendingCount": 14,
   "rows": [
     {
       "declNo": "4363226011224M",
@@ -780,6 +780,24 @@
       "no": 43
     },
     {
+      "declNo": "4363226011820M",
+      "declKnown": true,
+      "date": "2026-08-10",
+      "reportDate": "8/10",
+      "officer": "우동완",
+      "hbl": "TDCP20260807FKD",
+      "warehouse": "02070003",
+      "remark": "1란 SWIMMING GOGGLES\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "2",
+      "importer": "루밸런스코리아 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 44
+    },
+    {
       "declNo": "4363226011838M",
       "declKnown": true,
       "date": "2026-08-10",
@@ -795,7 +813,7 @@
       "importer": "유한회사 치얼업",
       "arrival": "",
       "verified": false,
-      "no": 44
+      "no": 45
     }
   ]
 }

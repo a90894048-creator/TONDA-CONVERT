@@ -756,7 +756,7 @@
 
       // 수입신고처리결과통보서 — 신고번호당 여러 건(상태 갱신) 올 수 있음. 가장 이른 통보(최초 접수,
       // 보통 심사구분 19)에만 GoodsShipment별 C/S검사 결과(StatementCode)가 실려 있고, 이 중 하나라도
-      // "Y"면 그 신고번호는 검사대상이다 — 5EM(검사계획통보)이 오기 전에도 이 시점에 이미 확정된 사실.
+      // "Y" 또는 "F"면 그 신고번호는 검사대상이다 — 5EM(검사계획통보)이 오기 전에도 이 시점에 이미 확정된 사실.
       if (typeCode === 'GOVCBR023'){
         var decl023 = findChild(root, 'Declaration');
         var declNo023 = txt(root, 'Declaration/FunctionalReferenceID') || txt(root, 'Declaration/ID');
@@ -764,7 +764,7 @@
         var items023 = decl023 ? findAllChildren(decl023, 'GoodsShipment') : [];
         var flaggedSeqs = [];
         items023.forEach(function(gs){
-          if (txt(gs, 'AdditionalInformation/StatementCode') === 'Y'){
+          if (['Y', 'F'].indexOf(txt(gs, 'AdditionalInformation/StatementCode')) !== -1){
             flaggedSeqs.push(txt(gs, 'SequenceNumeric').replace(/^0+/, ''));
           }
         });

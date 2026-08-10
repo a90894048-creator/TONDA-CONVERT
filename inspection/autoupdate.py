@@ -171,7 +171,7 @@ def parse_023(root) -> dict:
     flagged = []
     if decl is not None:
         for gs in decl.findall('GoodsShipment'):
-            if txt(gs, 'AdditionalInformation/StatementCode') == 'Y':
+            if txt(gs, 'AdditionalInformation/StatementCode') in ('Y', 'F'):
                 flagged.append(txt(gs, 'SequenceNumeric').lstrip('0'))
     flagged.sort(key=lambda s: int(s or 0))
     return {

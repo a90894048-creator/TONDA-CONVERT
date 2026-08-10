@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-06 15:25",
-  "today": "2026-08-06",
-  "totalCount": 42,
+  "updated": "2026-08-10 09:28",
+  "today": "2026-08-10",
+  "totalCount": 43,
   "autoCount": 31,
-  "pendingCount": 11,
+  "pendingCount": 12,
   "rows": [
     {
       "declNo": "4363226011224M",
@@ -760,6 +760,24 @@
       "arrival": "",
       "verified": true,
       "no": 42
+    },
+    {
+      "declNo": "4363226011787M",
+      "declKnown": true,
+      "date": "2026-08-10",
+      "reportDate": "8/10",
+      "officer": "우동완",
+      "hbl": "TDCP20260807SUN",
+      "warehouse": "02070003",
+      "remark": "2란\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "26",
+      "importer": "더메이커스 코리아",
+      "arrival": "",
+      "verified": false,
+      "no": 43
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-10 09:29",
+  "updated": "2026-08-10 09:54",
   "today": "2026-08-10",
-  "totalCount": 43,
+  "totalCount": 44,
   "autoCount": 31,
-  "pendingCount": 12,
+  "pendingCount": 13,
   "rows": [
     {
       "declNo": "4363226011224M",
@@ -778,6 +778,24 @@
       "arrival": "",
       "verified": false,
       "no": 43
+    },
+    {
+      "declNo": "4363226011838M",
+      "declKnown": true,
+      "date": "2026-08-10",
+      "reportDate": "8/10",
+      "officer": "조성일",
+      "hbl": "TDCP20260807HLZ03",
+      "warehouse": "02070003",
+      "remark": "1란,\n2란\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "11",
+      "importer": "유한회사 치얼업",
+      "arrival": "",
+      "verified": false,
+      "no": 44
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-10 17:57",
+  "updated": "2026-08-10 18:05",
   "today": "2026-08-10",
-  "totalCount": 48,
+  "totalCount": 50,
   "autoCount": 31,
-  "pendingCount": 17,
+  "pendingCount": 19,
   "rows": [
     {
       "declNo": "4363226011224M",
@@ -816,6 +816,24 @@
       "no": 45
     },
     {
+      "declNo": "4363226011826M",
+      "declKnown": true,
+      "date": "2026-08-10",
+      "reportDate": "8/10",
+      "officer": "조성일",
+      "hbl": "TDCP20260807AXH02",
+      "warehouse": "02070003",
+      "remark": "1란 LIGHT QUILT\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "56",
+      "importer": "노르벡사 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 46
+    },
+    {
       "declNo": "4363226011838M",
       "declKnown": true,
       "date": "2026-08-10",
@@ -831,7 +849,7 @@
       "importer": "유한회사 치얼업",
       "arrival": "",
       "verified": false,
-      "no": 46
+      "no": 47
     },
     {
       "declNo": "4363226400092M",
@@ -849,7 +867,7 @@
       "importer": "세화",
       "arrival": "",
       "verified": false,
-      "no": 47
+      "no": 48
     },
     {
       "declNo": "4363226400097M",
@@ -867,7 +885,25 @@
       "importer": "알라딘스퀘어",
       "arrival": "",
       "verified": false,
-      "no": 48
+      "no": 49
+    },
+    {
+      "declNo": "4363226550001M",
+      "declKnown": true,
+      "date": "2026-08-10",
+      "reportDate": "8/10",
+      "officer": "조성일",
+      "hbl": "TDCP20260807SZCQ02",
+      "warehouse": "02070003",
+      "remark": "1란 QUILT\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "10",
+      "importer": "난후안테크놀로지 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 50
     }
   ]
 }

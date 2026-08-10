@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-10 12:07",
+  "updated": "2026-08-10 12:17",
   "today": "2026-08-10",
-  "totalCount": 45,
+  "totalCount": 47,
   "autoCount": 31,
-  "pendingCount": 14,
+  "pendingCount": 16,
   "rows": [
     {
       "declNo": "4363226011224M",
@@ -762,6 +762,24 @@
       "no": 42
     },
     {
+      "declNo": "4363226011782M",
+      "declKnown": true,
+      "date": "2026-08-10",
+      "reportDate": "8/10",
+      "officer": "김세훈",
+      "hbl": "ZHL1144E05",
+      "warehouse": "01677016",
+      "remark": "4란 DRYING NET\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "5",
+      "importer": "하임하이",
+      "arrival": "",
+      "verified": false,
+      "no": 43
+    },
+    {
       "declNo": "4363226011787M",
       "declKnown": true,
       "date": "2026-08-10",
@@ -777,7 +795,7 @@
       "importer": "더메이커스 코리아",
       "arrival": "",
       "verified": false,
-      "no": 43
+      "no": 44
     },
     {
       "declNo": "4363226011820M",
@@ -795,7 +813,7 @@
       "importer": "루밸런스코리아 유한회사",
       "arrival": "",
       "verified": false,
-      "no": 44
+      "no": 45
     },
     {
       "declNo": "4363226011838M",
@@ -813,7 +831,25 @@
       "importer": "유한회사 치얼업",
       "arrival": "",
       "verified": false,
-      "no": 45
+      "no": 46
+    },
+    {
+      "declNo": "4363226400092M",
+      "declKnown": true,
+      "date": "2026-08-10",
+      "reportDate": "8/10",
+      "officer": "박연정",
+      "hbl": "ZHL1144E19",
+      "warehouse": "01677016",
+      "remark": "3란 T-SHIRT\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "19",
+      "importer": "세화",
+      "arrival": "",
+      "verified": false,
+      "no": 47
     }
   ]
 }

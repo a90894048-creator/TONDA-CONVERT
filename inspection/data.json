@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-10 12:57",
+  "updated": "2026-08-10 13:07",
   "today": "2026-08-10",
-  "totalCount": 47,
+  "totalCount": 48,
   "autoCount": 31,
-  "pendingCount": 16,
+  "pendingCount": 17,
   "rows": [
     {
       "declNo": "4363226011224M",
@@ -850,6 +850,24 @@
       "arrival": "",
       "verified": false,
       "no": 47
+    },
+    {
+      "declNo": "4363226400097M",
+      "declKnown": true,
+      "date": "2026-08-10",
+      "reportDate": "8/10",
+      "officer": "전기성",
+      "hbl": "ZHL1144E47",
+      "warehouse": "01677016",
+      "remark": "1란 BAG\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "47",
+      "importer": "알라딘스퀘어",
+      "arrival": "",
+      "verified": false,
+      "no": 48
     }
   ]
 }

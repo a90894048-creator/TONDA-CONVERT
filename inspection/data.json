@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-11 10:27",
+  "updated": "2026-08-11 10:37",
   "today": "2026-08-11",
-  "totalCount": 50,
+  "totalCount": 51,
   "autoCount": 34,
-  "pendingCount": 16,
+  "pendingCount": 17,
   "rows": [
     {
       "declNo": "4363226011224M",
@@ -904,6 +904,24 @@
       "arrival": "",
       "verified": false,
       "no": 50
+    },
+    {
+      "declNo": "4363226202450M",
+      "declKnown": true,
+      "date": "2026-08-11",
+      "reportDate": "8/11",
+      "officer": "김민정",
+      "hbl": "519781548344",
+      "warehouse": "01602003",
+      "remark": "1란 MEMORY CARD\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "2",
+      "importer": "주식회사 아이너프",
+      "arrival": "",
+      "verified": false,
+      "no": 51
     }
   ]
 }

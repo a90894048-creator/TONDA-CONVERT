@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-11 11:17",
+  "updated": "2026-08-11 11:27",
   "today": "2026-08-11",
-  "totalCount": 52,
+  "totalCount": 55,
   "autoCount": 34,
-  "pendingCount": 18,
+  "pendingCount": 21,
   "rows": [
     {
       "declNo": "4363226011224M",
@@ -906,6 +906,60 @@
       "no": 50
     },
     {
+      "declNo": "4363226012037M",
+      "declKnown": true,
+      "date": "2026-08-11",
+      "reportDate": "8/11",
+      "officer": "조성일",
+      "hbl": "TDCP20260810QZYX",
+      "warehouse": "02070003",
+      "remark": "1란 SLIPPERS\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "72",
+      "importer": "양말세계",
+      "arrival": "",
+      "verified": false,
+      "no": 51
+    },
+    {
+      "declNo": "4363226012048M",
+      "declKnown": true,
+      "date": "2026-08-11",
+      "reportDate": "8/11",
+      "officer": "우동완",
+      "hbl": "TDCP20260810JWKJ02",
+      "warehouse": "02070003",
+      "remark": "2란 SOLID WOOD STRETCHING BOARD\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "6",
+      "importer": "클라우드쇼핑이지딜리버리 유",
+      "arrival": "",
+      "verified": false,
+      "no": 52
+    },
+    {
+      "declNo": "4363226012054M",
+      "declKnown": true,
+      "date": "2026-08-11",
+      "reportDate": "8/11",
+      "officer": "우동완",
+      "hbl": "TDCP20260810ELVO",
+      "warehouse": "02070003",
+      "remark": "2란 CAMERA LENS SCREEN PROTECTOR\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "22",
+      "importer": "엘보라 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 53
+    },
+    {
       "declNo": "4363226012065M",
       "declKnown": true,
       "date": "2026-08-11",
@@ -921,7 +975,7 @@
       "importer": "치차이쟈주 유한회사",
       "arrival": "",
       "verified": false,
-      "no": 51
+      "no": 54
     },
     {
       "declNo": "4363226202450M",
@@ -939,7 +993,7 @@
       "importer": "주식회사 아이너프",
       "arrival": "",
       "verified": false,
-      "no": 52
+      "no": 55
     }
   ]
 }

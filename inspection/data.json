@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-11 11:07",
+  "updated": "2026-08-11 11:10",
   "today": "2026-08-11",
   "totalCount": 51,
   "autoCount": 34,
@@ -19,7 +19,7 @@
       "channel": "통다",
       "packages": "77",
       "importer": "무한결 유한회사",
-      "arrival": "",
+      "arrival": "8/3 15:07",
       "verified": true,
       "no": 1
     },
@@ -37,7 +37,7 @@
       "channel": "통다",
       "packages": "337",
       "importer": "무한결 유한회사",
-      "arrival": "",
+      "arrival": "8/3 16:35",
       "verified": true,
       "no": 2
     },
@@ -55,7 +55,7 @@
       "channel": "통다",
       "packages": "13",
       "importer": "디자인모노 유한회사",
-      "arrival": "",
+      "arrival": "8/3 17:19",
       "verified": false,
       "no": 3
     },
@@ -73,7 +73,7 @@
       "channel": "통다",
       "packages": "30",
       "importer": "에볼기어",
-      "arrival": "",
+      "arrival": "8/3 17:46",
       "verified": false,
       "no": 4
     },
@@ -91,7 +91,7 @@
       "channel": "통다",
       "packages": "1",
       "importer": "월간리빙",
-      "arrival": "",
+      "arrival": "8/3 09:37",
       "verified": false,
       "no": 5
     },
@@ -109,7 +109,7 @@
       "channel": "통다",
       "packages": "42",
       "importer": "라워스",
-      "arrival": "",
+      "arrival": "8/3 13:51",
       "verified": true,
       "no": 6
     },
@@ -127,7 +127,7 @@
       "channel": "통다",
       "packages": "40",
       "importer": "청라이커머스 유한회사",
-      "arrival": "",
+      "arrival": "8/5 08:47",
       "verified": true,
       "no": 7
     },
@@ -145,7 +145,7 @@
       "channel": "통다",
       "packages": "89",
       "importer": "주식회사 유첸시대",
-      "arrival": "",
+      "arrival": "8/5 08:47",
       "verified": true,
       "no": 8
     },
@@ -163,7 +163,7 @@
       "channel": "통다",
       "packages": "12",
       "importer": "수계트레이드 주식회사",
-      "arrival": "",
+      "arrival": "8/5 08:47",
       "verified": true,
       "no": 9
     },
@@ -181,7 +181,7 @@
       "channel": "통다",
       "packages": "18",
       "importer": "초이스몰 유한회사",
-      "arrival": "",
+      "arrival": "8/4 18:04",
       "verified": true,
       "no": 10
     },
@@ -199,7 +199,7 @@
       "channel": "통다",
       "packages": "3",
       "importer": "구름집트레이딩 유한회사",
-      "arrival": "",
+      "arrival": "8/4 18:05",
       "verified": true,
       "no": 11
     },
@@ -217,7 +217,7 @@
       "channel": "통다",
       "packages": "37",
       "importer": "(주)모덱시",
-      "arrival": "",
+      "arrival": "8/4 18:05",
       "verified": true,
       "no": 12
     },
@@ -235,7 +235,7 @@
       "channel": "통다",
       "packages": "75",
       "importer": "무한결 유한회사",
-      "arrival": "",
+      "arrival": "8/5 09:00",
       "verified": true,
       "no": 13
     },
@@ -253,7 +253,7 @@
       "channel": "통다",
       "packages": "17",
       "importer": "하임하이",
-      "arrival": "",
+      "arrival": "8/5 08:59",
       "verified": true,
       "no": 14
     },
@@ -271,7 +271,7 @@
       "channel": "통다",
       "packages": "237",
       "importer": "무한결 유한회사",
-      "arrival": "",
+      "arrival": "8/5 08:59",
       "verified": false,
       "no": 15
     },
@@ -289,7 +289,7 @@
       "channel": "통다",
       "packages": "8",
       "importer": "도도미라스 유한회사",
-      "arrival": "",
+      "arrival": "8/5 17:46",
       "verified": true,
       "no": 16
     },
@@ -307,7 +307,7 @@
       "channel": "통다",
       "packages": "6",
       "importer": "주식회사 펀드랩스",
-      "arrival": "",
+      "arrival": "8/5 10:44",
       "verified": false,
       "no": 17
     },
@@ -325,7 +325,7 @@
       "channel": "통다",
       "packages": "11",
       "importer": "워촹스홈 유한회사",
-      "arrival": "",
+      "arrival": "8/5 10:44",
       "verified": false,
       "no": 18
     },
@@ -343,7 +343,7 @@
       "channel": "통다",
       "packages": "23",
       "importer": "유한회사 황곤트레이딩",
-      "arrival": "",
+      "arrival": "8/5 09:57",
       "verified": true,
       "no": 19
     },
@@ -361,7 +361,7 @@
       "channel": "통다",
       "packages": "29",
       "importer": "루엔코리아",
-      "arrival": "",
+      "arrival": "8/5 09:56",
       "verified": true,
       "no": 20
     },
@@ -379,7 +379,7 @@
       "channel": "통다",
       "packages": "10",
       "importer": "클라우드쇼핑이지딜리버리 유한회사",
-      "arrival": "",
+      "arrival": "8/5 09:56",
       "verified": true,
       "no": 21
     },
@@ -397,7 +397,7 @@
       "channel": "통다",
       "packages": "3",
       "importer": "니아아르고 유한회사",
-      "arrival": "",
+      "arrival": "8/5 09:56",
       "verified": true,
       "no": 22
     },
@@ -415,7 +415,7 @@
       "channel": "통다",
       "packages": "20",
       "importer": "벨루리 유한회사",
-      "arrival": "",
+      "arrival": "8/5 09:56",
       "verified": true,
       "no": 23
     },
@@ -433,7 +433,7 @@
       "channel": "통다",
       "packages": "6",
       "importer": "지아무일렉트로닉커머스 유한회사",
-      "arrival": "",
+      "arrival": "8/5 17:45",
       "verified": true,
       "no": 24
     },
@@ -451,7 +451,7 @@
       "channel": "통다",
       "packages": "21",
       "importer": "(유)이판트레이딩",
-      "arrival": "",
+      "arrival": "8/5 17:45",
       "verified": true,
       "no": 25
     },
@@ -469,7 +469,7 @@
       "channel": "통다",
       "packages": "8",
       "importer": "프리파워 유한회사",
-      "arrival": "",
+      "arrival": "8/5 17:44",
       "verified": true,
       "no": 26
     },
@@ -487,7 +487,7 @@
       "channel": "통다",
       "packages": "25",
       "importer": "라이트커머스 유한회사",
-      "arrival": "",
+      "arrival": "8/5 17:44",
       "verified": true,
       "no": 27
     },
@@ -505,7 +505,7 @@
       "channel": "통다",
       "packages": "132",
       "importer": "서울일홍생활",
-      "arrival": "",
+      "arrival": "8/5 17:43",
       "verified": true,
       "no": 28
     },
@@ -523,7 +523,7 @@
       "channel": "통다",
       "packages": "17",
       "importer": "(주)리치모리",
-      "arrival": "",
+      "arrival": "8/5 17:45",
       "verified": true,
       "no": 29
     },
@@ -541,7 +541,7 @@
       "channel": "통다",
       "packages": "1",
       "importer": "천라이즈 유한회사",
-      "arrival": "",
+      "arrival": "8/5 09:57",
       "verified": true,
       "no": 30
     },
@@ -559,7 +559,7 @@
       "channel": "통다",
       "packages": "50",
       "importer": "승워 유한회사",
-      "arrival": "",
+      "arrival": "8/5 08:47",
       "verified": true,
       "no": 31
     },
@@ -577,7 +577,7 @@
       "channel": "통다",
       "packages": "51",
       "importer": "유한회사 하머니트레이딩",
-      "arrival": "",
+      "arrival": "8/5 09:57",
       "verified": true,
       "no": 32
     },
@@ -595,7 +595,7 @@
       "channel": "통다",
       "packages": "8",
       "importer": "주식회사 펀드랩스",
-      "arrival": "",
+      "arrival": "8/5 09:56",
       "verified": true,
       "no": 33
     },
@@ -613,7 +613,7 @@
       "channel": "통다",
       "packages": "10",
       "importer": "싱천 유한회사",
-      "arrival": "",
+      "arrival": "8/5 17:43",
       "verified": true,
       "no": 34
     },
@@ -631,7 +631,7 @@
       "channel": "통다",
       "packages": "19",
       "importer": "주식회사 제이지디글로벌",
-      "arrival": "",
+      "arrival": "8/5 08:59",
       "verified": true,
       "no": 35
     },
@@ -649,7 +649,7 @@
       "channel": "통다",
       "packages": "24",
       "importer": "유한회사 심펄하모니",
-      "arrival": "",
+      "arrival": "8/5 08:47",
       "verified": true,
       "no": 36
     },
@@ -667,7 +667,7 @@
       "channel": "통다",
       "packages": "25",
       "importer": "코리아스카이 유한회사",
-      "arrival": "",
+      "arrival": "8/7 13:07",
       "verified": false,
       "no": 37
     },
@@ -685,7 +685,7 @@
       "channel": "통다",
       "packages": "10",
       "importer": "도도미라스 유한회사",
-      "arrival": "",
+      "arrival": "8/7 13:07",
       "verified": false,
       "no": 38
     },
@@ -703,7 +703,7 @@
       "channel": "통다",
       "packages": "23",
       "importer": "유한회사 스타일파크",
-      "arrival": "",
+      "arrival": "8/7 13:47",
       "verified": false,
       "no": 39
     },
@@ -721,7 +721,7 @@
       "channel": "통다",
       "packages": "50",
       "importer": "그린홈컴퍼니",
-      "arrival": "",
+      "arrival": "8/6 17:14",
       "verified": false,
       "no": 40
     },
@@ -739,7 +739,7 @@
       "channel": "통다",
       "packages": "25",
       "importer": "무한결 유한회사",
-      "arrival": "",
+      "arrival": "8/6 15:55",
       "verified": false,
       "no": 41
     },
@@ -757,7 +757,7 @@
       "channel": "통다",
       "packages": "3",
       "importer": "메타랩 유한회사",
-      "arrival": "",
+      "arrival": "8/6 17:13",
       "verified": true,
       "no": 42
     },
@@ -775,7 +775,7 @@
       "channel": "통다",
       "packages": "5",
       "importer": "하임하이",
-      "arrival": "",
+      "arrival": "8/10 17:25",
       "verified": true,
       "no": 43
     },
@@ -793,7 +793,7 @@
       "channel": "통다",
       "packages": "26",
       "importer": "더메이커스 코리아",
-      "arrival": "",
+      "arrival": "8/10 17:34",
       "verified": false,
       "no": 44
     },
@@ -811,7 +811,7 @@
       "channel": "통다",
       "packages": "2",
       "importer": "루밸런스코리아 유한회사",
-      "arrival": "",
+      "arrival": "8/10 17:15",
       "verified": false,
       "no": 45
     },
@@ -829,7 +829,7 @@
       "channel": "통다",
       "packages": "56",
       "importer": "노르벡사 유한회사",
-      "arrival": "",
+      "arrival": "8/10 17:17",
       "verified": false,
       "no": 46
     },
@@ -847,7 +847,7 @@
       "channel": "통다",
       "packages": "11",
       "importer": "유한회사 치얼업",
-      "arrival": "",
+      "arrival": "8/10 17:33",
       "verified": false,
       "no": 47
     },
@@ -865,7 +865,7 @@
       "channel": "통다",
       "packages": "19",
       "importer": "세화",
-      "arrival": "",
+      "arrival": "8/10 17:25",
       "verified": true,
       "no": 48
     },
@@ -883,7 +883,7 @@
       "channel": "통다",
       "packages": "47",
       "importer": "알라딘스퀘어",
-      "arrival": "",
+      "arrival": "8/10 17:26",
       "verified": true,
       "no": 49
     },
@@ -901,7 +901,7 @@
       "channel": "통다",
       "packages": "10",
       "importer": "난후안테크놀로지 유한회사",
-      "arrival": "",
+      "arrival": "8/10 17:32",
       "verified": false,
       "no": 50
     },

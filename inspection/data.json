@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-11 13:07",
+  "updated": "2026-08-11 13:17",
   "today": "2026-08-11",
-  "totalCount": 57,
+  "totalCount": 59,
   "autoCount": 34,
-  "pendingCount": 23,
+  "pendingCount": 25,
   "rows": [
     {
       "declNo": "4363226011224M",
@@ -978,6 +978,42 @@
       "no": 54
     },
     {
+      "declNo": "4363226012069M",
+      "declKnown": true,
+      "date": "2026-08-11",
+      "reportDate": "8/11",
+      "officer": "조성일",
+      "hbl": "TDCP20260810BABY",
+      "warehouse": "02070003",
+      "remark": "1란 UNDERWEAR\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "3",
+      "importer": "베이비통신",
+      "arrival": "",
+      "verified": false,
+      "no": 55
+    },
+    {
+      "declNo": "4363226012081M",
+      "declKnown": true,
+      "date": "2026-08-11",
+      "reportDate": "8/11",
+      "officer": "우동완",
+      "hbl": "SZCP20260810MONO",
+      "warehouse": "02070003",
+      "remark": "9란 POLYESTER ORNAMENTS SHEET\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "10",
+      "importer": "디자인모노 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 56
+    },
+    {
       "declNo": "4363226202450M",
       "declKnown": true,
       "date": "2026-08-11",
@@ -993,7 +1029,7 @@
       "importer": "주식회사 아이너프",
       "arrival": "",
       "verified": false,
-      "no": 55
+      "no": 57
     },
     {
       "declNo": "4363226400101M",
@@ -1011,7 +1047,7 @@
       "importer": "모모타로",
       "arrival": "",
       "verified": false,
-      "no": 56
+      "no": 58
     },
     {
       "declNo": "4363226701884M",
@@ -1029,7 +1065,7 @@
       "importer": "알라딘스퀘어",
       "arrival": "",
       "verified": false,
-      "no": 57
+      "no": 59
     }
   ]
 }

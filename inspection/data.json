@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-12 11:18",
+  "updated": "2026-08-12 11:28",
   "today": "2026-08-12",
   "totalCount": 59,
   "autoCount": 36,
@@ -919,7 +919,7 @@
       "channel": "통다",
       "packages": "72",
       "importer": "양말세계",
-      "arrival": "",
+      "arrival": "8/12 11:14",
       "verified": false,
       "no": 51
     },
@@ -937,7 +937,7 @@
       "channel": "통다",
       "packages": "6",
       "importer": "클라우드쇼핑이지딜리버리 유",
-      "arrival": "",
+      "arrival": "8/12 11:13",
       "verified": false,
       "no": 52
     },
@@ -955,7 +955,7 @@
       "channel": "통다",
       "packages": "22",
       "importer": "엘보라 유한회사",
-      "arrival": "",
+      "arrival": "8/12 11:13",
       "verified": false,
       "no": 53
     },

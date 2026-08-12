@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-12 09:28",
+  "updated": "2026-08-12 09:37",
   "today": "2026-08-12",
   "totalCount": 59,
-  "autoCount": 34,
-  "pendingCount": 25,
+  "autoCount": 35,
+  "pendingCount": 24,
   "rows": [
     {
       "declNo": "4363226011224M",
@@ -1039,14 +1039,14 @@
       "officer": "이현정",
       "hbl": "ZHL1145E18",
       "warehouse": "01677016",
-      "remark": "5란 HEAD ROPE\n— 검사계획통보 대기중",
+      "remark": "5란 HEAD ROPE — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "18",
       "importer": "모모타로",
       "arrival": "8/11 18:00",
-      "verified": false,
+      "verified": true,
       "no": 58
     },
     {

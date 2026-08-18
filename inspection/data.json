@@ -1,8 +1,27 @@
 {
-  "updated": "2026-08-18 09:57",
+  "updated": "2026-08-18 10:07",
   "today": "2026-08-18",
-  "totalCount": 0,
+  "totalCount": 1,
   "autoCount": 0,
-  "pendingCount": 0,
-  "rows": []
+  "pendingCount": 1,
+  "rows": [
+    {
+      "declNo": "4363226012320M",
+      "declKnown": true,
+      "date": "2026-08-18",
+      "reportDate": "8/18",
+      "officer": "정현석",
+      "hbl": "TDCP20260814HLZ",
+      "warehouse": "02070003",
+      "remark": "1란 URINE BAG\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "18",
+      "importer": "(유)이판트레이딩",
+      "arrival": "",
+      "verified": false,
+      "no": 1
+    }
+  ]
 }

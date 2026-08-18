@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-18 15:17",
+  "updated": "2026-08-18 15:27",
   "today": "2026-08-18",
-  "totalCount": 3,
+  "totalCount": 4,
   "autoCount": 0,
-  "pendingCount": 3,
+  "pendingCount": 4,
   "rows": [
     {
       "declNo": "4363226012320M",
@@ -58,6 +58,24 @@
       "arrival": "",
       "verified": false,
       "no": 3
+    },
+    {
+      "declNo": "4363226012611M",
+      "declKnown": true,
+      "date": "2026-08-18",
+      "reportDate": "8/18",
+      "officer": "박진선",
+      "hbl": "ZHL1148E021",
+      "warehouse": "01677016",
+      "remark": "8란 LEGGINGS\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "21",
+      "importer": "스카이미너리즈",
+      "arrival": "",
+      "verified": false,
+      "no": 4
     }
   ]
 }

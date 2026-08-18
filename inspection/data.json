@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-18 12:17",
+  "updated": "2026-08-18 12:27",
   "today": "2026-08-18",
-  "totalCount": 2,
+  "totalCount": 3,
   "autoCount": 0,
-  "pendingCount": 2,
+  "pendingCount": 3,
   "rows": [
     {
       "declNo": "4363226012320M",
@@ -40,6 +40,24 @@
       "arrival": "",
       "verified": false,
       "no": 2
+    },
+    {
+      "declNo": "4363226012523M",
+      "declKnown": true,
+      "date": "2026-08-18",
+      "reportDate": "8/18",
+      "officer": "정현석",
+      "hbl": "TDCP20260817FTS",
+      "warehouse": "02070003",
+      "remark": "1란 PILLOW\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "2",
+      "importer": "아비오르 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 3
     }
   ]
 }

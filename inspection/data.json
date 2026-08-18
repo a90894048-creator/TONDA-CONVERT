@@ -1,10 +1,28 @@
 {
-  "updated": "2026-08-18 18:07",
+  "updated": "2026-08-18 18:17",
   "today": "2026-08-18",
-  "totalCount": 4,
+  "totalCount": 5,
   "autoCount": 0,
-  "pendingCount": 4,
+  "pendingCount": 5,
   "rows": [
+    {
+      "declNo": "4363226011999M",
+      "declKnown": true,
+      "date": "2026-08-18",
+      "reportDate": "8/18",
+      "officer": "김태은",
+      "hbl": "ZHL1145E171",
+      "warehouse": "01677016",
+      "remark": "43란 FOOT MASSAGER\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "164",
+      "importer": "무한결 유한회사",
+      "arrival": "8/11 18:00",
+      "verified": false,
+      "no": 1
+    },
     {
       "declNo": "4363226012320M",
       "declKnown": true,
@@ -21,7 +39,7 @@
       "importer": "(유)이판트레이딩",
       "arrival": "8/18 15:48",
       "verified": false,
-      "no": 1
+      "no": 2
     },
     {
       "declNo": "4363226012336M",
@@ -39,7 +57,7 @@
       "importer": "한코랩 유한회사",
       "arrival": "8/18 15:59",
       "verified": false,
-      "no": 2
+      "no": 3
     },
     {
       "declNo": "4363226012523M",
@@ -57,7 +75,7 @@
       "importer": "아비오르 유한회사",
       "arrival": "",
       "verified": false,
-      "no": 3
+      "no": 4
     },
     {
       "declNo": "4363226012611M",
@@ -75,7 +93,7 @@
       "importer": "스카이미너리즈",
       "arrival": "8/18 17:36",
       "verified": false,
-      "no": 4
+      "no": 5
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-18 10:07",
+  "updated": "2026-08-18 10:17",
   "today": "2026-08-18",
-  "totalCount": 1,
+  "totalCount": 2,
   "autoCount": 0,
-  "pendingCount": 1,
+  "pendingCount": 2,
   "rows": [
     {
       "declNo": "4363226012320M",
@@ -22,6 +22,24 @@
       "arrival": "",
       "verified": false,
       "no": 1
+    },
+    {
+      "declNo": "4363226012336M",
+      "declKnown": true,
+      "date": "2026-08-18",
+      "reportDate": "8/18",
+      "officer": "정현석",
+      "hbl": "TDCP20260814BSL03",
+      "warehouse": "02070003",
+      "remark": "4란 STORAGE RACK\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "33",
+      "importer": "한코랩 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 2
     }
   ]
 }

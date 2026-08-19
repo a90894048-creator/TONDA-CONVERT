@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-19 10:18",
+  "updated": "2026-08-19 10:28",
   "today": "2026-08-19",
-  "totalCount": 5,
+  "totalCount": 6,
   "autoCount": 1,
-  "pendingCount": 4,
+  "pendingCount": 5,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -94,6 +94,24 @@
       "arrival": "8/18 17:36",
       "verified": true,
       "no": 5
+    },
+    {
+      "declNo": "4363226012557M",
+      "declKnown": true,
+      "date": "2026-08-19",
+      "reportDate": "8/19",
+      "officer": "정현석",
+      "hbl": "SZCP20260817ROOT",
+      "warehouse": "02070003",
+      "remark": "7란 POLYESTER DECORATIVE BAND\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "10",
+      "importer": "루트필드 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 6
     }
   ]
 }

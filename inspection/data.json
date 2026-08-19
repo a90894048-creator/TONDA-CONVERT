@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-19 16:48",
+  "updated": "2026-08-19 16:58",
   "today": "2026-08-19",
   "totalCount": 7,
   "autoCount": 2,
@@ -127,7 +127,7 @@
       "channel": "통다",
       "packages": "10",
       "importer": "루트필드 유한회사",
-      "arrival": "",
+      "arrival": "8/19 16:53",
       "verified": false,
       "no": 7
     }

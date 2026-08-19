@@ -1,26 +1,26 @@
 {
-  "updated": "2026-08-19 16:08",
+  "updated": "2026-08-19 16:18",
   "today": "2026-08-19",
   "totalCount": 7,
-  "autoCount": 1,
-  "pendingCount": 6,
+  "autoCount": 2,
+  "pendingCount": 5,
   "rows": [
     {
       "declNo": "4363226011999M",
       "declKnown": true,
       "date": "2026-08-18",
       "reportDate": "8/18",
-      "officer": "김태은",
+      "officer": "이현정",
       "hbl": "ZHL1145E171",
       "warehouse": "01677016",
-      "remark": "43란 FOOT MASSAGER\n— 검사계획통보 대기중",
+      "remark": "43란 FOOT MASSAGER — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "164",
       "importer": "무한결 유한회사",
       "arrival": "8/11 18:00",
-      "verified": false,
+      "verified": true,
       "no": 1
     },
     {

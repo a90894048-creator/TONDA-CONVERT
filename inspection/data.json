@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-19 10:08",
+  "updated": "2026-08-19 10:18",
   "today": "2026-08-19",
   "totalCount": 5,
-  "autoCount": 0,
-  "pendingCount": 5,
+  "autoCount": 1,
+  "pendingCount": 4,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -82,17 +82,17 @@
       "declKnown": true,
       "date": "2026-08-18",
       "reportDate": "8/18",
-      "officer": "박진선",
+      "officer": "전기성",
       "hbl": "ZHL1148E021",
       "warehouse": "01677016",
-      "remark": "8란 LEGGINGS\n— 검사계획통보 대기중",
+      "remark": "8란 LEGGINGS — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "21",
       "importer": "스카이미너리즈",
       "arrival": "8/18 17:36",
-      "verified": false,
+      "verified": true,
       "no": 5
     }
   ]

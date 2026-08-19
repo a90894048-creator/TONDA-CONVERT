@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-19 14:58",
+  "updated": "2026-08-19 15:08",
   "today": "2026-08-19",
-  "totalCount": 6,
+  "totalCount": 7,
   "autoCount": 1,
-  "pendingCount": 5,
+  "pendingCount": 6,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -96,6 +96,24 @@
       "no": 5
     },
     {
+      "declNo": "4363226012543M",
+      "declKnown": true,
+      "date": "2026-08-19",
+      "reportDate": "8/19",
+      "officer": "정현석",
+      "hbl": "TDCP20260817MDS",
+      "warehouse": "02070003",
+      "remark": "2란 SUNSHADE\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "79",
+      "importer": "(주)모덱시",
+      "arrival": "",
+      "verified": false,
+      "no": 6
+    },
+    {
       "declNo": "4363226012557M",
       "declKnown": true,
       "date": "2026-08-19",
@@ -111,7 +129,7 @@
       "importer": "루트필드 유한회사",
       "arrival": "",
       "verified": false,
-      "no": 6
+      "no": 7
     }
   ]
 }

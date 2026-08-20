@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-20 14:18",
+  "updated": "2026-08-20 14:28",
   "today": "2026-08-20",
-  "totalCount": 11,
+  "totalCount": 12,
   "autoCount": 2,
-  "pendingCount": 9,
+  "pendingCount": 10,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -132,6 +132,24 @@
       "no": 7
     },
     {
+      "declNo": "4363226012619M",
+      "declKnown": true,
+      "date": "2026-08-20",
+      "reportDate": "8/20",
+      "officer": "이은선",
+      "hbl": "519781568434",
+      "warehouse": "01602003",
+      "remark": "1란 PHONE CASE\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "4",
+      "importer": "주식회사 펀드랩스",
+      "arrival": "8/19 21:06",
+      "verified": false,
+      "no": 8
+    },
+    {
       "declNo": "4363226012669M",
       "declKnown": true,
       "date": "2026-08-20",
@@ -147,7 +165,7 @@
       "importer": "무한결 유한회사",
       "arrival": "",
       "verified": false,
-      "no": 8
+      "no": 9
     },
     {
       "declNo": "4363226012670M",
@@ -165,7 +183,7 @@
       "importer": "성하운석과기 주식회사",
       "arrival": "",
       "verified": false,
-      "no": 9
+      "no": 10
     },
     {
       "declNo": "4363226012706M",
@@ -183,7 +201,7 @@
       "importer": "지와이코드 유한회사",
       "arrival": "",
       "verified": false,
-      "no": 10
+      "no": 11
     },
     {
       "declNo": "4363226012709M",
@@ -201,7 +219,7 @@
       "importer": "도우마이이커머스 유한회사",
       "arrival": "",
       "verified": false,
-      "no": 11
+      "no": 12
     }
   ]
 }

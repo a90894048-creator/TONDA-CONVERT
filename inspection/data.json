@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-20 10:28",
+  "updated": "2026-08-20 10:38",
   "today": "2026-08-20",
-  "totalCount": 9,
+  "totalCount": 10,
   "autoCount": 2,
-  "pendingCount": 7,
+  "pendingCount": 8,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -150,6 +150,24 @@
       "no": 8
     },
     {
+      "declNo": "4363226012670M",
+      "declKnown": true,
+      "date": "2026-08-20",
+      "reportDate": "8/20",
+      "officer": "김태은",
+      "hbl": "ZHL1149E04",
+      "warehouse": "01677016",
+      "remark": "3란 EYEGLASSES CORD\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "4",
+      "importer": "성하운석과기 주식회사",
+      "arrival": "",
+      "verified": false,
+      "no": 9
+    },
+    {
       "declNo": "4363226012706M",
       "declKnown": true,
       "date": "2026-08-20",
@@ -165,7 +183,7 @@
       "importer": "지와이코드 유한회사",
       "arrival": "",
       "verified": false,
-      "no": 9
+      "no": 10
     }
   ]
 }

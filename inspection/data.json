@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-20 10:58",
+  "updated": "2026-08-20 11:08",
   "today": "2026-08-20",
-  "totalCount": 10,
+  "totalCount": 11,
   "autoCount": 2,
-  "pendingCount": 8,
+  "pendingCount": 9,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -184,6 +184,24 @@
       "arrival": "",
       "verified": false,
       "no": 10
+    },
+    {
+      "declNo": "4363226012709M",
+      "declKnown": true,
+      "date": "2026-08-20",
+      "reportDate": "8/20",
+      "officer": "정현석",
+      "hbl": "TDCP20260819DM",
+      "warehouse": "02070003",
+      "remark": "3란 MEMORY FOAM PILLOW\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "32",
+      "importer": "도우마이이커머스 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 11
     }
   ]
 }

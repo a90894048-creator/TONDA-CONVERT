@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-20 09:58",
+  "updated": "2026-08-20 10:08",
   "today": "2026-08-20",
-  "totalCount": 7,
+  "totalCount": 8,
   "autoCount": 2,
-  "pendingCount": 5,
+  "pendingCount": 6,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -130,6 +130,24 @@
       "arrival": "8/19 16:53",
       "verified": false,
       "no": 7
+    },
+    {
+      "declNo": "4363226012706M",
+      "declKnown": true,
+      "date": "2026-08-20",
+      "reportDate": "8/20",
+      "officer": "정현석",
+      "hbl": "TDCP20260819HTSW",
+      "warehouse": "02070003",
+      "remark": "2란 PENCIL SHARPENER\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "7",
+      "importer": "지와이코드 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 8
     }
   ]
 }

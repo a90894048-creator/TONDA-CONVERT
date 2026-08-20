@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-20 10:18",
+  "updated": "2026-08-20 10:28",
   "today": "2026-08-20",
-  "totalCount": 8,
+  "totalCount": 9,
   "autoCount": 2,
-  "pendingCount": 6,
+  "pendingCount": 7,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -132,6 +132,24 @@
       "no": 7
     },
     {
+      "declNo": "4363226012669M",
+      "declKnown": true,
+      "date": "2026-08-20",
+      "reportDate": "8/20",
+      "officer": "박진선",
+      "hbl": "ZHL1149E132",
+      "warehouse": "01677016",
+      "remark": "25란 WARM KNEE PADS\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "132",
+      "importer": "무한결 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 8
+    },
+    {
       "declNo": "4363226012706M",
       "declKnown": true,
       "date": "2026-08-20",
@@ -147,7 +165,7 @@
       "importer": "지와이코드 유한회사",
       "arrival": "",
       "verified": false,
-      "no": 8
+      "no": 9
     }
   ]
 }

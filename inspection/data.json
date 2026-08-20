@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-20 15:08",
+  "updated": "2026-08-20 15:18",
   "today": "2026-08-20",
-  "totalCount": 12,
+  "totalCount": 13,
   "autoCount": 2,
-  "pendingCount": 10,
+  "pendingCount": 11,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -220,6 +220,24 @@
       "arrival": "",
       "verified": false,
       "no": 12
+    },
+    {
+      "declNo": "4363226400141M",
+      "declKnown": true,
+      "date": "2026-08-20",
+      "reportDate": "8/20",
+      "officer": "유영환",
+      "hbl": "519781593225",
+      "warehouse": "01602003",
+      "remark": "1란 SMAEL WATCH\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "1",
+      "importer": "새톱커머스 주식회사",
+      "arrival": "8/20 13:15",
+      "verified": false,
+      "no": 13
     }
   ]
 }

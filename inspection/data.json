@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-21 15:08",
+  "updated": "2026-08-21 15:18",
   "today": "2026-08-21",
-  "totalCount": 13,
+  "totalCount": 14,
   "autoCount": 5,
-  "pendingCount": 8,
+  "pendingCount": 9,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -238,6 +238,24 @@
       "arrival": "8/20 13:15",
       "verified": true,
       "no": 13
+    },
+    {
+      "declNo": "4363226400144M",
+      "declKnown": true,
+      "date": "2026-08-21",
+      "reportDate": "8/21",
+      "officer": "김희정",
+      "hbl": "519780551662",
+      "warehouse": "01602003",
+      "remark": "1란 MIRROR\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "3",
+      "importer": "센리",
+      "arrival": "",
+      "verified": false,
+      "no": 14
     }
   ]
 }

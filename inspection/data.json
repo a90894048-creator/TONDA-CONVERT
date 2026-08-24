@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-24 09:47",
+  "updated": "2026-08-24 09:57",
   "today": "2026-08-24",
-  "totalCount": 14,
+  "totalCount": 15,
   "autoCount": 5,
-  "pendingCount": 9,
+  "pendingCount": 10,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -256,6 +256,24 @@
       "arrival": "8/21 16:15",
       "verified": false,
       "no": 14
+    },
+    {
+      "declNo": "4363226400154M",
+      "declKnown": true,
+      "date": "2026-08-24",
+      "reportDate": "8/24",
+      "officer": "김세훈",
+      "hbl": "ZHL1150E19",
+      "warehouse": "01677016",
+      "remark": "3란 SHOES,\n4란 RAIN BOOTS\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "19",
+      "importer": "마리오스쿨",
+      "arrival": "",
+      "verified": false,
+      "no": 15
     }
   ]
 }

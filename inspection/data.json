@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-24 09:57",
+  "updated": "2026-08-24 10:07",
   "today": "2026-08-24",
-  "totalCount": 15,
+  "totalCount": 16,
   "autoCount": 5,
-  "pendingCount": 10,
+  "pendingCount": 11,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -258,6 +258,24 @@
       "no": 14
     },
     {
+      "declNo": "4363226012766M",
+      "declKnown": true,
+      "date": "2026-08-24",
+      "reportDate": "8/24",
+      "officer": "이현정",
+      "hbl": "ZHL1150E177",
+      "warehouse": "01677016",
+      "remark": "16란 DOG TOY,\n39란 WALL-MOUNTED FISH TANK\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "177",
+      "importer": "무한결 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 15
+    },
+    {
       "declNo": "4363226400154M",
       "declKnown": true,
       "date": "2026-08-24",
@@ -273,7 +291,7 @@
       "importer": "마리오스쿨",
       "arrival": "",
       "verified": false,
-      "no": 15
+      "no": 16
     }
   ]
 }

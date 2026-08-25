@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-25 16:07",
+  "updated": "2026-08-25 16:17",
   "today": "2026-08-25",
   "totalCount": 21,
   "autoCount": 8,
@@ -361,7 +361,7 @@
       "channel": "통다",
       "packages": "7",
       "importer": "쓸리보",
-      "arrival": "",
+      "arrival": "8/25 16:09",
       "verified": false,
       "no": 20
     },
@@ -379,7 +379,7 @@
       "channel": "통다",
       "packages": "96",
       "importer": "마리오스쿨",
-      "arrival": "",
+      "arrival": "8/25 16:09",
       "verified": false,
       "no": 21
     }

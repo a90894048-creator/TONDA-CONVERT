@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-25 14:57",
+  "updated": "2026-08-25 15:07",
   "today": "2026-08-25",
   "totalCount": 21,
-  "autoCount": 7,
-  "pendingCount": 14,
+  "autoCount": 8,
+  "pendingCount": 13,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -262,17 +262,17 @@
       "declKnown": true,
       "date": "2026-08-24",
       "reportDate": "8/24",
-      "officer": "전기성",
+      "officer": "소민주",
       "hbl": "ZHL1150E365",
       "warehouse": "01677016",
-      "remark": "24란 PHONE CORD\n— 검사계획통보 대기중",
+      "remark": "24란 PHONE CORD — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "365",
       "importer": "무한결 유한회사",
       "arrival": "8/24 14:39",
-      "verified": false,
+      "verified": true,
       "no": 15
     },
     {

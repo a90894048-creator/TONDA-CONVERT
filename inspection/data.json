@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-25 10:37",
+  "updated": "2026-08-25 10:47",
   "today": "2026-08-25",
-  "totalCount": 17,
+  "totalCount": 20,
   "autoCount": 7,
-  "pendingCount": 10,
+  "pendingCount": 13,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -310,6 +310,60 @@
       "arrival": "8/24 17:44",
       "verified": true,
       "no": 17
+    },
+    {
+      "declNo": "4363226012994M",
+      "declKnown": true,
+      "date": "2026-08-25",
+      "reportDate": "8/25",
+      "officer": "박연정",
+      "hbl": "ZHL1151E80",
+      "warehouse": "01677016",
+      "remark": "5란 EARMUFFS,\n14란 GLOVES\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "80",
+      "importer": "무한결 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 18
+    },
+    {
+      "declNo": "4363226012997M",
+      "declKnown": true,
+      "date": "2026-08-25",
+      "reportDate": "8/25",
+      "officer": "전기성",
+      "hbl": "ZHL1151E362",
+      "warehouse": "01677016",
+      "remark": "79란 MASSAGER\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "362",
+      "importer": "무한결 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 19
+    },
+    {
+      "declNo": "4363226400164M",
+      "declKnown": true,
+      "date": "2026-08-25",
+      "reportDate": "8/25",
+      "officer": "김세훈",
+      "hbl": "ZHL1151E96",
+      "warehouse": "01677016",
+      "remark": "2란 WOMENS SWIM WEAR T-SHRTS\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "96",
+      "importer": "마리오스쿨",
+      "arrival": "",
+      "verified": false,
+      "no": 20
     }
   ]
 }

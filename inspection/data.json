@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-25 11:17",
+  "updated": "2026-08-25 11:27",
   "today": "2026-08-25",
-  "totalCount": 20,
+  "totalCount": 21,
   "autoCount": 7,
-  "pendingCount": 13,
+  "pendingCount": 14,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -348,6 +348,24 @@
       "no": 19
     },
     {
+      "declNo": "4363226400158M",
+      "declKnown": true,
+      "date": "2026-08-25",
+      "reportDate": "8/25",
+      "officer": "전기성",
+      "hbl": "ZHL1151E07",
+      "warehouse": "01677016",
+      "remark": "1란 CROSSBACK\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "7",
+      "importer": "쓸리보",
+      "arrival": "",
+      "verified": false,
+      "no": 20
+    },
+    {
       "declNo": "4363226400164M",
       "declKnown": true,
       "date": "2026-08-25",
@@ -363,7 +381,7 @@
       "importer": "마리오스쿨",
       "arrival": "",
       "verified": false,
-      "no": 20
+      "no": 21
     }
   ]
 }

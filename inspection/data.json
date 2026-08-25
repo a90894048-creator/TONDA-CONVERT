@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-25 09:37",
+  "updated": "2026-08-25 09:47",
   "today": "2026-08-25",
   "totalCount": 17,
-  "autoCount": 5,
-  "pendingCount": 12,
+  "autoCount": 7,
+  "pendingCount": 10,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -280,17 +280,17 @@
       "declKnown": true,
       "date": "2026-08-24",
       "reportDate": "8/24",
-      "officer": "이현정",
+      "officer": "박연정",
       "hbl": "ZHL1150E177",
       "warehouse": "01677016",
-      "remark": "16란 DOG TOY,\n39란 WALL-MOUNTED FISH TANK\n— 검사계획통보 대기중",
+      "remark": "16란 DOG TOY,\n39란 WALL-MOUNTED FISH TANK — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "177",
       "importer": "무한결 유한회사",
       "arrival": "8/24 17:44",
-      "verified": false,
+      "verified": true,
       "no": 16
     },
     {
@@ -298,17 +298,17 @@
       "declKnown": true,
       "date": "2026-08-24",
       "reportDate": "8/24",
-      "officer": "김세훈",
+      "officer": "박연정",
       "hbl": "ZHL1150E19",
       "warehouse": "01677016",
-      "remark": "3란 SHOES,\n4란 RAIN BOOTS\n— 검사계획통보 대기중",
+      "remark": "3란 SHOES,\n4란 RAIN BOOTS — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "19",
       "importer": "마리오스쿨",
       "arrival": "8/24 17:44",
-      "verified": false,
+      "verified": true,
       "no": 17
     }
   ]

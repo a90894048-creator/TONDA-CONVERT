@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-26 10:57",
+  "updated": "2026-08-26 11:07",
   "today": "2026-08-26",
   "totalCount": 21,
-  "autoCount": 11,
-  "pendingCount": 10,
+  "autoCount": 12,
+  "pendingCount": 9,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -352,17 +352,17 @@
       "declKnown": true,
       "date": "2026-08-25",
       "reportDate": "8/25",
-      "officer": "전기성",
+      "officer": "김하영",
       "hbl": "ZHL1151E07",
       "warehouse": "01677016",
-      "remark": "1란 CROSSBACK\n— 검사계획통보 대기중",
+      "remark": "1란 CROSSBACK — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "7",
       "importer": "쓸리보",
       "arrival": "8/25 16:09",
-      "verified": false,
+      "verified": true,
       "no": 20
     },
     {

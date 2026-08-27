@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-27 13:27",
+  "updated": "2026-08-27 13:37",
   "today": "2026-08-27",
   "totalCount": 22,
   "autoCount": 12,
@@ -397,7 +397,7 @@
       "channel": "통다",
       "packages": "4",
       "importer": "센리",
-      "arrival": "",
+      "arrival": "8/27 13:32",
       "verified": false,
       "no": 22
     }

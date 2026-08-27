@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-27 11:07",
+  "updated": "2026-08-27 11:17",
   "today": "2026-08-27",
-  "totalCount": 21,
+  "totalCount": 22,
   "autoCount": 12,
-  "pendingCount": 9,
+  "pendingCount": 10,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -382,6 +382,24 @@
       "arrival": "8/25 16:09",
       "verified": true,
       "no": 21
+    },
+    {
+      "declNo": "4363226400177M",
+      "declKnown": true,
+      "date": "2026-08-27",
+      "reportDate": "8/27",
+      "officer": "이종혁",
+      "hbl": "519780556842",
+      "warehouse": "01602003",
+      "remark": "1란 MIRROR\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "4",
+      "importer": "센리",
+      "arrival": "",
+      "verified": false,
+      "no": 22
     }
   ]
 }

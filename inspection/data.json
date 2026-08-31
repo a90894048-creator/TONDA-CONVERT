@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-31 09:37",
+  "updated": "2026-08-31 09:47",
   "today": "2026-08-31",
-  "totalCount": 22,
+  "totalCount": 23,
   "autoCount": 12,
-  "pendingCount": 10,
+  "pendingCount": 11,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -400,6 +400,24 @@
       "arrival": "8/27 13:32",
       "verified": false,
       "no": 22
+    },
+    {
+      "declNo": "4363226013155M",
+      "declKnown": true,
+      "date": "2026-08-31",
+      "reportDate": "8/31",
+      "officer": "김하영",
+      "hbl": "ZHL1153E03",
+      "warehouse": "01677016",
+      "remark": "1란 EARRINGS\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "3",
+      "importer": "금복마켓",
+      "arrival": "",
+      "verified": false,
+      "no": 23
     }
   ]
 }

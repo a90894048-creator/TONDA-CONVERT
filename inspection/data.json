@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-31 10:27",
+  "updated": "2026-08-31 10:37",
   "today": "2026-08-31",
-  "totalCount": 23,
+  "totalCount": 24,
   "autoCount": 12,
-  "pendingCount": 11,
+  "pendingCount": 12,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -402,6 +402,24 @@
       "no": 22
     },
     {
+      "declNo": "4363226013154M",
+      "declKnown": true,
+      "date": "2026-08-31",
+      "reportDate": "8/31",
+      "officer": "박진선",
+      "hbl": "ZHL1153E401",
+      "warehouse": "01677016",
+      "remark": "65란 THUMB MASSAGE DEVICE\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "401",
+      "importer": "무한결 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 23
+    },
+    {
       "declNo": "4363226013155M",
       "declKnown": true,
       "date": "2026-08-31",
@@ -417,7 +435,7 @@
       "importer": "금복마켓",
       "arrival": "",
       "verified": false,
-      "no": 23
+      "no": 24
     }
   ]
 }

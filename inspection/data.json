@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-31 17:17",
+  "updated": "2026-08-31 17:27",
   "today": "2026-08-31",
   "totalCount": 25,
-  "autoCount": 13,
-  "pendingCount": 12,
+  "autoCount": 14,
+  "pendingCount": 11,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -427,14 +427,14 @@
       "officer": "김하영",
       "hbl": "ZHL1153E03",
       "warehouse": "01677016",
-      "remark": "1란 EARRINGS\n— 검사계획통보 대기중",
+      "remark": "1란 EARRINGS — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "3",
       "importer": "금복마켓",
       "arrival": "8/31 14:02",
-      "verified": false,
+      "verified": true,
       "no": 24
     },
     {

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-08-31 11:07",
+  "updated": "2026-08-31 11:17",
   "today": "2026-08-31",
-  "totalCount": 24,
+  "totalCount": 25,
   "autoCount": 12,
-  "pendingCount": 12,
+  "pendingCount": 13,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -436,6 +436,24 @@
       "arrival": "",
       "verified": false,
       "no": 24
+    },
+    {
+      "declNo": "4363226013157M",
+      "declKnown": true,
+      "date": "2026-08-31",
+      "reportDate": "8/31",
+      "officer": "박진선",
+      "hbl": "ZHL1153E10",
+      "warehouse": "01677016",
+      "remark": "1란 PHONE HOLDER\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "10",
+      "importer": "미블룸",
+      "arrival": "8/31 09:57",
+      "verified": false,
+      "no": 25
     }
   ]
 }

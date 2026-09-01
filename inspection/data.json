@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-01 10:07",
+  "updated": "2026-09-01 10:17",
   "today": "2026-09-01",
-  "totalCount": 26,
+  "totalCount": 27,
   "autoCount": 15,
-  "pendingCount": 11,
+  "pendingCount": 12,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -472,6 +472,24 @@
       "arrival": "",
       "verified": false,
       "no": 26
+    },
+    {
+      "declNo": "4363226013365M",
+      "declKnown": true,
+      "date": "2026-09-01",
+      "reportDate": "9/1",
+      "officer": "김하영",
+      "hbl": "ZHL1154E17",
+      "warehouse": "01677016",
+      "remark": "1란 TRASH CAN,\n6란 STORAGE BOX\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "17",
+      "importer": "무한결 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 27
     }
   ]
 }

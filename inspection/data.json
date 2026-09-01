@@ -1,8 +1,8 @@
 {
-  "updated": "2026-09-01 09:47",
+  "updated": "2026-09-01 09:57",
   "today": "2026-09-01",
-  "totalCount": 25,
-  "autoCount": 14,
+  "totalCount": 26,
+  "autoCount": 15,
   "pendingCount": 11,
   "rows": [
     {
@@ -406,17 +406,17 @@
       "declKnown": true,
       "date": "2026-08-31",
       "reportDate": "8/31",
-      "officer": "박진선",
+      "officer": "이현정",
       "hbl": "ZHL1153E401",
       "warehouse": "01677016",
-      "remark": "65란 THUMB MASSAGE DEVICE\n— 검사계획통보 대기중",
+      "remark": "65란 THUMB MASSAGE DEVICE — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "401",
       "importer": "무한결 유한회사",
       "arrival": "8/31 14:03",
-      "verified": false,
+      "verified": true,
       "no": 23
     },
     {
@@ -454,6 +454,24 @@
       "arrival": "8/31 09:57",
       "verified": true,
       "no": 25
+    },
+    {
+      "declNo": "4363226013363M",
+      "declKnown": true,
+      "date": "2026-09-01",
+      "reportDate": "9/1",
+      "officer": "박진선",
+      "hbl": "ZHL1154E246",
+      "warehouse": "01677016",
+      "remark": "13란 WATCH STORAGE BOX,\n29란 CAR ACCESSORIES BLACKOUT CURTA,\n32란 STORAGE BASKET,\n40란 STEPPING STONE\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "246",
+      "importer": "무한결 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 26
     }
   ]
 }

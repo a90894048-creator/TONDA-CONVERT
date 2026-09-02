@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-02 14:47",
+  "updated": "2026-09-02 14:57",
   "today": "2026-09-02",
   "totalCount": 27,
-  "autoCount": 16,
-  "pendingCount": 11,
+  "autoCount": 17,
+  "pendingCount": 10,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -463,14 +463,14 @@
       "officer": "박진선",
       "hbl": "ZHL1154E246",
       "warehouse": "01677016",
-      "remark": "13란 WATCH STORAGE BOX,\n29란 CAR ACCESSORIES BLACKOUT CURTA,\n32란 STORAGE BASKET,\n40란 STEPPING STONE\n— 검사계획통보 대기중",
+      "remark": "13란 WATCH STORAGE BOX,\n29란 CAR ACCESSORIES BLACKOUT CURTA,\n32란 STORAGE BASKET,\n40란 STEPPING STONE — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "246",
       "importer": "무한결 유한회사",
       "arrival": "9/1 17:24",
-      "verified": false,
+      "verified": true,
       "no": 26
     },
     {

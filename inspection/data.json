@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-07 15:27",
+  "updated": "2026-09-07 15:37",
   "today": "2026-09-07",
   "totalCount": 29,
   "autoCount": 18,
@@ -523,7 +523,7 @@
       "channel": "통다",
       "packages": "20",
       "importer": "데구 유한회사",
-      "arrival": "",
+      "arrival": "9/7 15:02",
       "verified": false,
       "no": 29
     }

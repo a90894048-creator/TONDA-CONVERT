@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-07 14:47",
+  "updated": "2026-09-07 14:57",
   "today": "2026-09-07",
   "totalCount": 29,
-  "autoCount": 17,
-  "pendingCount": 12,
+  "autoCount": 18,
+  "pendingCount": 11,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -496,17 +496,17 @@
       "declKnown": true,
       "date": "2026-09-07",
       "reportDate": "9/7",
-      "officer": "박연정",
+      "officer": "임아영",
       "hbl": "ZHL1156E150",
       "warehouse": "01677016",
-      "remark": "44란 DRILL ICE CONES\n— 검사계획통보 대기중",
+      "remark": "44란 DRILL ICE CONES — 물품검사 준비 및 검사후 재포장요망",
       "plan": "D",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "150",
       "importer": "무한결 유한회사",
       "arrival": "9/7 10:23",
-      "verified": false,
+      "verified": true,
       "no": 28
     },
     {

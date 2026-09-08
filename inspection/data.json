@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-08 10:17",
+  "updated": "2026-09-08 10:27",
   "today": "2026-09-08",
-  "totalCount": 30,
+  "totalCount": 31,
   "autoCount": 19,
-  "pendingCount": 11,
+  "pendingCount": 12,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -544,6 +544,24 @@
       "arrival": "",
       "verified": false,
       "no": 30
+    },
+    {
+      "declNo": "4363226013799M",
+      "declKnown": true,
+      "date": "2026-09-08",
+      "reportDate": "9/8",
+      "officer": "전기성",
+      "hbl": "ZHL1157E85",
+      "warehouse": "01677016",
+      "remark": "7란 RUBBER SEALING PARTS,\n9란 STORAGE BAG,\n17란 COLLAR,\n27란 REARVIEW MIRROR,\n35란 CHISEL,\n46란 ONE-LEGGED CLOCK,\n49란 SWING PRACTICE DEVICE,\n50란 FISHING GEAR\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "85",
+      "importer": "태정트레이드 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 31
     }
   ]
 }

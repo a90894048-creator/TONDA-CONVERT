@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-09 09:27",
+  "updated": "2026-09-09 09:37",
   "today": "2026-09-09",
   "totalCount": 31,
-  "autoCount": 19,
-  "pendingCount": 12,
+  "autoCount": 20,
+  "pendingCount": 11,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -532,17 +532,17 @@
       "declKnown": true,
       "date": "2026-09-08",
       "reportDate": "9/8",
-      "officer": "김세훈",
+      "officer": "전기성",
       "hbl": "ZHL1157E236",
       "warehouse": "01677016",
-      "remark": "1란 STICKER,\n4란 DISPENSING BOTTLE,\n6란 FILE FOLDER,\n7란 BELT,\n11란 GLASSES CASE,\n15란 PEDESTAL,\n26란 TIE,\n33란 PET BANDAGE,\n37란 HAT,\n39란 CRUTCHES,\n40란 PENDANT,\n41란 COSMETIC MIRROR,\n42란 STORAGE TANK,\n43란 MINI VASE,\n47란 RING,\n50란 BRACELET,\n52란 NUT,\n57란 HOE,\n59란 WRENCH,\n62란 CORNER HOLDER,\n69란 BICYCLE BASKET,\n70란 GLASSES,\n77란 SEAT CUSHION,\n78란 STRESS-RELIEF TWIST TOY\n— 검사계획통보 대기중",
+      "remark": "1란 STICKER,\n4란 DISPENSING BOTTLE,\n6란 FILE FOLDER,\n7란 BELT,\n11란 GLASSES CASE,\n15란 PEDESTAL,\n26란 TIE,\n33란 PET BANDAGE,\n37란 HAT,\n39란 CRUTCHES,\n40란 PENDANT,\n41란 COSMETIC MIRROR,\n42란 STORAGE TANK,\n43란 MINI VASE,\n47란 RING,\n50란 BRACELET,\n52란 NUT,\n57란 HOE,\n59란 WRENCH,\n62란 CORNER HOLDER,\n69란 BICYCLE BASKET,\n70란 GLASSES,\n77란 SEAT CUSHION,\n78란 STRESS-RELIEF TWIST TOY — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "236",
       "importer": "태정트레이드 유한회사",
       "arrival": "9/9 08:30",
-      "verified": false,
+      "verified": true,
       "no": 30
     },
     {

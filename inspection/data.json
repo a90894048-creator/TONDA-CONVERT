@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-10 13:28",
+  "updated": "2026-09-10 13:38",
   "today": "2026-09-10",
-  "totalCount": 34,
+  "totalCount": 35,
   "autoCount": 22,
-  "pendingCount": 12,
+  "pendingCount": 13,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -616,6 +616,24 @@
       "arrival": "",
       "verified": false,
       "no": 34
+    },
+    {
+      "declNo": "4363226013936M",
+      "declKnown": true,
+      "date": "2026-09-10",
+      "reportDate": "9/10",
+      "officer": "배수빈",
+      "hbl": "519781664150",
+      "warehouse": "01602003",
+      "remark": "4란 PENCIL\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "2",
+      "importer": "새톱커머스 주식회사",
+      "arrival": "",
+      "verified": false,
+      "no": 35
     }
   ]
 }

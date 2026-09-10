@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-10 16:58",
+  "updated": "2026-09-10 17:08",
   "today": "2026-09-10",
-  "totalCount": 35,
+  "totalCount": 36,
   "autoCount": 22,
-  "pendingCount": 13,
+  "pendingCount": 14,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -634,6 +634,24 @@
       "arrival": "9/10 15:00",
       "verified": false,
       "no": 35
+    },
+    {
+      "declNo": "4363226013972M",
+      "declKnown": true,
+      "date": "2026-09-10",
+      "reportDate": "9/10",
+      "officer": "김태은",
+      "hbl": "EASPN2627SP6000",
+      "warehouse": "01612033",
+      "remark": "1란 PET DRYER (HM-CW02)\n— 검사계획통보 대기중",
+      "plan": "B",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "663",
+      "importer": "포즈텍 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 36
     }
   ]
 }

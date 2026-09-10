@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-10 10:57",
+  "updated": "2026-09-10 11:07",
   "today": "2026-09-10",
-  "totalCount": 33,
+  "totalCount": 34,
   "autoCount": 22,
-  "pendingCount": 11,
+  "pendingCount": 12,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -598,6 +598,24 @@
       "arrival": "",
       "verified": false,
       "no": 33
+    },
+    {
+      "declNo": "4363226013925M",
+      "declKnown": true,
+      "date": "2026-09-10",
+      "reportDate": "9/10",
+      "officer": "임아영",
+      "hbl": "ZHL1158E165",
+      "warehouse": "01677016",
+      "remark": "16란 VEST,\n18란 GLOVES,\n29란 PET THIGH-HIGH SOCKS,\n55란 GUN GLUE\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "165",
+      "importer": "태정트레이드 유한회사",
+      "arrival": "",
+      "verified": false,
+      "no": 34
     }
   ]
 }

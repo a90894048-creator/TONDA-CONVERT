@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-11 14:47",
+  "updated": "2026-09-11 14:57",
   "today": "2026-09-11",
-  "totalCount": 37,
+  "totalCount": 38,
   "autoCount": 24,
-  "pendingCount": 13,
+  "pendingCount": 14,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -707,6 +707,24 @@
       "verified": false,
       "hsDone": true,
       "no": 37
+    },
+    {
+      "declNo": "4363226501078M",
+      "declKnown": true,
+      "date": "2026-09-11",
+      "reportDate": "9/11",
+      "officer": "정미경",
+      "hbl": "",
+      "warehouse": "",
+      "remark": "1란\n— 검사계획통보 대기중",
+      "plan": "",
+      "agency": "",
+      "channel": "",
+      "packages": "",
+      "importer": "",
+      "arrival": "",
+      "verified": false,
+      "no": 38
     }
   ]
 }

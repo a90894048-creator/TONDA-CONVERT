@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-11 11:07",
+  "updated": "2026-09-11 11:27",
   "today": "2026-09-11",
   "totalCount": 36,
   "autoCount": 24,
@@ -13,7 +13,7 @@
       "officer": "이현정",
       "hbl": "ZHL1145E171",
       "warehouse": "01677016",
-      "remark": "43란 FOOT MASSAGER — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "43란 9019102000 FOOT MASSAGER — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -21,7 +21,8 @@
       "importer": "무한결 유한회사",
       "arrival": "8/11 18:00",
       "verified": true,
-      "no": 1
+      "no": 1,
+      "hsDone": true
     },
     {
       "declNo": "4363226012320M",
@@ -31,7 +32,7 @@
       "officer": "정현석",
       "hbl": "TDCP20260814HLZ",
       "warehouse": "02070003",
-      "remark": "1란 URINE BAG\n— 검사계획통보 대기중",
+      "remark": "1란 4202921090 URINE BAG\n— 검사계획통보 대기중",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -39,7 +40,8 @@
       "importer": "(유)이판트레이딩",
       "arrival": "8/18 15:48",
       "verified": false,
-      "no": 2
+      "no": 2,
+      "hsDone": true
     },
     {
       "declNo": "4363226012336M",
@@ -49,7 +51,7 @@
       "officer": "정현석",
       "hbl": "TDCP20260814BSL03",
       "warehouse": "02070003",
-      "remark": "4란 STORAGE RACK\n— 검사계획통보 대기중",
+      "remark": "4란 7323990000 STORAGE RACK\n— 검사계획통보 대기중",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -57,7 +59,8 @@
       "importer": "한코랩 유한회사",
       "arrival": "8/18 15:59",
       "verified": false,
-      "no": 3
+      "no": 3,
+      "hsDone": true
     },
     {
       "declNo": "4363226012523M",
@@ -67,7 +70,7 @@
       "officer": "정현석",
       "hbl": "TDCP20260817FTS",
       "warehouse": "02070003",
-      "remark": "1란 PILLOW\n— 검사계획통보 대기중",
+      "remark": "1란 9404900000 PILLOW\n— 검사계획통보 대기중",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -75,7 +78,8 @@
       "importer": "아비오르 유한회사",
       "arrival": "8/19 13:57",
       "verified": false,
-      "no": 4
+      "no": 4,
+      "hsDone": true
     },
     {
       "declNo": "4363226012611M",
@@ -85,7 +89,7 @@
       "officer": "전기성",
       "hbl": "ZHL1148E021",
       "warehouse": "01677016",
-      "remark": "8란 LEGGINGS — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "8란 6104630000 LEGGINGS — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -93,7 +97,8 @@
       "importer": "스카이미너리즈",
       "arrival": "8/18 17:36",
       "verified": true,
-      "no": 5
+      "no": 5,
+      "hsDone": true
     },
     {
       "declNo": "4363226012543M",
@@ -103,7 +108,7 @@
       "officer": "정현석",
       "hbl": "TDCP20260817MDS",
       "warehouse": "02070003",
-      "remark": "2란 SUNSHADE\n— 검사계획통보 대기중",
+      "remark": "2란 6307909000 SUNSHADE\n— 검사계획통보 대기중",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -111,7 +116,8 @@
       "importer": "(주)모덱시",
       "arrival": "8/19 17:01",
       "verified": false,
-      "no": 6
+      "no": 6,
+      "hsDone": true
     },
     {
       "declNo": "4363226012557M",
@@ -121,7 +127,7 @@
       "officer": "정현석",
       "hbl": "SZCP20260817ROOT",
       "warehouse": "02070003",
-      "remark": "7란 POLYESTER DECORATIVE BAND\n— 검사계획통보 대기중",
+      "remark": "7란 6117800000 POLYESTER DECORATIVE BAND\n— 검사계획통보 대기중",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -129,7 +135,8 @@
       "importer": "루트필드 유한회사",
       "arrival": "8/19 16:53",
       "verified": false,
-      "no": 7
+      "no": 7,
+      "hsDone": true
     },
     {
       "declNo": "4363226012619M",
@@ -139,7 +146,7 @@
       "officer": "이은선",
       "hbl": "519781568434",
       "warehouse": "01602003",
-      "remark": "1란 PHONE CASE\n— 검사계획통보 대기중",
+      "remark": "1란 3926909000 PHONE CASE\n— 검사계획통보 대기중",
       "plan": "D",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -147,7 +154,8 @@
       "importer": "주식회사 펀드랩스",
       "arrival": "8/19 21:06",
       "verified": false,
-      "no": 8
+      "no": 8,
+      "hsDone": true
     },
     {
       "declNo": "4363226012669M",
@@ -157,7 +165,7 @@
       "officer": "박연정",
       "hbl": "ZHL1149E132",
       "warehouse": "01677016",
-      "remark": "25란 WARM KNEE PADS — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "25란 6307909000 WARM KNEE PADS — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -165,7 +173,8 @@
       "importer": "무한결 유한회사",
       "arrival": "8/20 17:12",
       "verified": true,
-      "no": 9
+      "no": 9,
+      "hsDone": true
     },
     {
       "declNo": "4363226012670M",
@@ -175,7 +184,7 @@
       "officer": "박연정",
       "hbl": "ZHL1149E04",
       "warehouse": "01677016",
-      "remark": "3란 EYEGLASSES CORD — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "3란 4205001900 EYEGLASSES CORD — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -183,7 +192,8 @@
       "importer": "성하운석과기 주식회사",
       "arrival": "8/20 17:01",
       "verified": true,
-      "no": 10
+      "no": 10,
+      "hsDone": true
     },
     {
       "declNo": "4363226012706M",
@@ -193,7 +203,7 @@
       "officer": "정현석",
       "hbl": "TDCP20260819HTSW",
       "warehouse": "02070003",
-      "remark": "2란 PENCIL SHARPENER\n— 검사계획통보 대기중",
+      "remark": "2란 8472904000 PENCIL SHARPENER\n— 검사계획통보 대기중",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -201,7 +211,8 @@
       "importer": "지와이코드 유한회사",
       "arrival": "8/21 09:03",
       "verified": false,
-      "no": 11
+      "no": 11,
+      "hsDone": true
     },
     {
       "declNo": "4363226012709M",
@@ -211,7 +222,7 @@
       "officer": "정현석",
       "hbl": "TDCP20260819DM",
       "warehouse": "02070003",
-      "remark": "3란 MEMORY FOAM PILLOW\n— 검사계획통보 대기중",
+      "remark": "3란 9404900000 MEMORY FOAM PILLOW\n— 검사계획통보 대기중",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -219,7 +230,8 @@
       "importer": "도우마이이커머스 유한회사",
       "arrival": "8/21 09:03",
       "verified": false,
-      "no": 12
+      "no": 12,
+      "hsDone": true
     },
     {
       "declNo": "4363226400141M",
@@ -229,7 +241,7 @@
       "officer": "유영환",
       "hbl": "519781593225",
       "warehouse": "01602003",
-      "remark": "1란 SMAEL WATCH — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "1란 9102119090 SMAEL WATCH — 물품검사 준비 및 검사후 재포장요망",
       "plan": "D",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -237,7 +249,8 @@
       "importer": "새톱커머스 주식회사",
       "arrival": "8/20 13:15",
       "verified": true,
-      "no": 13
+      "no": 13,
+      "hsDone": true
     },
     {
       "declNo": "4363226400144M",
@@ -247,7 +260,7 @@
       "officer": "김희정",
       "hbl": "519780551662",
       "warehouse": "01602003",
-      "remark": "1란 MIRROR\n— 검사계획통보 대기중",
+      "remark": "1란 7009920000 MIRROR\n— 검사계획통보 대기중",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -255,7 +268,8 @@
       "importer": "센리",
       "arrival": "8/21 16:15",
       "verified": false,
-      "no": 14
+      "no": 14,
+      "hsDone": true
     },
     {
       "declNo": "4363226012765M",
@@ -265,7 +279,7 @@
       "officer": "소민주",
       "hbl": "ZHL1150E365",
       "warehouse": "01677016",
-      "remark": "24란 PHONE CORD — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "24란 6307909000 PHONE CORD — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -273,7 +287,8 @@
       "importer": "무한결 유한회사",
       "arrival": "8/24 14:39",
       "verified": true,
-      "no": 15
+      "no": 15,
+      "hsDone": true
     },
     {
       "declNo": "4363226012766M",
@@ -283,7 +298,7 @@
       "officer": "박연정",
       "hbl": "ZHL1150E177",
       "warehouse": "01677016",
-      "remark": "16란 DOG TOY,\n39란 WALL-MOUNTED FISH TANK — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "16란 6307909000 DOG TOY,\n39란 3926909000 WALL-MOUNTED FISH TANK — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -291,7 +306,8 @@
       "importer": "무한결 유한회사",
       "arrival": "8/24 17:44",
       "verified": true,
-      "no": 16
+      "no": 16,
+      "hsDone": true
     },
     {
       "declNo": "4363226400154M",
@@ -301,7 +317,7 @@
       "officer": "박연정",
       "hbl": "ZHL1150E19",
       "warehouse": "01677016",
-      "remark": "3란 SHOES,\n4란 RAIN BOOTS — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "3란 6402999000 SHOES,\n4란 6401929090 RAIN BOOTS — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -309,7 +325,8 @@
       "importer": "마리오스쿨",
       "arrival": "8/24 17:44",
       "verified": true,
-      "no": 17
+      "no": 17,
+      "hsDone": true
     },
     {
       "declNo": "4363226012994M",
@@ -319,7 +336,7 @@
       "officer": "백혜영",
       "hbl": "ZHL1151E80",
       "warehouse": "01677016",
-      "remark": "5란 EARMUFFS,\n14란 GLOVES — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "5란 3926909000 EARMUFFS,\n14란 6116929000 GLOVES — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -327,7 +344,8 @@
       "importer": "무한결 유한회사",
       "arrival": "8/26 08:21",
       "verified": true,
-      "no": 18
+      "no": 18,
+      "hsDone": true
     },
     {
       "declNo": "4363226012997M",
@@ -337,7 +355,7 @@
       "officer": "김하영",
       "hbl": "ZHL1151E362",
       "warehouse": "01677016",
-      "remark": "79란 MASSAGER — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "79란 9019102000 MASSAGER — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -345,7 +363,8 @@
       "importer": "무한결 유한회사",
       "arrival": "8/26 08:20",
       "verified": true,
-      "no": 19
+      "no": 19,
+      "hsDone": true
     },
     {
       "declNo": "4363226400158M",
@@ -355,7 +374,7 @@
       "officer": "김하영",
       "hbl": "ZHL1151E07",
       "warehouse": "01677016",
-      "remark": "1란 CROSSBACK — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "1란 4202922000 CROSSBACK — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -363,7 +382,8 @@
       "importer": "쓸리보",
       "arrival": "8/25 16:09",
       "verified": true,
-      "no": 20
+      "no": 20,
+      "hsDone": true
     },
     {
       "declNo": "4363226400164M",
@@ -373,7 +393,7 @@
       "officer": "김하영",
       "hbl": "ZHL1151E96",
       "warehouse": "01677016",
-      "remark": "2란 WOMENS SWIM WEAR T-SHRTS — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "2란 6211129000 WOMENS SWIM WEAR T-SHRTS — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -381,7 +401,8 @@
       "importer": "마리오스쿨",
       "arrival": "8/25 16:09",
       "verified": true,
-      "no": 21
+      "no": 21,
+      "hsDone": true
     },
     {
       "declNo": "4363226400177M",
@@ -391,7 +412,7 @@
       "officer": "이종혁",
       "hbl": "519780556842",
       "warehouse": "01602003",
-      "remark": "1란 MIRROR\n— 검사계획통보 대기중",
+      "remark": "1란 7009920000 MIRROR\n— 검사계획통보 대기중",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -399,7 +420,8 @@
       "importer": "센리",
       "arrival": "8/27 13:32",
       "verified": false,
-      "no": 22
+      "no": 22,
+      "hsDone": true
     },
     {
       "declNo": "4363226013154M",
@@ -409,7 +431,7 @@
       "officer": "이현정",
       "hbl": "ZHL1153E401",
       "warehouse": "01677016",
-      "remark": "65란 THUMB MASSAGE DEVICE — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "65란 9019102000 THUMB MASSAGE DEVICE — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -417,7 +439,8 @@
       "importer": "무한결 유한회사",
       "arrival": "8/31 14:03",
       "verified": true,
-      "no": 23
+      "no": 23,
+      "hsDone": true
     },
     {
       "declNo": "4363226013155M",
@@ -427,7 +450,7 @@
       "officer": "김하영",
       "hbl": "ZHL1153E03",
       "warehouse": "01677016",
-      "remark": "1란 EARRINGS — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "1란 7117193000 EARRINGS — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -435,7 +458,8 @@
       "importer": "금복마켓",
       "arrival": "8/31 14:02",
       "verified": true,
-      "no": 24
+      "no": 24,
+      "hsDone": true
     },
     {
       "declNo": "4363226013157M",
@@ -445,7 +469,7 @@
       "officer": "전기성",
       "hbl": "ZHL1153E10",
       "warehouse": "01677016",
-      "remark": "1란 PHONE HOLDER — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "1란 7326909000 PHONE HOLDER — 물품검사 준비 및 검사후 재포장요망",
       "plan": "D",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -453,7 +477,8 @@
       "importer": "미블룸",
       "arrival": "8/31 09:57",
       "verified": true,
-      "no": 25
+      "no": 25,
+      "hsDone": true
     },
     {
       "declNo": "4363226013363M",
@@ -463,7 +488,7 @@
       "officer": "박진선",
       "hbl": "ZHL1154E246",
       "warehouse": "01677016",
-      "remark": "13란 WATCH STORAGE BOX,\n29란 CAR ACCESSORIES BLACKOUT CURTA,\n32란 STORAGE BASKET,\n40란 STEPPING STONE — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "13란 4420909020 WATCH STORAGE BOX,\n29란 6303920000 CAR ACCESSORIES BLACKOUT CURTA,\n32란 6307909000 STORAGE BASKET,\n40란 6815990000 STEPPING STONE — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -471,7 +496,8 @@
       "importer": "무한결 유한회사",
       "arrival": "9/1 17:24",
       "verified": true,
-      "no": 26
+      "no": 26,
+      "hsDone": true
     },
     {
       "declNo": "4363226013365M",
@@ -481,7 +507,7 @@
       "officer": "임아영",
       "hbl": "ZHL1154E17",
       "warehouse": "01677016",
-      "remark": "1란 TRASH CAN,\n6란 STORAGE BOX — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "1란 3924909000 TRASH CAN,\n6란 6307909000 STORAGE BOX — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -489,7 +515,8 @@
       "importer": "무한결 유한회사",
       "arrival": "9/2 08:54",
       "verified": true,
-      "no": 27
+      "no": 27,
+      "hsDone": true
     },
     {
       "declNo": "4363226013729M",
@@ -499,7 +526,7 @@
       "officer": "임아영",
       "hbl": "ZHL1156E150",
       "warehouse": "01677016",
-      "remark": "44란 DRILL ICE CONES — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "44란 8205599000 DRILL ICE CONES — 물품검사 준비 및 검사후 재포장요망",
       "plan": "D",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -507,7 +534,8 @@
       "importer": "무한결 유한회사",
       "arrival": "9/7 10:23",
       "verified": true,
-      "no": 28
+      "no": 28,
+      "hsDone": true
     },
     {
       "declNo": "4363226400235M",
@@ -517,7 +545,7 @@
       "officer": "김세훈",
       "hbl": "ZHL1156E20",
       "warehouse": "01677016",
-      "remark": "1란 CUSHION — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "1란 9404900000 CUSHION — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -525,7 +553,8 @@
       "importer": "데구 유한회사",
       "arrival": "9/7 15:02",
       "verified": true,
-      "no": 29
+      "no": 29,
+      "hsDone": true
     },
     {
       "declNo": "4363226013792M",
@@ -535,7 +564,7 @@
       "officer": "전기성",
       "hbl": "ZHL1157E236",
       "warehouse": "01677016",
-      "remark": "1란 STICKER,\n4란 DISPENSING BOTTLE,\n6란 FILE FOLDER,\n7란 BELT,\n11란 GLASSES CASE,\n15란 PEDESTAL,\n26란 TIE,\n33란 PET BANDAGE,\n37란 HAT,\n39란 CRUTCHES,\n40란 PENDANT,\n41란 COSMETIC MIRROR,\n42란 STORAGE TANK,\n43란 MINI VASE,\n47란 RING,\n50란 BRACELET,\n52란 NUT,\n57란 HOE,\n59란 WRENCH,\n62란 CORNER HOLDER,\n69란 BICYCLE BASKET,\n70란 GLASSES,\n77란 SEAT CUSHION,\n78란 STRESS-RELIEF TWIST TOY — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "1란 3919900000 STICKER,\n4란 3923300000 DISPENSING BOTTLE,\n6란 3926109000 FILE FOLDER,\n7란 3926200000 BELT,\n11란 4202390000 GLASSES CASE,\n15란 4420909020 PEDESTAL,\n26란 6215200000 TIE,\n33란 6307909000 PET BANDAGE,\n37란 6505009029 HAT,\n39란 6602001000 CRUTCHES,\n40란 6913900000 PENDANT,\n41란 7009920000 COSMETIC MIRROR,\n42란 7010900000 STORAGE TANK,\n43란 7018909000 MINI VASE,\n47란 7117195000 RING,\n50란 7117900000 BRACELET,\n52란 7318160000 NUT,\n57란 8201300000 HOE,\n59란 8204110000 WRENCH,\n62란 8207909000 CORNER HOLDER,\n69란 8714990000 BICYCLE BASKET,\n70란 9004109000 GLASSES,\n77란 9404900000 SEAT CUSHION,\n78란 9503003919 STRESS-RELIEF TWIST TOY — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -543,6 +572,7 @@
       "importer": "태정트레이드 유한회사",
       "arrival": "9/9 08:30",
       "verified": true,
+      "hsDone": true,
       "no": 30
     },
     {
@@ -553,7 +583,7 @@
       "officer": "박진선",
       "hbl": "ZHL1157E85",
       "warehouse": "01677016",
-      "remark": "7란 RUBBER SEALING PARTS,\n9란 STORAGE BAG,\n17란 COLLAR,\n27란 REARVIEW MIRROR,\n35란 CHISEL,\n46란 ONE-LEGGED CLOCK,\n49란 SWING PRACTICE DEVICE,\n50란 FISHING GEAR — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "7란 4016930000 RUBBER SEALING PARTS,\n9란 4202921020 STORAGE BAG,\n17란 6217100000 COLLAR,\n27란 7009920000 REARVIEW MIRROR,\n35란 8205300000 CHISEL,\n46란 9105990000 ONE-LEGGED CLOCK,\n49란 9506910000 SWING PRACTICE DEVICE,\n50란 9507200000 FISHING GEAR — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -561,6 +591,7 @@
       "importer": "태정트레이드 유한회사",
       "arrival": "9/8 17:42",
       "verified": true,
+      "hsDone": true,
       "no": 31
     },
     {
@@ -571,7 +602,7 @@
       "officer": "전기성",
       "hbl": "EASPS2649QP007",
       "warehouse": "01612033",
-      "remark": "1란 BLANKET,\n2란 CURTAIN — 물품검사 준비 및 검사후 재포장요망\n\n-컨테이너검색+발췌검사 : TRHU4745520  \t\n\n지정된 컨테이너검색 등을 미이행할 경우 [관세법] 제276조 제4항 제7호에 따라 1천만원 이하의 벌금에 처해질 수 있습니다.",
+      "remark": "1란 6301900000 BLANKET,\n2란 6303120000 CURTAIN — 물품검사 준비 및 검사후 재포장요망\n\n-컨테이너검색+발췌검사 : TRHU4745520  \t\n\n지정된 컨테이너검색 등을 미이행할 경우 [관세법] 제276조 제4항 제7호에 따라 1천만원 이하의 벌금에 처해질 수 있습니다.",
       "plan": "E",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -579,6 +610,7 @@
       "importer": "포근나래 유한회사",
       "arrival": "9/10 22:19",
       "verified": true,
+      "hsDone": true,
       "no": 32
     },
     {
@@ -589,7 +621,7 @@
       "officer": "백혜영",
       "hbl": "ZHL1158E166",
       "warehouse": "01677016",
-      "remark": "69란 GUASHA BOARD — 물품검사 준비 및 검사후 재포장요망",
+      "remark": "69란 9019102000 GUASHA BOARD — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -597,6 +629,7 @@
       "importer": "태정트레이드 유한회사",
       "arrival": "9/11 08:16",
       "verified": true,
+      "hsDone": true,
       "no": 33
     },
     {
@@ -607,7 +640,7 @@
       "officer": "임아영",
       "hbl": "ZHL1158E165",
       "warehouse": "01677016",
-      "remark": "16란 VEST,\n18란 GLOVES,\n29란 PET THIGH-HIGH SOCKS,\n55란 GUN GLUE\n— 검사계획통보 대기중",
+      "remark": "16란 6109903090 VEST,\n18란 6116929000 GLOVES,\n29란 6307909000 PET THIGH-HIGH SOCKS,\n55란 8205599000 GUN GLUE\n— 검사계획통보 대기중",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -615,6 +648,7 @@
       "importer": "태정트레이드 유한회사",
       "arrival": "9/11 08:25",
       "verified": false,
+      "hsDone": true,
       "no": 34
     },
     {
@@ -625,7 +659,7 @@
       "officer": "배수빈",
       "hbl": "519781664150",
       "warehouse": "01602003",
-      "remark": "4란 PENCIL\n— 검사계획통보 대기중",
+      "remark": "4란 9609101000 PENCIL\n— 검사계획통보 대기중",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -633,6 +667,7 @@
       "importer": "새톱커머스 주식회사",
       "arrival": "9/10 15:00",
       "verified": false,
+      "hsDone": true,
       "no": 35
     },
     {
@@ -643,7 +678,7 @@
       "officer": "김태은",
       "hbl": "EASPN2627SP6000",
       "warehouse": "01612033",
-      "remark": "1란 PET DRYER (HM-CW02) — 물품검사 준비 및 검사후 재포장요망\n컨테이너검색+발췌검사 : TIIU7507748   \n지정된 컨테이너검색 등을 미이행할 경우 [관세법] 제276조 제4항 제7호에 따라 1천만원 이하의 벌금에 처해질 수 있습니다",
+      "remark": "1란 8516799000 PET DRYER (HM-CW02) — 물품검사 준비 및 검사후 재포장요망\n컨테이너검색+발췌검사 : TIIU7507748   \n지정된 컨테이너검색 등을 미이행할 경우 [관세법] 제276조 제4항 제7호에 따라 1천만원 이하의 벌금에 처해질 수 있습니다",
       "plan": "B",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
@@ -651,6 +686,7 @@
       "importer": "포즈텍 유한회사",
       "arrival": "",
       "verified": true,
+      "hsDone": true,
       "no": 36
     }
   ]

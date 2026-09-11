@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-11 08:57",
+  "updated": "2026-09-11 09:07",
   "today": "2026-09-11",
   "totalCount": 36,
-  "autoCount": 22,
-  "pendingCount": 14,
+  "autoCount": 23,
+  "pendingCount": 13,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -643,14 +643,14 @@
       "officer": "김태은",
       "hbl": "EASPN2627SP6000",
       "warehouse": "01612033",
-      "remark": "1란 PET DRYER (HM-CW02)\n— 검사계획통보 대기중",
+      "remark": "1란 PET DRYER (HM-CW02) — 물품검사 준비 및 검사후 재포장요망\n컨테이너검색+발췌검사 : TIIU7507748   \n지정된 컨테이너검색 등을 미이행할 경우 [관세법] 제276조 제4항 제7호에 따라 1천만원 이하의 벌금에 처해질 수 있습니다",
       "plan": "B",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "663",
       "importer": "포즈텍 유한회사",
       "arrival": "",
-      "verified": false,
+      "verified": true,
       "no": 36
     }
   ]

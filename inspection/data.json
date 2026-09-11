@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-11 16:27",
+  "updated": "2026-09-11 16:37",
   "today": "2026-09-11",
-  "totalCount": 38,
+  "totalCount": 39,
   "autoCount": 25,
-  "pendingCount": 13,
+  "pendingCount": 14,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -690,6 +690,25 @@
       "no": 36
     },
     {
+      "declNo": "4363226014044M",
+      "declKnown": true,
+      "date": "2026-09-11",
+      "reportDate": "9/11",
+      "officer": "김현규",
+      "hbl": "SITSKING813821",
+      "warehouse": "02012016",
+      "remark": "3란 3926909000 PLASTIC FLOATING SHELVES     F\n— 검사계획통보 대기중",
+      "plan": "B",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "378",
+      "importer": "서울일홍생활",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 37
+    },
+    {
       "declNo": "4363226400133M",
       "declKnown": true,
       "date": "2026-09-11",
@@ -706,7 +725,7 @@
       "arrival": "",
       "verified": false,
       "hsDone": true,
-      "no": 37
+      "no": 38
     },
     {
       "declNo": "4363226501078M",
@@ -724,7 +743,7 @@
       "importer": "",
       "arrival": "",
       "verified": false,
-      "no": 38
+      "no": 39
     }
   ]
 }

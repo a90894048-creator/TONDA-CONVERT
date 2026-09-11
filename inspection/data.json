@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-11 14:17",
+  "updated": "2026-09-11 14:27",
   "today": "2026-09-11",
-  "totalCount": 36,
+  "totalCount": 37,
   "autoCount": 24,
-  "pendingCount": 12,
+  "pendingCount": 13,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -688,6 +688,25 @@
       "verified": true,
       "hsDone": true,
       "no": 36
+    },
+    {
+      "declNo": "4363226400133M",
+      "declKnown": true,
+      "date": "2026-09-11",
+      "reportDate": "9/11",
+      "officer": "전기성",
+      "hbl": "ZHL1148E267",
+      "warehouse": "01677016",
+      "remark": "1란 8509809000 CORDLESS WATER FLOSSER\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "12",
+      "importer": "주식회사 제이지디글로벌",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 37
     }
   ]
 }

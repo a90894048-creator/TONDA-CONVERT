@@ -150,6 +150,7 @@ def parse_5em(root) -> dict:
 def parse_929(root) -> dict:
     issue = txt(root, 'IssueDateTime')
     items = {}
+    hs = {}
     # GovernmentAgencyGoodsItem은 root의 직속 자식이 아니라 GoodsShipment 아래에 있음 —
     # './/'로 깊이 상관없이 전부 찾는다
     for item in root.findall('.//GovernmentAgencyGoodsItem'):
@@ -157,6 +158,7 @@ def parse_929(root) -> dict:
         desc = txt(item, 'Commodity/CargoDescription')
         if seq:
             items[seq] = desc
+            hs[seq] = txt(item, 'Commodity/Classification/ID')   # 세번부호(HSK 10자리)
     hbl = ''
     for tcd in root.findall('.//TransportContractDocument'):
         if txt(tcd, 'TypeCode') == '714':
@@ -173,6 +175,7 @@ def parse_929(root) -> dict:
         'warehouse': txt(root, 'GoodsShipment/Warehouse/ID'),
         'hbl': hbl,
         'items': items,
+        'hs': hs,
     }
 
 
@@ -274,6 +277,51 @@ def build_rows(rows5em, rows929, rows023) -> dict:
 
         result[decl_no] = row
     return result
+
+
+# ── 검사란 앞 세번부호 ─────────────────────────────────────────
+# 검사내용은 5EM이든 023 대기중이든 "N란 품명"이 한 줄씩 온다 → 줄 맨 앞 "N란" 뒤에
+# 929의 같은 란 세번부호를 끼워 넣는다. 이미 들어가 있으면 다시 넣지 않는다.
+_SEQ_LINE = re.compile(r'(?m)^(\d+)란(?! \d{10}(?!\d))')
+
+
+def add_hs(remark: str, hs_map: dict) -> str:
+    def repl(m):
+        code = hs_map.get(m.group(1), '')
+        return f'{m.group(1)}란 {code}' if code else m.group(0)
+    return _SEQ_LINE.sub(repl, remark or '')
+
+
+def find_929(decl_no: str, date_iso: str):
+    """스캔 범위 밖 과거 행의 929를 신고번호로 찾는다 (신고일자 폴더와 그 전 이틀만 확인)."""
+    if not decl_no or len(date_iso) < 10:
+        return None
+    base = datetime.strptime(date_iso[:10], '%Y-%m-%d')
+    for back in range(3):   # 929 전송이 접수(신고일자)보다 하루이틀 앞설 수 있음
+        d = (base - timedelta(days=back)).strftime('%Y%m%d')
+        for path in glob.glob(os.path.join(SEND_DIR, 'complete', d, f'GOVCBR929{decl_no}_*.xml')):
+            root = parse_xml(path)
+            if root is not None:
+                return parse_929(root)
+    return None
+
+
+def apply_hs_codes(rows: list, rows929: dict, rescanned: set):
+    """모든 행의 검사내용에 세번부호를 붙인다.
+
+    이번에 스캔된 행은 검사내용이 새로 만들어졌으니 매번 다시 붙이고, 과거 행은
+    처음 한 번만 929를 찾아 붙인 뒤 hsDone 표시로 이후 실행에서는 건너뛴다.
+    """
+    for r in rows:
+        is_new = r.get('declNo') in rescanned
+        if r.get('hsDone') and not is_new:
+            continue
+        r929 = rows929.get(r.get('declNo')) or find_929(r.get('declNo', ''), r.get('date', ''))
+        if r929 and any(r929['hs'].values()):
+            r['remark'] = add_hs(r.get('remark', ''), r929['hs'])
+            r['hsDone'] = True
+        elif not is_new:
+            r['hsDone'] = True   # 929를 못 찾은 과거 행은 10분마다 재시도하지 않음
 
 
 # --------------------------------------------- 유니패스 화물통관진행정보 → 반입일
@@ -456,6 +504,7 @@ def main():
     merged.update(scanned_rows)    # 이번에 스캔된 신고번호만 새로 추가/갱신
 
     rows = list(merged.values())
+    apply_hs_codes(rows, rows929, set(scanned_rows))
     rows.sort(key=lambda r: (r.get('date', ''), r.get('declNo', '')))
     for i, r in enumerate(rows, start=1):
         r['no'] = i

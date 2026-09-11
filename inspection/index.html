@@ -679,6 +679,13 @@
       return node && node.textContent ? node.textContent.trim() : '';
     }
 
+    // 검사내용의 줄 맨 앞 "N란" 뒤에 929의 같은 란 세번부호(10자리)를 끼워 넣는다 (이미 있으면 그대로)
+    function addHs(remark, hsBySeq){
+      return (remark || '').replace(/^(\d+)란(?! \d{10}(?!\d))/gm, function(m, seq){
+        return hsBySeq[seq] ? (seq + '란 ' + hsBySeq[seq]) : m;
+      });
+    }
+
     function itemSummary(declRoot){
       var consign = findChild(declRoot, 'Consignment');
       var items = findAllChildren(consign, 'ConsignmentItem');
@@ -733,12 +740,16 @@
       if (typeCode === 'GOVCBR929'){
         var issueRaw = txt(root, 'IssueDateTime');
         var itemDescByeq = {};
+        var itemHsBySeq = {};
         // GovernmentAgencyGoodsItem은 root의 직속 자식이 아니라 GoodsShipment 아래에 있음 —
         // querySelectorAll로 깊이 상관없이 전부 찾는다
         Array.prototype.forEach.call(root.querySelectorAll('GovernmentAgencyGoodsItem'), function(item){
           var seq = txt(item, 'SequenceNumeric').replace(/^0+/, '');
           var desc = txt(item, 'Commodity/CargoDescription');
-          if (seq) itemDescByeq[seq] = desc;
+          if (seq){
+            itemDescByeq[seq] = desc;
+            itemHsBySeq[seq] = txt(item, 'Commodity/Classification/ID');   // 세번부호(HSK 10자리)
+          }
         });
         return {
           type: '929',
@@ -751,6 +762,7 @@
           importer: txt(root, 'Importer/Name'),
           warehouse: txt(root, 'GoodsShipment/Warehouse/ID'),
           items: itemDescByeq,
+          hs: itemHsBySeq,
         };
       }
 
@@ -902,6 +914,7 @@
           });
           remark = (itemParts.length ? itemParts.join(',\n') + '\n— ' : '') + '검사계획통보 대기중';
         }
+        if (r929 && r929.hs) remark = addHs(remark, r929.hs);
 
         var row = {
           declNo: declNo,

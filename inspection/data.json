@@ -1,6 +1,6 @@
 {
-  "updated": "2026-09-14 23:57",
-  "today": "2026-09-14",
+  "updated": "2026-09-15 00:07",
+  "today": "2026-09-15",
   "totalCount": 40,
   "autoCount": 28,
   "pendingCount": 12,
@@ -743,7 +743,8 @@
       "importer": "",
       "arrival": "9/11 17:31",
       "verified": true,
-      "no": 39
+      "no": 39,
+      "hsDone": true
     },
     {
       "declNo": "4363226014046M",

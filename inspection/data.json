@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-14 09:07",
+  "updated": "2026-09-14 09:17",
   "today": "2026-09-14",
   "totalCount": 39,
-  "autoCount": 25,
-  "pendingCount": 14,
+  "autoCount": 26,
+  "pendingCount": 13,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -732,17 +732,17 @@
       "declKnown": true,
       "date": "2026-09-11",
       "reportDate": "9/11",
-      "officer": "정미경",
-      "hbl": "",
-      "warehouse": "",
-      "remark": "1란\n— 검사계획통보 대기중",
+      "officer": "심은아",
+      "hbl": "MRY260911A7",
+      "warehouse": "02010025",
+      "remark": "1란 BABY BIBS — 물품검사 준비 및 검사후 재포장요망",
       "plan": "",
       "agency": "",
       "channel": "",
       "packages": "",
       "importer": "",
-      "arrival": "",
-      "verified": false,
+      "arrival": "9/11 17:31",
+      "verified": true,
       "no": 39
     }
   ]

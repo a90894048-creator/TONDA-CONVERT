@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-14 09:47",
+  "updated": "2026-09-14 09:57",
   "today": "2026-09-14",
   "totalCount": 39,
-  "autoCount": 26,
-  "pendingCount": 13,
+  "autoCount": 27,
+  "pendingCount": 12,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -713,17 +713,17 @@
       "declKnown": true,
       "date": "2026-09-11",
       "reportDate": "9/11",
-      "officer": "전기성",
+      "officer": "이현정",
       "hbl": "ZHL1148E267",
       "warehouse": "01677016",
-      "remark": "1란 8509809000 CORDLESS WATER FLOSSER\n— 검사계획통보 대기중",
+      "remark": "1란 8509809000 CORDLESS WATER FLOSSER — 물품검사 준비 및 검사후 재포장요망",
       "plan": "D",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "12",
       "importer": "주식회사 제이지디글로벌",
       "arrival": "",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 38
     },

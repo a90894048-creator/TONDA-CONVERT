@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-15 10:07",
+  "updated": "2026-09-15 10:17",
   "today": "2026-09-15",
   "totalCount": 40,
-  "autoCount": 28,
-  "pendingCount": 12,
+  "autoCount": 29,
+  "pendingCount": 11,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -751,17 +751,17 @@
       "declKnown": true,
       "date": "2026-09-14",
       "reportDate": "9/14",
-      "officer": "백혜영",
+      "officer": "박연정",
       "hbl": "ZHL1159E170",
       "warehouse": "01677016",
-      "remark": "26란 6307909000 PATCH\n— 검사계획통보 대기중",
+      "remark": "26란 6307909000 PATCH — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "170",
       "importer": "태정트레이드 유한회사",
       "arrival": "9/14 15:06",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 40
     }

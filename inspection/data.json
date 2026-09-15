@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-15 10:37",
+  "updated": "2026-09-15 10:47",
   "today": "2026-09-15",
-  "totalCount": 40,
+  "totalCount": 41,
   "autoCount": 29,
-  "pendingCount": 11,
+  "pendingCount": 12,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -764,6 +764,25 @@
       "verified": true,
       "hsDone": true,
       "no": 40
+    },
+    {
+      "declNo": "4363226400371M",
+      "declKnown": true,
+      "date": "2026-09-15",
+      "reportDate": "9/15",
+      "officer": "박진선",
+      "hbl": "JDSNGP1160E1362E",
+      "warehouse": "01677016",
+      "remark": "6란 7326909000 PHONE CASE DECORATION\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "226",
+      "importer": "(주)모란카노코리아",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 41
     }
   ]
 }

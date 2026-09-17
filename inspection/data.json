@@ -1,8 +1,8 @@
 {
-  "updated": "2026-09-15 14:57",
-  "today": "2026-09-15",
-  "totalCount": 41,
-  "autoCount": 29,
+  "updated": "2026-09-17 13:37",
+  "today": "2026-09-17",
+  "totalCount": 43,
+  "autoCount": 31,
   "pendingCount": 12,
   "rows": [
     {
@@ -766,23 +766,61 @@
       "no": 40
     },
     {
+      "declNo": "4363226202814M",
+      "declKnown": true,
+      "date": "2026-09-15",
+      "reportDate": "9/15",
+      "officer": "이종혁",
+      "hbl": "519781680445",
+      "warehouse": "01602003",
+      "remark": "2란 9506990000 RECURVE BOW — 물품검사 준비 및 검사후 재포장요망",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "2",
+      "importer": "새톱커머스 주식회사",
+      "arrival": "9/15 16:03",
+      "verified": true,
+      "hsDone": true,
+      "no": 41
+    },
+    {
       "declNo": "4363226400371M",
       "declKnown": true,
       "date": "2026-09-15",
       "reportDate": "9/15",
-      "officer": "박진선",
+      "officer": "임아영",
       "hbl": "JDSNGP1160E1362E",
       "warehouse": "01677016",
-      "remark": "6란 7326909000 PHONE CASE DECORATION\n— 검사계획통보 대기중",
+      "remark": "6란 7326909000 PHONE CASE DECORATION — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "226",
       "importer": "(주)모란카노코리아",
+      "arrival": "9/15 17:10",
+      "verified": true,
+      "hsDone": true,
+      "no": 42
+    },
+    {
+      "declNo": "4363226702305M",
+      "declKnown": true,
+      "date": "2026-09-17",
+      "reportDate": "9/17",
+      "officer": "김하영",
+      "hbl": "ZHL1161E08",
+      "warehouse": "01677016",
+      "remark": "5란 5608191000 CAR SEAT STORAGE NET\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "8",
+      "importer": "하임하이",
       "arrival": "",
       "verified": false,
       "hsDone": true,
-      "no": 41
+      "no": 43
     }
   ]
 }

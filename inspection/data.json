@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-18 09:27",
+  "updated": "2026-09-18 09:37",
   "today": "2026-09-18",
   "totalCount": 43,
-  "autoCount": 31,
-  "pendingCount": 12,
+  "autoCount": 32,
+  "pendingCount": 11,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -808,17 +808,17 @@
       "declKnown": true,
       "date": "2026-09-17",
       "reportDate": "9/17",
-      "officer": "김하영",
+      "officer": "김세훈",
       "hbl": "ZHL1161E08",
       "warehouse": "01677016",
-      "remark": "5란 5608191000 CAR SEAT STORAGE NET\n— 검사계획통보 대기중",
+      "remark": "5란 5608191000 CAR SEAT STORAGE NET — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "8",
       "importer": "하임하이",
       "arrival": "9/17 17:02",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 43
     }

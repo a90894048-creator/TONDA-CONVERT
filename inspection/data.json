@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-21 13:37",
+  "updated": "2026-09-21 13:47",
   "today": "2026-09-21",
   "totalCount": 45,
-  "autoCount": 32,
-  "pendingCount": 13,
+  "autoCount": 33,
+  "pendingCount": 12,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -830,14 +830,14 @@
       "officer": "소민주",
       "hbl": "ZHL1162E04",
       "warehouse": "01677016",
-      "remark": "2란 3923100000 SOAP STORAGE BOX,\n6란 7616999090 LAPTOP STAND\n— 검사계획통보 대기중",
+      "remark": "2란 3923100000 SOAP STORAGE BOX,\n6란 7616999090 LAPTOP STAND — 물품검사 준비 및 검사후 재포장요망",
       "plan": "D",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "4",
       "importer": "메타랩 유한회사",
       "arrival": "9/21 09:03",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 44
     },

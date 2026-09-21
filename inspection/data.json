@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-21 11:27",
+  "updated": "2026-09-21 11:37",
   "today": "2026-09-21",
-  "totalCount": 43,
+  "totalCount": 45,
   "autoCount": 32,
-  "pendingCount": 11,
+  "pendingCount": 13,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -821,6 +821,44 @@
       "verified": true,
       "hsDone": true,
       "no": 43
+    },
+    {
+      "declNo": "4363226400420M",
+      "declKnown": true,
+      "date": "2026-09-21",
+      "reportDate": "9/21",
+      "officer": "소민주",
+      "hbl": "ZHL1162E04",
+      "warehouse": "01677016",
+      "remark": "2란 3923100000 SOAP STORAGE BOX,\n6란 7616999090 LAPTOP STAND\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "4",
+      "importer": "메타랩 유한회사",
+      "arrival": "9/21 09:03",
+      "verified": false,
+      "hsDone": true,
+      "no": 44
+    },
+    {
+      "declNo": "4363226400465M",
+      "declKnown": true,
+      "date": "2026-09-21",
+      "reportDate": "9/21",
+      "officer": "김태은",
+      "hbl": "ZHL1162E30",
+      "warehouse": "01677016",
+      "remark": "1란 6201401090 VEST\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "30",
+      "importer": "라온마켓",
+      "arrival": "9/21 09:02",
+      "verified": false,
+      "hsDone": true,
+      "no": 45
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-23 09:27",
+  "updated": "2026-09-23 09:37",
   "today": "2026-09-23",
   "totalCount": 46,
-  "autoCount": 34,
-  "pendingCount": 12,
+  "autoCount": 35,
+  "pendingCount": 11,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -865,17 +865,17 @@
       "declKnown": true,
       "date": "2026-09-22",
       "reportDate": "9/22",
-      "officer": "이현정",
+      "officer": "백혜영",
       "hbl": "JDSNGP1163E1362D",
       "warehouse": "01677016",
-      "remark": "3란 3926909000 JELLY PHONE CASE,\n6란 7326909000 PHONE RING\n— 검사계획통보 대기중",
+      "remark": "3란 3926909000 JELLY PHONE CASE,\n6란 7326909000 PHONE RING — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "227",
       "importer": "(주)모란카노코리아",
       "arrival": "9/22 16:55",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 46
     }

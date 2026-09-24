@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-24 20:38",
+  "updated": "2026-09-24 20:48",
   "today": "2026-09-24",
   "totalCount": 47,
   "autoCount": 36,
@@ -893,7 +893,7 @@
       "channel": "통다",
       "packages": "1719",
       "importer": "제트스파크 유한회사",
-      "arrival": "",
+      "arrival": "9/24 20:20",
       "verified": true,
       "hsDone": true,
       "no": 47

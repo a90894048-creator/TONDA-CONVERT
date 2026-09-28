@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-28 15:17",
+  "updated": "2026-09-28 15:27",
   "today": "2026-09-28",
-  "totalCount": 51,
+  "totalCount": 52,
   "autoCount": 36,
-  "pendingCount": 15,
+  "pendingCount": 16,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -973,6 +973,25 @@
       "verified": false,
       "hsDone": true,
       "no": 51
+    },
+    {
+      "declNo": "4363226400605M",
+      "declKnown": true,
+      "date": "2026-09-28",
+      "reportDate": "9/28",
+      "officer": "김태은",
+      "hbl": "ZHL1165E31",
+      "warehouse": "01677016",
+      "remark": "5란 3926909000 HOOK\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "31",
+      "importer": "데구 유한회사",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 52
     }
   ]
 }

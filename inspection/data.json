@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-29 09:57",
+  "updated": "2026-09-29 10:07",
   "today": "2026-09-29",
   "totalCount": 53,
-  "autoCount": 36,
-  "pendingCount": 17,
+  "autoCount": 37,
+  "pendingCount": 16,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -979,17 +979,17 @@
       "declKnown": true,
       "date": "2026-09-28",
       "reportDate": "9/28",
-      "officer": "소민주",
+      "officer": "전기성",
       "hbl": "JDSNGP1164E1362C",
       "warehouse": "01677016",
-      "remark": "1란 8509809000 HUMIDIFIER\n— 검사계획통보 대기중",
+      "remark": "1란 8509809000 HUMIDIFIER — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "5",
       "importer": "주식회사 리튬포어스",
       "arrival": "9/28 16:59",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 52
     },

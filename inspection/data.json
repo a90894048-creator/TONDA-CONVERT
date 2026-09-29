@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-29 10:47",
+  "updated": "2026-09-29 10:57",
   "today": "2026-09-29",
   "totalCount": 53,
   "autoCount": 37,
@@ -912,7 +912,7 @@
       "channel": "통다",
       "packages": "145",
       "importer": "태정트레이드 유한회사",
-      "arrival": "",
+      "arrival": "9/29 10:50",
       "verified": false,
       "hsDone": true,
       "no": 48
@@ -931,7 +931,7 @@
       "channel": "통다",
       "packages": "381",
       "importer": "태정트레이드 유한회사",
-      "arrival": "",
+      "arrival": "9/29 10:49",
       "verified": false,
       "hsDone": true,
       "no": 49
@@ -950,7 +950,7 @@
       "channel": "통다",
       "packages": "244",
       "importer": "태정트레이드 유한회사",
-      "arrival": "",
+      "arrival": "9/29 10:52",
       "verified": false,
       "hsDone": true,
       "no": 50
@@ -969,7 +969,7 @@
       "channel": "통다",
       "packages": "219",
       "importer": "태정트레이드 유한회사",
-      "arrival": "",
+      "arrival": "9/29 10:49",
       "verified": false,
       "hsDone": true,
       "no": 51

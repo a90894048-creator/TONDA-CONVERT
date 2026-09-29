@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-29 11:57",
+  "updated": "2026-09-29 12:07",
   "today": "2026-09-29",
-  "totalCount": 54,
+  "totalCount": 55,
   "autoCount": 37,
-  "pendingCount": 17,
+  "pendingCount": 18,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1030,6 +1030,25 @@
       "verified": false,
       "hsDone": true,
       "no": 54
+    },
+    {
+      "declNo": "4363226400607M",
+      "declKnown": true,
+      "date": "2026-09-29",
+      "reportDate": "9/29",
+      "officer": "소민주",
+      "hbl": "ZHL1165E28",
+      "warehouse": "01677016",
+      "remark": "2란 7323930000 FRIED EGG MOLD\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "28",
+      "importer": "주식회사 제이지디글로벌",
+      "arrival": "9/29 09:28",
+      "verified": false,
+      "hsDone": true,
+      "no": 55
     }
   ]
 }

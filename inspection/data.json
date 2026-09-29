@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-29 11:27",
+  "updated": "2026-09-29 11:37",
   "today": "2026-09-29",
-  "totalCount": 53,
+  "totalCount": 54,
   "autoCount": 37,
-  "pendingCount": 16,
+  "pendingCount": 17,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1011,6 +1011,25 @@
       "verified": false,
       "hsDone": true,
       "no": 53
+    },
+    {
+      "declNo": "4363226202976M",
+      "declKnown": true,
+      "date": "2026-09-29",
+      "reportDate": "9/29",
+      "officer": "전하진",
+      "hbl": "519779990833",
+      "warehouse": "01602003",
+      "remark": "3란 6505009029 PEAKED CAP\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "3",
+      "importer": "월간리빙",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 54
     }
   ]
 }

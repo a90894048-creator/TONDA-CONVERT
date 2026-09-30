@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-30 11:07",
+  "updated": "2026-09-30 11:17",
   "today": "2026-09-30",
-  "totalCount": 55,
+  "totalCount": 56,
   "autoCount": 43,
-  "pendingCount": 12,
+  "pendingCount": 13,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1049,6 +1049,25 @@
       "verified": true,
       "hsDone": true,
       "no": 55
+    },
+    {
+      "declNo": "4363226400608M",
+      "declKnown": true,
+      "date": "2026-09-30",
+      "reportDate": "9/30",
+      "officer": "박진선",
+      "hbl": "ZHL1166E19",
+      "warehouse": "01677016",
+      "remark": "4란 7323930000 FRIED EGG MOLD\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "19",
+      "importer": "주식회사 제이지디글로벌",
+      "arrival": "9/29 14:55",
+      "verified": false,
+      "hsDone": true,
+      "no": 56
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-30 17:18",
-  "today": "2026-09-30",
-  "totalCount": 56,
+  "updated": "2026-10-01 12:18",
+  "today": "2026-10-01",
+  "totalCount": 58,
   "autoCount": 43,
-  "pendingCount": 13,
+  "pendingCount": 15,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1068,6 +1068,44 @@
       "verified": false,
       "hsDone": true,
       "no": 56
+    },
+    {
+      "declNo": "4363226014879M",
+      "declKnown": true,
+      "date": "2026-10-01",
+      "reportDate": "10/1",
+      "officer": "김태은",
+      "hbl": "ZHL2643E65",
+      "warehouse": "01677016",
+      "remark": "2란 7323930000 SNOW CONE CUP\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "65",
+      "importer": "주식회사 제이지디글로벌",
+      "arrival": "9/29 10:50",
+      "verified": false,
+      "hsDone": true,
+      "no": 57
+    },
+    {
+      "declNo": "4363226015151M",
+      "declKnown": true,
+      "date": "2026-10-01",
+      "reportDate": "10/1",
+      "officer": "김하영",
+      "hbl": "ZHL1167E69",
+      "warehouse": "01677016",
+      "remark": "7란 5806320000 RIBBON\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "69",
+      "importer": "태정트레이드 유한회사",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 58
     }
   ]
 }

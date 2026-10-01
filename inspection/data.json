@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-01 13:38",
+  "updated": "2026-10-01 13:48",
   "today": "2026-10-01",
   "totalCount": 58,
   "autoCount": 43,
@@ -1026,7 +1026,7 @@
       "channel": "통다",
       "packages": "3",
       "importer": "월간리빙",
-      "arrival": "",
+      "arrival": "10/1 13:45",
       "verified": false,
       "hsDone": true,
       "no": 54

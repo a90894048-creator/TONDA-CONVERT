@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-02 15:07",
+  "updated": "2026-10-02 15:18",
   "today": "2026-10-02",
   "totalCount": 59,
-  "autoCount": 45,
-  "pendingCount": 14,
+  "autoCount": 46,
+  "pendingCount": 13,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1112,17 +1112,17 @@
       "declKnown": true,
       "date": "2026-10-02",
       "reportDate": "10/2",
-      "officer": "김하영",
+      "officer": "박진선",
       "hbl": "ZHL1167E49",
       "warehouse": "01677016",
-      "remark": "2란 7323930000 SKEWER\n— 검사계획통보 대기중",
+      "remark": "2란 7323930000 SKEWER — 물품검사 준비 및 검사후 재포장요망",
       "plan": "D",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "49",
       "importer": "주식회사 제이지디글로벌",
       "arrival": "10/1 15:56",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 59
     }

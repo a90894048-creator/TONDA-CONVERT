@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-06 10:47",
+  "updated": "2026-10-06 10:57",
   "today": "2026-10-06",
-  "totalCount": 61,
+  "totalCount": 62,
   "autoCount": 46,
-  "pendingCount": 15,
+  "pendingCount": 16,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1127,6 +1127,25 @@
       "no": 59
     },
     {
+      "declNo": "4363226015262M",
+      "declKnown": true,
+      "date": "2026-10-06",
+      "reportDate": "10/6",
+      "officer": "임아영",
+      "hbl": "ZHL1168E261",
+      "warehouse": "01677016",
+      "remark": "36란 6602001000 HIKING STICK,\n70란 9014109000 SLOPE READER\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "261",
+      "importer": "태정트레이드 유한회사",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 60
+    },
+    {
       "declNo": "4363226015267M",
       "declKnown": true,
       "date": "2026-10-06",
@@ -1143,7 +1162,7 @@
       "arrival": "",
       "verified": false,
       "hsDone": true,
-      "no": 60
+      "no": 61
     },
     {
       "declNo": "4363226015269M",
@@ -1162,7 +1181,7 @@
       "arrival": "10/6 06:52",
       "verified": false,
       "hsDone": true,
-      "no": 61
+      "no": 62
     }
   ]
 }

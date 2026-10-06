@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-06 09:27",
+  "updated": "2026-10-06 09:37",
   "today": "2026-10-06",
-  "totalCount": 59,
+  "totalCount": 60,
   "autoCount": 46,
-  "pendingCount": 13,
+  "pendingCount": 14,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1125,6 +1125,25 @@
       "verified": true,
       "hsDone": true,
       "no": 59
+    },
+    {
+      "declNo": "4363226015269M",
+      "declKnown": true,
+      "date": "2026-10-06",
+      "reportDate": "10/6",
+      "officer": "조성일",
+      "hbl": "COHEAR755EC391B",
+      "warehouse": "02006152",
+      "remark": "1란 8516799000 HAND WARMER\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "4",
+      "importer": "주식회사 리튬포어스",
+      "arrival": "10/6 06:52",
+      "verified": false,
+      "hsDone": true,
+      "no": 60
     }
   ]
 }

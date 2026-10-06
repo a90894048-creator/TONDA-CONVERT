@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-06 17:27",
+  "updated": "2026-10-06 17:37",
   "today": "2026-10-06",
   "totalCount": 66,
   "autoCount": 46,
@@ -1216,7 +1216,7 @@
       "channel": "통다",
       "packages": "25",
       "importer": "천림유통",
-      "arrival": "",
+      "arrival": "10/6 17:34",
       "verified": false,
       "hsDone": true,
       "no": 64
@@ -1235,7 +1235,7 @@
       "channel": "통다",
       "packages": "2",
       "importer": "호블네름",
-      "arrival": "",
+      "arrival": "10/6 17:33",
       "verified": false,
       "hsDone": true,
       "no": 65
@@ -1254,7 +1254,7 @@
       "channel": "통다",
       "packages": "11",
       "importer": "하임하이",
-      "arrival": "",
+      "arrival": "10/6 17:33",
       "verified": false,
       "hsDone": true,
       "no": 66

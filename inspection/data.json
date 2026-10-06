@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-06 10:27",
+  "updated": "2026-10-06 10:37",
   "today": "2026-10-06",
-  "totalCount": 60,
+  "totalCount": 61,
   "autoCount": 46,
-  "pendingCount": 14,
+  "pendingCount": 15,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1127,6 +1127,25 @@
       "no": 59
     },
     {
+      "declNo": "4363226015267M",
+      "declKnown": true,
+      "date": "2026-10-06",
+      "reportDate": "10/6",
+      "officer": "김세훈",
+      "hbl": "ZHL1168E105",
+      "warehouse": "01677016",
+      "remark": "8란 3926909000 CROSS CARD,\n53란 8205599000 EYE PUNCH\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "105",
+      "importer": "태정트레이드 유한회사",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 60
+    },
+    {
       "declNo": "4363226015269M",
       "declKnown": true,
       "date": "2026-10-06",
@@ -1143,7 +1162,7 @@
       "arrival": "10/6 06:52",
       "verified": false,
       "hsDone": true,
-      "no": 60
+      "no": 61
     }
   ]
 }

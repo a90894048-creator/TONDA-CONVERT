@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-12 11:27",
+  "updated": "2026-10-12 11:37",
   "today": "2026-10-12",
   "totalCount": 69,
   "autoCount": 52,
@@ -1273,7 +1273,7 @@
       "channel": "통다",
       "packages": "22",
       "importer": "오로라링크 유한회사",
-      "arrival": "",
+      "arrival": "10/12 11:32",
       "verified": false,
       "hsDone": true,
       "no": 67
@@ -1292,7 +1292,7 @@
       "channel": "통다",
       "packages": "11",
       "importer": "마법의 주머니",
-      "arrival": "",
+      "arrival": "10/12 11:32",
       "verified": false,
       "hsDone": true,
       "no": 68
@@ -1311,7 +1311,7 @@
       "channel": "통다",
       "packages": "3",
       "importer": "하임하이",
-      "arrival": "",
+      "arrival": "10/12 11:31",
       "verified": false,
       "hsDone": true,
       "no": 69

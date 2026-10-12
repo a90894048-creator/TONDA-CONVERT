@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-12 11:07",
+  "updated": "2026-10-12 11:17",
   "today": "2026-10-12",
-  "totalCount": 66,
+  "totalCount": 69,
   "autoCount": 52,
-  "pendingCount": 14,
+  "pendingCount": 17,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1258,6 +1258,63 @@
       "verified": true,
       "hsDone": true,
       "no": 66
+    },
+    {
+      "declNo": "4363226015675M",
+      "declKnown": true,
+      "date": "2026-10-12",
+      "reportDate": "10/12",
+      "officer": "황선영",
+      "hbl": "ZHL1170E22",
+      "warehouse": "01677016",
+      "remark": "1란 3924909000 SILICONE MAT,\n2란 4202211090 LEATHER BAG,\n3란 6115960000 SOCKS\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "22",
+      "importer": "오로라링크 유한회사",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 67
+    },
+    {
+      "declNo": "4363226015676M",
+      "declKnown": true,
+      "date": "2026-10-12",
+      "reportDate": "10/12",
+      "officer": "김태은",
+      "hbl": "ZHL1170E11",
+      "warehouse": "01677016",
+      "remark": "4란 9404900000 CAR SEAT CUSHION\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "11",
+      "importer": "마법의 주머니",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 68
+    },
+    {
+      "declNo": "4363226015677M",
+      "declKnown": true,
+      "date": "2026-10-12",
+      "reportDate": "10/12",
+      "officer": "김하영",
+      "hbl": "ZHL1170E03",
+      "warehouse": "01677016",
+      "remark": "2란 7323930000 SOAP DISH\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "3",
+      "importer": "하임하이",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 69
     }
   ]
 }

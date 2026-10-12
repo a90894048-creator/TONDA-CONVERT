@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-12 14:27",
+  "updated": "2026-10-12 14:37",
   "today": "2026-10-12",
-  "totalCount": 69,
+  "totalCount": 70,
   "autoCount": 52,
-  "pendingCount": 17,
+  "pendingCount": 18,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1315,6 +1315,25 @@
       "verified": false,
       "hsDone": true,
       "no": 69
+    },
+    {
+      "declNo": "4363226015703M",
+      "declKnown": true,
+      "date": "2026-10-12",
+      "reportDate": "10/12",
+      "officer": "이미옥",
+      "hbl": "519779992653",
+      "warehouse": "01602003",
+      "remark": "12란 7326909000 LAPTOP STAND\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "8",
+      "importer": "월간리빙",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 70
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-13 16:57",
+  "updated": "2026-10-13 17:07",
   "today": "2026-10-13",
-  "totalCount": 70,
+  "totalCount": 71,
   "autoCount": 53,
-  "pendingCount": 17,
+  "pendingCount": 18,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1334,6 +1334,25 @@
       "verified": true,
       "hsDone": true,
       "no": 70
+    },
+    {
+      "declNo": "4363226203153M",
+      "declKnown": true,
+      "date": "2026-10-13",
+      "reportDate": "10/13",
+      "officer": "최진욱",
+      "hbl": "519781698354",
+      "warehouse": "01602003",
+      "remark": "1란 3926200000 BELT\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "5",
+      "importer": "위세얼커머스 주식회사",
+      "arrival": "10/13 14:20",
+      "verified": false,
+      "hsDone": true,
+      "no": 71
     }
   ]
 }

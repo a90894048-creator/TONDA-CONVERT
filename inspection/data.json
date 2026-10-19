@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-19 09:07",
+  "updated": "2026-10-19 09:17",
   "today": "2026-10-19",
-  "totalCount": 71,
+  "totalCount": 72,
   "autoCount": 56,
-  "pendingCount": 15,
+  "pendingCount": 16,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1353,6 +1353,25 @@
       "verified": false,
       "hsDone": true,
       "no": 71
+    },
+    {
+      "declNo": "4363226015914M",
+      "declKnown": true,
+      "date": "2026-10-19",
+      "reportDate": "10/19",
+      "officer": "김세훈",
+      "hbl": "ZHL1173E125",
+      "warehouse": "01677016",
+      "remark": "17란 6116929000 GLOVES\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "125",
+      "importer": "태정트레이드 유한회사",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 72
     }
   ]
 }

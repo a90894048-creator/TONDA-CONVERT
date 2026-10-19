@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-19 11:07",
+  "updated": "2026-10-19 11:27",
   "today": "2026-10-19",
   "totalCount": 73,
   "autoCount": 56,
@@ -1387,7 +1387,7 @@
       "channel": "통다",
       "packages": "5",
       "importer": "호블네름",
-      "arrival": "",
+      "arrival": "10/19 11:16",
       "verified": false,
       "hsDone": true,
       "no": 73

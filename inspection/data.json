@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-19 10:27",
+  "updated": "2026-10-19 10:37",
   "today": "2026-10-19",
-  "totalCount": 72,
+  "totalCount": 73,
   "autoCount": 56,
-  "pendingCount": 16,
+  "pendingCount": 17,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1372,6 +1372,25 @@
       "verified": false,
       "hsDone": true,
       "no": 72
+    },
+    {
+      "declNo": "4363226400856M",
+      "declKnown": true,
+      "date": "2026-10-19",
+      "reportDate": "10/19",
+      "officer": "전기성",
+      "hbl": "ZHL1173E005",
+      "warehouse": "01677016",
+      "remark": "1란 3926909000 BEDSHEET CLAMP\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "5",
+      "importer": "호블네름",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 73
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-20 10:37",
+  "updated": "2026-10-20 10:47",
   "today": "2026-10-20",
-  "totalCount": 73,
+  "totalCount": 74,
   "autoCount": 58,
-  "pendingCount": 15,
+  "pendingCount": 16,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1391,6 +1391,25 @@
       "verified": true,
       "hsDone": true,
       "no": 73
+    },
+    {
+      "declNo": "4363226016200M",
+      "declKnown": true,
+      "date": "2026-10-20",
+      "reportDate": "10/20",
+      "officer": "박연정",
+      "hbl": "KSG2610003",
+      "warehouse": "01677016",
+      "remark": "2란 8505199000 MAGNETIC CARD CASE\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "793",
+      "importer": "(주)모란카노코리아",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 74
     }
   ]
 }

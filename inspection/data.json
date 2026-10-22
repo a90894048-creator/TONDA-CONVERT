@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-22 13:17",
+  "updated": "2026-10-22 13:27",
   "today": "2026-10-22",
   "totalCount": 76,
   "autoCount": 58,
@@ -1444,7 +1444,7 @@
       "channel": "통다",
       "packages": "3",
       "importer": "진귀천하",
-      "arrival": "",
+      "arrival": "10/22 13:18",
       "verified": false,
       "hsDone": true,
       "no": 76

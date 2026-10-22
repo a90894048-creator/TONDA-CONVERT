@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-22 09:37",
+  "updated": "2026-10-22 09:47",
   "today": "2026-10-22",
-  "totalCount": 74,
+  "totalCount": 76,
   "autoCount": 58,
-  "pendingCount": 16,
+  "pendingCount": 18,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1410,6 +1410,44 @@
       "verified": false,
       "hsDone": true,
       "no": 74
+    },
+    {
+      "declNo": "4363226203311M",
+      "declKnown": true,
+      "date": "2026-10-22",
+      "reportDate": "10/22",
+      "officer": "장소희",
+      "hbl": "519780709696",
+      "warehouse": "01602003",
+      "remark": "1란 6206900000 T-SHIRT\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "2",
+      "importer": "이매력",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 75
+    },
+    {
+      "declNo": "4363226203312M",
+      "declKnown": true,
+      "date": "2026-10-22",
+      "reportDate": "10/22",
+      "officer": "이종혁",
+      "hbl": "519780707714",
+      "warehouse": "01602003",
+      "remark": "1란 6206900000 T-SHIRT\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "3",
+      "importer": "진귀천하",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 76
     }
   ]
 }

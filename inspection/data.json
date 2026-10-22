@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-22 13:07",
+  "updated": "2026-10-22 13:17",
   "today": "2026-10-22",
   "totalCount": 76,
   "autoCount": 58,
@@ -1425,7 +1425,7 @@
       "channel": "통다",
       "packages": "2",
       "importer": "이매력",
-      "arrival": "",
+      "arrival": "10/22 13:16",
       "verified": false,
       "hsDone": true,
       "no": 75

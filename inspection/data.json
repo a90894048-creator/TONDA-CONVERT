@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-23 17:47",
+  "updated": "2026-10-23 17:57",
   "today": "2026-10-23",
   "totalCount": 76,
-  "autoCount": 58,
-  "pendingCount": 18,
+  "autoCount": 59,
+  "pendingCount": 17,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1438,14 +1438,14 @@
       "officer": "이종혁",
       "hbl": "519780707714",
       "warehouse": "01602003",
-      "remark": "1란 6206900000 T-SHIRT\n— 검사계획통보 대기중",
+      "remark": "1란 6206900000 T-SHIRT — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "3",
       "importer": "진귀천하",
       "arrival": "10/22 13:18",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 76
     }

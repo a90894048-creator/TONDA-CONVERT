@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-26 14:37",
+  "updated": "2026-10-26 14:47",
   "today": "2026-10-26",
   "totalCount": 77,
   "autoCount": 59,
@@ -1463,7 +1463,7 @@
       "channel": "통다",
       "packages": "9",
       "importer": "판모레",
-      "arrival": "",
+      "arrival": "10/26 14:46",
       "verified": false,
       "hsDone": true,
       "no": 77

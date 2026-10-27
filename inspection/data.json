@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-27 09:27",
+  "updated": "2026-10-27 09:37",
   "today": "2026-10-27",
   "totalCount": 77,
-  "autoCount": 59,
-  "pendingCount": 18,
+  "autoCount": 60,
+  "pendingCount": 17,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1454,17 +1454,17 @@
       "declKnown": true,
       "date": "2026-10-26",
       "reportDate": "10/26",
-      "officer": "박진선",
+      "officer": "김세훈",
       "hbl": "ZHL1176E09",
       "warehouse": "01677016",
-      "remark": "1란 6115960000 SOCKS\n— 검사계획통보 대기중",
+      "remark": "1란 6115960000 SOCKS — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "9",
       "importer": "판모레",
       "arrival": "10/26 14:46",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 77
     }

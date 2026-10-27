@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-27 13:37",
+  "updated": "2026-10-27 13:47",
   "today": "2026-10-27",
-  "totalCount": 78,
+  "totalCount": 79,
   "autoCount": 60,
-  "pendingCount": 18,
+  "pendingCount": 19,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1469,6 +1469,25 @@
       "no": 77
     },
     {
+      "declNo": "4363226203364M",
+      "declKnown": true,
+      "date": "2026-10-27",
+      "reportDate": "10/27",
+      "officer": "김희정",
+      "hbl": "519781721266",
+      "warehouse": "01602003",
+      "remark": "7란 7326909000 TURNING TOOL HOLDER\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "4",
+      "importer": "은성 인터내셔널",
+      "arrival": "10/27 13:42",
+      "verified": false,
+      "hsDone": true,
+      "no": 78
+    },
+    {
       "declNo": "4363226401002M",
       "declKnown": true,
       "date": "2026-10-27",
@@ -1485,7 +1504,7 @@
       "arrival": "",
       "verified": false,
       "hsDone": true,
-      "no": 78
+      "no": 79
     }
   ]
 }

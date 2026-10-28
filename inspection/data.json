@@ -1,9 +1,9 @@
 {
-  "updated": "2026-10-28 14:08",
+  "updated": "2026-10-28 14:18",
   "today": "2026-10-28",
   "totalCount": 79,
-  "autoCount": 60,
-  "pendingCount": 19,
+  "autoCount": 61,
+  "pendingCount": 18,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1492,17 +1492,17 @@
       "declKnown": true,
       "date": "2026-10-27",
       "reportDate": "10/27",
-      "officer": "황선영",
+      "officer": "윤일경",
       "hbl": "ZHL1177E17",
       "warehouse": "01677016",
-      "remark": "3란 9404900000 GOOSE DOWN, PLUSH\n— 검사계획통보 대기중",
+      "remark": "3란 9404900000 GOOSE DOWN, PLUSH — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "17",
       "importer": "마법의 주머니",
       "arrival": "10/28 10:14",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 79
     }

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-05 09:58",
+  "updated": "2026-11-05 10:08",
   "today": "2026-11-05",
-  "totalCount": 80,
+  "totalCount": 81,
   "autoCount": 63,
-  "pendingCount": 17,
+  "pendingCount": 18,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1524,6 +1524,25 @@
       "verified": true,
       "hsDone": true,
       "no": 80
+    },
+    {
+      "declNo": "4363226017099M",
+      "declKnown": true,
+      "date": "2026-11-05",
+      "reportDate": "11/5",
+      "officer": "김세훈",
+      "hbl": "ZHL1181E08",
+      "warehouse": "01677016",
+      "remark": "7란 6307909000 DRYING NET,\n10란 8204120000 ADJUSTABLE PIPE WRENCH,\n12란 9019102000 MASSAGER\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "8",
+      "importer": "하임하이",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 81
     }
   ]
 }

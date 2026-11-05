@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-05 17:58",
+  "updated": "2026-11-05 18:08",
   "today": "2026-11-05",
-  "totalCount": 83,
+  "totalCount": 84,
   "autoCount": 63,
-  "pendingCount": 20,
+  "pendingCount": 21,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1545,6 +1545,25 @@
       "no": 81
     },
     {
+      "declNo": "4363226203414M",
+      "declKnown": true,
+      "date": "2026-11-05",
+      "reportDate": "11/5",
+      "officer": "임아영",
+      "hbl": "ZHL1179E296",
+      "warehouse": "01677016",
+      "remark": "3란 7013280000 WATER GLASS,\n10란 8516290000 HEATER\n— 검사계획통보 대기중",
+      "plan": "D",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "296",
+      "importer": "주식회사 제이지디글로벌",
+      "arrival": "11/2 13:06",
+      "verified": false,
+      "hsDone": true,
+      "no": 82
+    },
+    {
       "declNo": "4363226203499M",
       "declKnown": true,
       "date": "2026-11-05",
@@ -1561,7 +1580,7 @@
       "arrival": "11/5 11:18",
       "verified": false,
       "hsDone": true,
-      "no": 82
+      "no": 83
     },
     {
       "declNo": "4363226401119M",
@@ -1580,7 +1599,7 @@
       "arrival": "",
       "verified": false,
       "hsDone": true,
-      "no": 83
+      "no": 84
     }
   ]
 }

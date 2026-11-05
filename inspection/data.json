@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-05 13:08",
+  "updated": "2026-11-05 13:18",
   "today": "2026-11-05",
-  "totalCount": 81,
+  "totalCount": 82,
   "autoCount": 63,
-  "pendingCount": 18,
+  "pendingCount": 19,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1543,6 +1543,25 @@
       "verified": false,
       "hsDone": true,
       "no": 81
+    },
+    {
+      "declNo": "4363226401119M",
+      "declKnown": true,
+      "date": "2026-11-05",
+      "reportDate": "11/5",
+      "officer": "김세훈",
+      "hbl": "ZHL1181E73",
+      "warehouse": "01677016",
+      "remark": "3란 6117800000 NECK WARMER\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "73",
+      "importer": "무한결 유한회사",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 82
     }
   ]
 }

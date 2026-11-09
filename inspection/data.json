@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-09 10:27",
+  "updated": "2026-11-09 10:37",
   "today": "2026-11-09",
-  "totalCount": 86,
+  "totalCount": 87,
   "autoCount": 67,
-  "pendingCount": 19,
+  "pendingCount": 20,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1621,6 +1621,25 @@
       "no": 85
     },
     {
+      "declNo": "4363226017368M",
+      "declKnown": true,
+      "date": "2026-11-09",
+      "reportDate": "11/9",
+      "officer": "윤준수",
+      "hbl": "KSG2611006",
+      "warehouse": "02006026",
+      "remark": "2란 8507609000 POWER BANK DX188-1\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "4",
+      "importer": "(주)모란카노코리아",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 86
+    },
+    {
       "declNo": "4363226401154M",
       "declKnown": true,
       "date": "2026-11-09",
@@ -1637,7 +1656,7 @@
       "arrival": "",
       "verified": false,
       "hsDone": true,
-      "no": 86
+      "no": 87
     }
   ]
 }

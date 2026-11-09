@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-09 14:27",
+  "updated": "2026-11-09 14:37",
   "today": "2026-11-09",
   "totalCount": 87,
-  "autoCount": 67,
-  "pendingCount": 20,
+  "autoCount": 68,
+  "pendingCount": 19,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1644,17 +1644,17 @@
       "declKnown": true,
       "date": "2026-11-09",
       "reportDate": "11/9",
-      "officer": "김태은",
+      "officer": "김하영",
       "hbl": "ZHL1182E04",
       "warehouse": "01677016",
-      "remark": "4란 7326909000 PHONE STAND\n— 검사계획통보 대기중",
+      "remark": "4란 7326909000 PHONE STAND — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "4",
       "importer": "메타랩 유한회사",
       "arrival": "11/9 10:57",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 87
     }

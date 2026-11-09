@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-09 09:27",
+  "updated": "2026-11-09 09:37",
   "today": "2026-11-09",
   "totalCount": 85,
-  "autoCount": 66,
-  "pendingCount": 19,
+  "autoCount": 67,
+  "pendingCount": 18,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1606,17 +1606,17 @@
       "declKnown": true,
       "date": "2026-11-06",
       "reportDate": "11/6",
-      "officer": "임아영",
+      "officer": "박연정",
       "hbl": "ZHL1181E331",
       "warehouse": "01677016",
-      "remark": "11란 8516290000 MINI ELECTRIC HEATER\n— 검사계획통보 대기중",
+      "remark": "11란 8516290000 MINI ELECTRIC HEATER — 물품검사 준비 및 검사후 재포장요망",
       "plan": "D",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "331",
       "importer": "주식회사 제이지디글로벌",
       "arrival": "11/6 10:25",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 85
     }

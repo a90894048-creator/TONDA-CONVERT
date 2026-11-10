@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-10 10:07",
+  "updated": "2026-11-10 10:17",
   "today": "2026-11-10",
-  "totalCount": 88,
+  "totalCount": 89,
   "autoCount": 69,
-  "pendingCount": 19,
+  "pendingCount": 20,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1659,6 +1659,25 @@
       "no": 87
     },
     {
+      "declNo": "4363226017430M",
+      "declKnown": true,
+      "date": "2026-11-10",
+      "reportDate": "11/10",
+      "officer": "박진선",
+      "hbl": "ZHL1183E289",
+      "warehouse": "01677016",
+      "remark": "51란 7326909000 NOTICE BOARD,\n66란 8210005000 LID OPENER\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "289",
+      "importer": "무한결 유한회사",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 88
+    },
+    {
       "declNo": "4363226017466M",
       "declKnown": true,
       "date": "2026-11-10",
@@ -1675,7 +1694,7 @@
       "arrival": "",
       "verified": false,
       "hsDone": true,
-      "no": 88
+      "no": 89
     }
   ]
 }

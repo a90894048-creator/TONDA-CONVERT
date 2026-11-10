@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-10 09:47",
+  "updated": "2026-11-10 09:57",
   "today": "2026-11-10",
-  "totalCount": 87,
+  "totalCount": 88,
   "autoCount": 69,
-  "pendingCount": 18,
+  "pendingCount": 19,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1657,6 +1657,25 @@
       "verified": true,
       "hsDone": true,
       "no": 87
+    },
+    {
+      "declNo": "4363226017466M",
+      "declKnown": true,
+      "date": "2026-11-10",
+      "reportDate": "11/10",
+      "officer": "김태은",
+      "hbl": "ZHL1183E116",
+      "warehouse": "01677016",
+      "remark": "1란 4202922000 BAG\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "116",
+      "importer": "알라딘스퀘어",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 88
     }
   ]
 }

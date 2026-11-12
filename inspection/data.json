@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-13 01:27",
+  "updated": "2026-11-13 01:37",
   "today": "2026-11-13",
   "totalCount": 91,
   "autoCount": 72,
@@ -1729,7 +1729,7 @@
       "channel": "통다",
       "packages": "739",
       "importer": "포근나래 유한회사",
-      "arrival": "",
+      "arrival": "11/13 01:25",
       "verified": false,
       "hsDone": true,
       "no": 91

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-12 09:28",
+  "updated": "2026-11-12 09:38",
   "today": "2026-11-12",
-  "totalCount": 90,
+  "totalCount": 91,
   "autoCount": 72,
-  "pendingCount": 18,
+  "pendingCount": 19,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1714,6 +1714,25 @@
       "verified": true,
       "hsDone": true,
       "no": 90
+    },
+    {
+      "declNo": "4363226017567M",
+      "declKnown": true,
+      "date": "2026-11-12",
+      "reportDate": "11/12",
+      "officer": "양윤선",
+      "hbl": "WDFCHNP23022135",
+      "warehouse": "02012014",
+      "remark": "4란 9404400000 QUILT\n— 검사계획통보 대기중",
+      "plan": "B",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "739",
+      "importer": "포근나래 유한회사",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 91
     }
   ]
 }

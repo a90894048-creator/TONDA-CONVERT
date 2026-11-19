@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-19 16:28",
+  "updated": "2026-11-19 16:38",
   "today": "2026-11-19",
   "totalCount": 96,
-  "autoCount": 73,
-  "pendingCount": 23,
+  "autoCount": 74,
+  "pendingCount": 22,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1780,14 +1780,14 @@
       "officer": "이미옥",
       "hbl": "519780758991",
       "warehouse": "01602003",
-      "remark": "1란 9401800000 FIBERGLASS PEBBLE-SHAPED STOOL\n— 검사계획통보 대기중",
+      "remark": "1란 9401800000 FIBERGLASS PEBBLE-SHAPED STOOL — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "3",
       "importer": "와이제이 컴퍼니",
       "arrival": "",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 94
     },

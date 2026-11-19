@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-19 11:38",
+  "updated": "2026-11-19 11:48",
   "today": "2026-11-19",
-  "totalCount": 94,
+  "totalCount": 96,
   "autoCount": 73,
-  "pendingCount": 21,
+  "pendingCount": 23,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1754,6 +1754,44 @@
       "no": 92
     },
     {
+      "declNo": "4363226203707M",
+      "declKnown": true,
+      "date": "2026-11-19",
+      "reportDate": "11/19",
+      "officer": "이은경",
+      "hbl": "519779996890",
+      "warehouse": "01602003",
+      "remark": "3란 4811410000 STICKER\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "3",
+      "importer": "월간리빙",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 93
+    },
+    {
+      "declNo": "4363226203708M",
+      "declKnown": true,
+      "date": "2026-11-19",
+      "reportDate": "11/19",
+      "officer": "이미옥",
+      "hbl": "519780758991",
+      "warehouse": "01602003",
+      "remark": "1란 9401800000 FIBERGLASS PEBBLE-SHAPED STOOL\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "3",
+      "importer": "와이제이 컴퍼니",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 94
+    },
+    {
       "declNo": "4363226401324M",
       "declKnown": true,
       "date": "2026-11-19",
@@ -1770,7 +1808,7 @@
       "arrival": "",
       "verified": false,
       "hsDone": true,
-      "no": 93
+      "no": 95
     },
     {
       "declNo": "4363226703134M",
@@ -1789,7 +1827,7 @@
       "arrival": "",
       "verified": false,
       "hsDone": true,
-      "no": 94
+      "no": 96
     }
   ]
 }

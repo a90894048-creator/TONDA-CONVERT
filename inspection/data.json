@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20 08:37",
+  "updated": "2026-11-20 08:47",
   "today": "2026-11-20",
   "totalCount": 96,
   "autoCount": 74,
@@ -1805,7 +1805,7 @@
       "channel": "통다",
       "packages": "23",
       "importer": "미블룸",
-      "arrival": "",
+      "arrival": "11/20 08:46",
       "verified": false,
       "hsDone": true,
       "no": 95

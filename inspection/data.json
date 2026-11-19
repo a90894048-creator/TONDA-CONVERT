@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-19 11:28",
+  "updated": "2026-11-19 11:38",
   "today": "2026-11-19",
-  "totalCount": 92,
+  "totalCount": 94,
   "autoCount": 73,
-  "pendingCount": 19,
+  "pendingCount": 21,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1752,6 +1752,44 @@
       "verified": true,
       "hsDone": true,
       "no": 92
+    },
+    {
+      "declNo": "4363226401324M",
+      "declKnown": true,
+      "date": "2026-11-19",
+      "reportDate": "11/19",
+      "officer": "이현정",
+      "hbl": "ZHL1187E23",
+      "warehouse": "01677016",
+      "remark": "1란 6505009029 HAT,\n2란 7326909000 PHONE HOLDER\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "23",
+      "importer": "미블룸",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 93
+    },
+    {
+      "declNo": "4363226703134M",
+      "declKnown": true,
+      "date": "2026-11-19",
+      "reportDate": "11/19",
+      "officer": "전기성",
+      "hbl": "ZHL1187E14",
+      "warehouse": "01677016",
+      "remark": "1란 9615901000 A CLAW PIN\n— 검사계획통보 대기중",
+      "plan": "C",
+      "agency": "주식회사 통다글로벌로지스틱스",
+      "channel": "통다",
+      "packages": "14",
+      "importer": "판모레",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 94
     }
   ]
 }

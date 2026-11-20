@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-20 23:57",
-  "today": "2026-11-20",
-  "totalCount": 96,
+  "updated": "2026-11-21 00:07",
+  "today": "2026-11-21",
+  "totalCount": 97,
   "autoCount": 77,
-  "pendingCount": 19,
+  "pendingCount": 20,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1754,6 +1754,25 @@
       "no": 92
     },
     {
+      "declNo": "4363226152771M",
+      "declKnown": true,
+      "date": "2026-11-17",
+      "reportDate": "11/17",
+      "officer": "유정희",
+      "hbl": "",
+      "warehouse": "",
+      "remark": "1란 6309000000\n— 검사계획통보 대기중",
+      "plan": "",
+      "agency": "",
+      "channel": "",
+      "packages": "",
+      "importer": "",
+      "arrival": "",
+      "verified": false,
+      "hsDone": true,
+      "no": 93
+    },
+    {
       "declNo": "4363226203707M",
       "declKnown": true,
       "date": "2026-11-19",
@@ -1770,7 +1789,7 @@
       "arrival": "11/20 13:44",
       "verified": true,
       "hsDone": true,
-      "no": 93
+      "no": 94
     },
     {
       "declNo": "4363226203708M",
@@ -1789,7 +1808,7 @@
       "arrival": "11/20 13:35",
       "verified": true,
       "hsDone": true,
-      "no": 94
+      "no": 95
     },
     {
       "declNo": "4363226401324M",
@@ -1808,7 +1827,7 @@
       "arrival": "11/20 08:46",
       "verified": true,
       "hsDone": true,
-      "no": 95
+      "no": 96
     },
     {
       "declNo": "4363226703134M",
@@ -1827,7 +1846,7 @@
       "arrival": "11/19 15:11",
       "verified": true,
       "hsDone": true,
-      "no": 96
+      "no": 97
     }
   ]
 }

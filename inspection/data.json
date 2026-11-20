@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-20 16:27",
+  "updated": "2026-11-20 16:37",
   "today": "2026-11-20",
   "totalCount": 96,
-  "autoCount": 76,
-  "pendingCount": 20,
+  "autoCount": 77,
+  "pendingCount": 19,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1761,14 +1761,14 @@
       "officer": "이은경",
       "hbl": "519779996890",
       "warehouse": "01602003",
-      "remark": "3란 4811410000 STICKER\n— 검사계획통보 대기중",
+      "remark": "3란 4811410000 STICKER — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "3",
       "importer": "월간리빙",
       "arrival": "11/20 13:44",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 93
     },

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-24 09:17",
+  "updated": "2026-11-24 09:27",
   "today": "2026-11-24",
   "totalCount": 98,
-  "autoCount": 77,
-  "pendingCount": 21,
+  "autoCount": 78,
+  "pendingCount": 20,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1853,17 +1853,17 @@
       "declKnown": true,
       "date": "2026-11-23",
       "reportDate": "11/23",
-      "officer": "김하영",
+      "officer": "김세훈",
       "hbl": "ZHL1188E127",
       "warehouse": "01677016",
-      "remark": "3란 3926909000 ROBOT VACUUM THRESHOLD RAMP\n— 검사계획통보 대기중",
+      "remark": "3란 3926909000 ROBOT VACUUM THRESHOLD RAMP — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "127",
       "importer": "무한결 유한회사",
       "arrival": "11/23 10:32",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 98
     }

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-11-25 09:27",
+  "updated": "2026-11-25 09:37",
   "today": "2026-11-25",
   "totalCount": 99,
-  "autoCount": 78,
-  "pendingCount": 21,
+  "autoCount": 79,
+  "pendingCount": 20,
   "rows": [
     {
       "declNo": "4363226011999M",
@@ -1875,14 +1875,14 @@
       "officer": "소민주",
       "hbl": "KSG2611022",
       "warehouse": "01677016",
-      "remark": "1란 3926909000 JELLY PHONE CASE\n— 검사계획통보 대기중",
+      "remark": "1란 3926909000 JELLY PHONE CASE — 물품검사 준비 및 검사후 재포장요망",
       "plan": "C",
       "agency": "주식회사 통다글로벌로지스틱스",
       "channel": "통다",
       "packages": "106",
       "importer": "(주)모란카노코리아",
       "arrival": "11/24 16:16",
-      "verified": false,
+      "verified": true,
       "hsDone": true,
       "no": 99
     }

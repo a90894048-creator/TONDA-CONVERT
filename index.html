@@ -65,34 +65,55 @@
 <body>
 
 <script>
-/* ── TONDA 접근 잠금 (브라우저 닫으면 재입력) ── */
+/* ── TONDA 접근 잠금 (서버에서 비밀번호 확인 · 브라우저 닫으면 재입력) ──
+   비밀번호는 tonda-api 서버가 검사하고, 데이터(공용 DB·검사건 리스트)는 로그인한 사람에게만 내려준다.
+   비밀번호를 바꾸면 모든 사람의 기존 접속이 끊기고 새 비밀번호로 다시 들어와야 한다. */
+window.TONDA_API = 'https://tonda-api.tonda-kr.workers.dev';
 (function(){
-  if (location.protocol === 'file:') return;                 // 로컬 파일은 잠금 없음
-  let unlocked = sessionStorage.getItem('tonda_gate_ok') === '1';
-  const GATE_JSON = 'https://raw.githubusercontent.com/a90894048-creator/TONDA-CONVERT/main/gate.json';
-  const GATE_API  = 'https://api.github.com/repos/a90894048-creator/TONDA-CONVERT/contents/gate.json';
-  let activeHash = '388ff3adccc5444ba184b8e4edd589fbfc30dc56cada02ecc83004ead7f24aeb';
-  const sha256 = async s => { const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); };
-
-  /* 열려있는 다른 탭과 인증 상태 공유 — 한 번 입력하면 모든 탭/변환기 통과 (브라우저 닫으면 초기화) */
-  let bc = null; try { bc = new BroadcastChannel('tonda_gate'); } catch(_) {}
+  const API = window.TONDA_API;
+  const KEY = 'tonda_session';
+  let token = sessionStorage.getItem(KEY) || '';
+  let waiters = [];
   let cover = null;
-  const removeCover = () => { if (cover) { cover.remove(); cover = null; if (document.body) document.body.style.overflow = ''; } };
-  const markUnlocked = broadcast => {
-    unlocked = true;
-    sessionStorage.setItem('tonda_gate_ok','1');
-    removeCover();
-    if (broadcast && bc) bc.postMessage({ type:'grant' });
+  let bc = null; try { bc = new BroadcastChannel('tonda_gate'); } catch(_) {}
+
+  const setToken = (t, broadcast) => {
+    token = t || '';
+    if (token) sessionStorage.setItem(KEY, token); else sessionStorage.removeItem(KEY);
+    if (token) {
+      removeCover();
+      const w = waiters; waiters = []; w.forEach(r => r(token));
+      if (broadcast && bc) bc.postMessage({ type: 'grant', token });
+    }
   };
+  const removeCover = () => { if (cover) { cover.remove(); cover = null; if (document.body) document.body.style.overflow = ''; } };
+
+  /* 다른 데이터 코드가 쓰는 함수: 로그인될 때까지 기다렸다가 토큰을 붙여 서버에 요청 */
+  window.tondaAuth = {
+    ready: () => token ? Promise.resolve(token) : new Promise(r => waiters.push(r)),
+    async fetch(path, opts, retried) {
+      opts = opts || {};
+      const t = await this.ready();
+      const headers = Object.assign({}, opts.headers || {}, { Authorization: 'Bearer ' + t });
+      const res = await fetch(API + path, Object.assign({}, opts, { headers, cache: 'no-store' }));
+      if (res.status === 401 && !retried) {
+        // 비밀번호가 바뀌었거나 24시간이 지남 → 다시 로그인하면 같은 요청을 자동으로 다시 보낸다
+        if (token === t) setToken('', false);
+        showGate('다시 로그인해주세요 (비밀번호가 바뀌었거나 시간이 지났습니다)');
+        return this.fetch(path, opts, true);
+      }
+      return res;
+    },
+  };
+
   if (bc) bc.onmessage = e => {
     const m = e.data || {};
-    if (m.type === 'ask') { if (unlocked && bc) bc.postMessage({ type:'grant' }); }
-    else if (m.type === 'grant') { if (!unlocked) markUnlocked(false); }
+    if (m.type === 'ask') { if (token && bc) bc.postMessage({ type: 'grant', token }); }
+    else if (m.type === 'grant' && m.token && !token) setToken(m.token, false);
   };
-  if (unlocked) return;   // 이 탭은 이미 인증됨
 
-  const buildCover = () => {
-    if (unlocked) return;
+  const buildCover = msg => {
+    if (token || cover) return;
     cover = document.createElement('div');
     cover.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#f4f5f7;display:flex;align-items:center;justify-content:center;font-family:"Malgun Gothic",Arial,sans-serif;';
     cover.innerHTML = '<div style="width:320px;background:#fff;border:1px solid #ececec;border-radius:16px;padding:32px 28px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.08);">'
@@ -107,41 +128,43 @@
       + '</div>';
     document.documentElement.appendChild(cover);
     if (document.body) document.body.style.overflow = 'hidden';
-    const pw = cover.querySelector('#_gpw'), err = cover.querySelector('#_gerr');
+    const pw = cover.querySelector('#_gpw'), err = cover.querySelector('#_gerr'), ok = cover.querySelector('#_gok');
+    if (msg) err.textContent = msg;
     const unlock = async () => {
-      if (await sha256(pw.value) === activeHash) { markUnlocked(true); }
-      else { err.textContent = '비밀번호가 올바르지 않습니다'; pw.select(); }
+      ok.disabled = true; err.textContent = '';
+      try {
+        const r = await fetch(API + '/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pw.value }) });
+        const j = await r.json().catch(() => ({}));
+        if (r.ok && j.token) setToken(j.token, true);
+        else { err.textContent = j.error || ('로그인 실패 (' + r.status + ')'); pw.select(); }
+      } catch (e) { err.textContent = '서버에 연결할 수 없습니다. 인터넷 연결을 확인하세요.'; }
+      finally { ok.disabled = false; }
     };
-    cover.querySelector('#_gok').onclick = unlock;
+    ok.onclick = unlock;
     pw.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
     pw.focus();
     cover.querySelector('#_gchg').onclick = async e => {
       e.preventDefault();
       const cur = prompt('현재 비밀번호'); if (cur == null) return;
-      if (await sha256(cur) !== activeHash) { alert('현재 비밀번호가 올바르지 않습니다.'); return; }
-      const n1 = prompt('새 비밀번호'); if (!n1) return;
+      const n1 = prompt('새 비밀번호 (4자 이상)'); if (!n1) return;
       const n2 = prompt('새 비밀번호 확인'); if (n1 !== n2) { alert('새 비밀번호가 일치하지 않습니다.'); return; }
-      let token = localStorage.getItem('tonda_gh_token') || prompt('GitHub 토큰 (변경 권한 필요)');
-      if (!token) return; localStorage.setItem('tonda_gh_token', token);
-      const nh = await sha256(n1);
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify({ hash: nh, updated: new Date().toISOString() }))));
-      let sha = null;
-      try { const g = await fetch(GATE_API, { headers: { Authorization: 'token ' + token } }); if (g.ok) sha = (await g.json()).sha; } catch(_) {}
-      const body = { message: '비밀번호 변경', content }; if (sha) body.sha = sha;
-      const put = await fetch(GATE_API, { method: 'PUT', headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-      if (put.ok) { activeHash = nh; alert('비밀번호가 변경되었습니다. 모든 사용자에게 1~2분 내 적용됩니다.'); }
-      else { alert('변경 실패: ' + ((await put.json().catch(()=>({}))).message || put.status)); }
+      try {
+        const r = await fetch(API + '/gate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ current: cur, next: n1 }) });
+        const j = await r.json().catch(() => ({}));
+        if (r.ok && j.token) { alert('비밀번호가 변경되었습니다.\n다른 사람들은 새 비밀번호로 다시 로그인해야 합니다.'); setToken(j.token, true); }
+        else alert('변경 실패: ' + (j.error || r.status));
+      } catch (_) { alert('서버에 연결할 수 없습니다.'); }
     };
   };
-  const showGate = () => {
-    if (unlocked) return;   // 대기 중 다른 탭에서 인증되면 입력창을 띄우지 않음
-    if (document.body) buildCover();
-    else document.addEventListener('DOMContentLoaded', buildCover);
-  };
+  function showGate(msg) {
+    if (token) return;
+    if (document.body) buildCover(msg);
+    else document.addEventListener('DOMContentLoaded', () => buildCover(msg));
+  }
 
-  if (bc) bc.postMessage({ type:'ask' });   // 열려있는 다른 탭에 인증 여부 질의
-  setTimeout(showGate, 250);                // 응답 없으면 비밀번호 입력창 표시
-  fetch(GATE_JSON + '?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(j => { if (j && j.hash) activeHash = j.hash; }).catch(()=>{});
+  if (token) return;                         // 이 탭은 이미 로그인됨
+  if (bc) bc.postMessage({ type: 'ask' });   // 열려있는 다른 탭에 로그인 여부 질의
+  setTimeout(() => showGate(), 250);         // 응답 없으면 비밀번호 입력창 표시
 })();
 </script>
 
@@ -230,7 +253,7 @@
     <div class="db-status" id="dbStatus"><span class="dot" id="dbDot"></span><span id="dbText">GitHub에서 불러오는 중…</span></div>
   </div>
 
-  <div class="foot">교동 · DX · 쿠팡 변환기는 공용 레포 TONDA-DB 하나를 함께 사용합니다</div>
+  <div class="foot">교동 · DX · 쿠팡 변환기는 공용 DB 하나를 함께 사용합니다</div>
 </div>
 
 <script>
@@ -240,14 +263,14 @@ const RAW_URL = 'https://raw.githubusercontent.com/a90894048-creator/TONDA-DB/ma
   const text = document.getElementById('dbText');
   const wrap = document.getElementById('dbStatus');
   try {
-    const res = await fetch(RAW_URL + '?t=' + Date.now());
+    const res = await tondaAuth.fetch('/db');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const buf = await res.arrayBuffer();
     const wb = XLSX.read(new Uint8Array(buf), { type: 'array' });
     const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' })
       .filter(r => String(r['사업자번호'] || '').trim());
     dot.className = 'dot ok'; wrap.className = 'db-status ok';
-    text.textContent = `${rows.length.toLocaleString()}개 사업자 · GitHub 최신`;
+    text.textContent = `${rows.length.toLocaleString()}개 사업자 · 최신`;
   } catch (e) {
     dot.className = 'dot err'; wrap.className = 'db-status err';
     text.textContent = '연결 실패 (' + e.message + ')';

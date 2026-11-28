@@ -12,7 +12,15 @@ TONDA-CONVERT 레포의 inspection/data.json에 게시합니다.
   신고번호만 추가/갱신합니다 — 스캔 범위(기본 최근 3일) 밖의 과거 데이터는
   삭제되지 않고 그대로 유지됩니다.
 
+★ config.ini 에 [tonda] 섹션(api_url, relay_key)이 있으면 GitHub 대신 tonda-api 서버에
+  읽고 씁니다 (검사건 리스트를 공개 레포에 올리지 않음). 없으면 예전처럼 GitHub에 게시합니다.
+
 실행 전 준비:
+  0) (서버 방식) config.ini 에 [tonda] 섹션 추가:
+       [tonda]
+       api_url = https://tonda-api.xxxx.workers.dev
+       relay_key = ...      (서버에 등록한 RELAY_KEY 와 같은 값)
+     이 경우 아래 [github] token 은 필요 없습니다.
   1) config.ini 에 [github] 섹션 추가:
        [github]
        token = ghp_xxx...   (repo 권한 있는 GitHub Personal Access Token)
@@ -49,6 +57,12 @@ RECV_DIR = _config.get('paths', 'recv_dir', fallback='')
 SEND_DIR = _config.get('paths', 'send_dir', fallback='')
 GH_TOKEN = _config.get('github', 'token', fallback='').strip()
 UNIPASS_KEY = _config.get('unipass', 'cargo_key', fallback='').strip()
+# tonda-api 서버 (설정돼 있으면 GitHub 대신 이 서버에 읽고 쓴다 — 검사건 리스트 비공개 보관)
+#   [tonda]
+#   api_url = https://tonda-api.xxxx.workers.dev
+#   relay_key = (서버의 RELAY_KEY 와 같은 값)
+TONDA_API = _config.get('tonda', 'api_url', fallback='').strip().rstrip('/')
+TONDA_KEY = _config.get('tonda', 'relay_key', fallback='').strip()
 
 # 유니패스 화물통관진행정보조회 (서비스ID API001) — 반입일 자동 채움에 사용
 CARGO_API = 'https://unipass.customs.go.kr:38010/ext/rest/cargCsclPrgsInfoQry/retrieveCargCsclPrgsInfo'
@@ -433,6 +447,22 @@ def fill_arrivals(rows: list):
 
 def fetch_existing_rows() -> dict:
     """이미 게시된 data.json을 읽어 declNo -> row 맵으로 반환 (실패 시 빈 맵)."""
+    if TONDA_API:
+        # 서버 방식: 읽기에 실패했는데 빈 목록으로 덮어쓰면 과거 데이터가 사라지므로 중단한다
+        try:
+            req = urllib.request.Request(TONDA_API + '/inspection', headers={'Authorization': f'Bearer {TONDA_KEY}'})
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                data = json.loads(resp.read().decode('utf-8'))
+            return {r['declNo']: r for r in data.get('rows', [])}
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                print('서버에 기존 데이터가 없습니다 (새로 시작합니다).')
+                return {}
+            print(f'서버에서 기존 데이터 조회 실패 — 이번 실행은 게시하지 않습니다: HTTP {e.code}')
+            sys.exit(1)
+        except Exception as e:
+            print(f'서버에서 기존 데이터 조회 실패 — 이번 실행은 게시하지 않습니다: {e}')
+            sys.exit(1)
     try:
         req = urllib.request.Request(RAW_URL + '?t=' + str(int(datetime.now().timestamp())))
         with urllib.request.urlopen(req, timeout=15) as resp:
@@ -444,6 +474,24 @@ def fetch_existing_rows() -> dict:
 
 
 def publish(payload: dict):
+    if TONDA_API:
+        if not TONDA_KEY:
+            print('config.ini [tonda] relay_key 가 없습니다.')
+            sys.exit(1)
+        req = urllib.request.Request(
+            TONDA_API + '/inspection',
+            data=json.dumps(payload, ensure_ascii=False, indent=2).encode('utf-8'),
+            headers={'Authorization': f'Bearer {TONDA_KEY}', 'Content-Type': 'application/json; charset=utf-8'},
+            method='PUT',
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                print(f'서버 게시 완료 (HTTP {resp.status})')
+        except urllib.error.HTTPError as e:
+            print(f'서버 게시 실패: {e.code} {e.read().decode("utf-8", "ignore")}')
+            sys.exit(1)
+        return
+
     if not GH_TOKEN:
         print('GitHub 토큰이 없습니다. config.ini 에 [github] token = ... 을 추가하세요.')
         sys.exit(1)

@@ -450,7 +450,7 @@ def fetch_existing_rows() -> dict:
     if TONDA_API:
         # 서버 방식: 읽기에 실패했는데 빈 목록으로 덮어쓰면 과거 데이터가 사라지므로 중단한다
         try:
-            req = urllib.request.Request(TONDA_API + '/inspection', headers={'Authorization': f'Bearer {TONDA_KEY}'})
+            req = urllib.request.Request(TONDA_API + '/inspection', headers={'User-Agent': 'tonda-relay/1.0', 'Authorization': f'Bearer {TONDA_KEY}'})
             with urllib.request.urlopen(req, timeout=20) as resp:
                 data = json.loads(resp.read().decode('utf-8'))
             return {r['declNo']: r for r in data.get('rows', [])}
@@ -481,7 +481,7 @@ def publish(payload: dict):
         req = urllib.request.Request(
             TONDA_API + '/inspection',
             data=json.dumps(payload, ensure_ascii=False, indent=2).encode('utf-8'),
-            headers={'Authorization': f'Bearer {TONDA_KEY}', 'Content-Type': 'application/json; charset=utf-8'},
+            headers={'User-Agent': 'tonda-relay/1.0', 'Authorization': f'Bearer {TONDA_KEY}', 'Content-Type': 'application/json; charset=utf-8'},
             method='PUT',
         )
         try:
